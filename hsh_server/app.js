@@ -53,6 +53,22 @@ app.post('/login', (req, res) => {
     });
 })
 
+app.get('/propiedades', (req, res) => {
+  var sql="SELECT prop.name, prop.description, prop.address, prop.base_price FROM propiedades prop";
+  conn.query(sql, function(err, result){
+    res.send(result);
+    console.log(result);
+  })
+})
+
+app.get('/propiedades/:id', (req, res) => {
+  var sql="SELECT * FROM propiedades prop WHERE prop.id="+req.params.id;
+  conn.query(sql, function(err, result){
+    res.send(result);
+    console.log(result);
+  })
+})
+
 app.post('/validatetoken', (req, res) => {
     try {
       var decoded = jwt.verify(req.body.token, 'shhhhh');
