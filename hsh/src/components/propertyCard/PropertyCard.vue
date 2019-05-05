@@ -11,15 +11,19 @@
     <h4 slot="header">Mi hotel</h4>
 
     <b-card-body> 
-      <b-card-sub-title class="mb-2">Ubicación: 172 n° 3750</b-card-sub-title>
+      <b-card-sub-title class="mb-2">Ubicación : 172 n° 3750</b-card-sub-title>
     </b-card-body>
   </b-card>
   </div>
 </template>
 
 <script>
+  import {mapState} from 'vuex';
+
   export default {
     name: 'PropertyCard',
-  }
+    computed: {
+      ...mapState([property])
+    }}
 </script>
 
