@@ -39,16 +39,19 @@
       </b-collapse>
     </b-navbar>
     <router-view class="mt-sm-5"/>
+    <PropertyCard> </PropertyCard>
   </div>
 </template>
 
 <script>
   import Vuex from 'vuex';
   import Acceso from '@/components/Acceso.vue';
+  import PropertyCard from '@/components/propertyCard/PropertyCard.vue'
 
   export default {
     components: {
-      Acceso
+      Acceso,
+      PropertyCard
     },
     computed: {
       ...Vuex.mapState([
