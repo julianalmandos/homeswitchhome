@@ -7,20 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: null,
-    properties: [
-      {
-        nombre: "Mi casa",
-        direccion: "172 n°3750"
-      },
-      {
-        nombre: "Casa de Franco",
-        direccion: "Barrio Juan B. Justo, manzana 9 n°238"
-      },
-      {
-        nombre: "Casa del abuelo de Oriana Arevalos",
-        direccion: "Haramboure entre Contarelli y Saavedra n°300"
-      }
-    ],
+    properties: null,
   },
   mutations: {
     loginUserMutation(state, data) {
@@ -29,6 +16,9 @@ export default new Vuex.Store({
     logoutUserMutation(state) {
       state.user = null;
     },
+    listPropertiesMutation(state, data) {
+      state.properties = data;
+    }
 
   },
   actions: {
@@ -40,6 +30,9 @@ export default new Vuex.Store({
       localStorage.removeItem('user');
       commit('logoutUserMutation');
       router.push('');
-    }
+    },
+    listProperties({ commit }, data) {
+      commit('listPropertiesMutation', data);
+    },
   }
 })

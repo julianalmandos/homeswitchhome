@@ -7,10 +7,16 @@
       img-alt="Image"
       img-top
     >
-      <h4 slot="header">{{ this.$store.state.properties[index].nombre }}</h4>
-
+      <h7
+        slot="header"
+        class="d-inline-block text-truncate"
+        style="max-width: 200px;"
+      >{{ properties[index].nombre }}</h7>
       <b-card-body>
-        <b-card-sub-title class="mb-2">Ubicación : {{ this.$store.state.properties[index].direccion }}</b-card-sub-title>
+        <b-card-sub-title
+          class="mb-2 d-inline-block text-truncate"
+          style="max-width: 200px;"
+        >Ubicación : {{ properties[index].direccion }}</b-card-sub-title>
       </b-card-body>
     </b-card>
   </div>
@@ -21,9 +27,9 @@ import { mapState } from "vuex";
 
 export default {
   name: "PropertyCard",
-  props: ['index'],
+  props: ["index"],
   computed: {
-    ...mapState(['properties'])
+    ...mapState(["properties"])
   }
 };
 </script>
