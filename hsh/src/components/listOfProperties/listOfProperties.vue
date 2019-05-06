@@ -1,13 +1,13 @@
 <template>
   <div class="list-of-properties">
     <div class="container">
-      <div class="row">
+      <b-card-group deck>
         <div v-for="(property, index) of properties" :key="property.id">
-          <div class="col-sm-12 col-md-4 col-lg-3 d-flex p-2">
+          <div class="">
             <PropertyCard :index="index"></PropertyCard>
           </div>
         </div>
-      </div>
+      </b-card-group>
     </div>
   </div>
 </template>
@@ -26,18 +26,18 @@ export default {
   computed: {
     ...mapState(["properties"])
   },
+  beforeCreate(){
+    axios
+      .get("http://localhost:3000/propiedades")
+      .then(response => {
+        this.listProperties(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
   methods: {
     ...Vuex.mapActions(["listProperties"]),
-    getlistProperties() {
-      axios
-        .get("http://localhost:3000/propiedades")
-        .then(response => {
-          this.listProperties(response.data);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
   }
 };
 </script>

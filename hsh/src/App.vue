@@ -12,7 +12,7 @@
         <b-navbar-nav>
           <b-nav-form>
             <b-input-group>
-              <b-form-input size="sm" style="width:600px;" placeholder="Buscar propiedad..."></b-form-input>
+              <b-form-input size="sm" style="width:400px;" placeholder="Buscar propiedad..."></b-form-input>
               <b-input-group-append>
                 <b-button size="sm" class="my-2 my-sm-0 botonAzul" type="submit">Buscar</b-button>
               </b-input-group-append>              
