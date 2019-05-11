@@ -26,7 +26,7 @@
 import { mapState } from "vuex";
 
 export default {
-  name: "PropertyCard",
+  name: "propertyCard",
   props: ["index"],
   computed: {
     ...mapState(["properties"])

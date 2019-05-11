@@ -63,7 +63,7 @@
     import axios from 'axios';
 
     export default {
-        name: 'Acceso',
+        name: 'access',
         data() {
             return {
                 dataRegister: {

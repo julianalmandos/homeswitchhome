@@ -4,7 +4,7 @@
       <b-card-group deck>
         <div v-for="(property, index) of properties" :key="property.id">
           <div class="">
-            <PropertyCard :index="index"></PropertyCard>
+            <propertyCard :index="index"></propertyCard>
           </div>
         </div>
       </b-card-group>
@@ -16,12 +16,12 @@
 import Vuex from "vuex";
 import { mapState } from "vuex";
 import axios from "axios";
-import PropertyCard from "@/components/propertyCard/PropertyCard.vue";
+import propertyCard from "@/components/propertyCard/propertyCard.vue";
 
 export default {
   name: "listOfProperties",
   components: {
-    PropertyCard
+    propertyCard
   },
   computed: {
     ...mapState(["properties"])

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
 
 Vue.use(Router)
 
@@ -11,7 +10,7 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import('./views/Home.vue'),
+      component: () => import('./components/home/home.vue'),
       /*meta: {
         requiresAuth: true,
       }*/
@@ -19,12 +18,12 @@ export default new Router({
     {
       path: '/acerca-de',
       name: 'acerca-de',
-      component: () => import('./views/AcercaDe.vue')
+      component: () => import('./components/about/about.vue')
     },
     {
       path: '/contacto',
       name: 'contacto',
-      component: () => import('./views/Contacto.vue')
+      component: () => import('./components/contact/contact.vue')
     }
   ]
 })
