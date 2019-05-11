@@ -89,3 +89,14 @@ INSERT INTO `usuarios` VALUES (9, 'yonose@gmail.com', '$2b$08$MGeDhcAi.doH4qEUeJ
 INSERT INTO `usuarios` VALUES (10, 'yonose@gmail.com', '$2b$08$k9SWwL8BOra0aop9ypaZA.444ak8NxcrmEH6NoDap1j9zXsn1mdqy', 'Oriana', 'Arevalos', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ----------------------------
+-- Records of propiedades
+-- ----------------------------
+INSERT INTO `propiedades` VALUES (1, 'Casa de Oriana', 'Casa con patio', '500 N°16122', '1234');
+INSERT INTO `propiedades` VALUES (2, 'Casa de Julián', 'Casa sin patio', '44 N°1062', '1235');
+INSERT INTO `propiedades` VALUES (3, 'Casa de Cande', 'Casa de cande', '477 N°2696', '1236');
+INSERT INTO `propiedades` VALUES (4, 'Casa de Nico', 'Casa en berisso', '540 N°1622', '1237');
+INSERT INTO `propiedades` VALUES (5, 'Casa de Tomi', 'Casa en la plata', '506 N°1122', '1238');
+INSERT INTO `propiedades` VALUES (6, 'Casa de Mauri', 'Casa grande', '5120 N°162', '1239');
+
