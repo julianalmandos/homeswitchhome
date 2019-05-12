@@ -43,10 +43,13 @@ CREATE TABLE `paises`  (
 DROP TABLE IF EXISTS `propiedades`;
 CREATE TABLE `propiedades`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `address` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `base_price` decimal(10, 2) NOT NULL,
+  `country` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `province` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `locality` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 

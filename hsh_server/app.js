@@ -5,17 +5,17 @@ const jwt = require('jsonwebtoken');
 
 var app = express();
 var conn = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database : 'hsh'
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'hsh'
 });
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Methods', '*');
@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', function (req, res) {
-  var sql="SELECT * FROM usuarios";
+  var sql = "SELECT * FROM usuarios";
   conn.query(sql, function (err, result) {
     if (err) throw err;
     res.send(result);
@@ -31,64 +31,74 @@ app.get('/', function (req, res) {
 });
 
 app.post('/login', (req, res) => {
-    console.log(req.body.data);
-    var sql="SELECT * FROM usuarios us WHERE us.email='"+req.body.data.email+"'";
-    conn.query(sql, function (err, result) {
-      console.log(result);
-      if (err) throw err;
-      if (result[0]==null){
-        console.log('entra'); 
-        return res.status(401).send('Ese e-mail no se encuentra registrado.');
-      }else{
-        let contraseñaValida = bcrypt.compareSync(req.body.data.password, result[0].password);
-        //let contraseñaValida=result[0].password==req.body.data.password;
-        if (!contraseñaValida){
-            return res.status(401).send({ auth: false, token: null, msg: 'Contraseña incorrecta.'});
-        } 
-        let token = jwt.sign({ id: result[0].id }, 'shhhhh', { expiresIn: 600 // 10 minutos de sesión
-        });
-        console.log(token);
-        res.status(200).send({ auth: true, token: token, user: result[0] });
+  console.log(req.body.data);
+  var sql = "SELECT * FROM usuarios us WHERE us.email='" + req.body.data.email + "'";
+  conn.query(sql, function (err, result) {
+    console.log(result);
+    if (err) throw err;
+    if (result[0] == null) {
+      console.log('entra');
+      return res.status(401).send('Ese e-mail no se encuentra registrado.');
+    } else {
+      let contraseñaValida = bcrypt.compareSync(req.body.data.password, result[0].password);
+      //let contraseñaValida=result[0].password==req.body.data.password;
+      if (!contraseñaValida) {
+        return res.status(401).send({ auth: false, token: null, msg: 'Contraseña incorrecta.' });
       }
-    });
+      let token = jwt.sign({ id: result[0].id }, 'shhhhh', {
+        expiresIn: 600 // 10 minutos de sesión
+      });
+      console.log(token);
+      res.status(200).send({ auth: true, token: token, user: result[0] });
+    }
+  });
 })
 
 app.get('/propiedades', (req, res) => {
-  var sql="SELECT prop.name, prop.description, prop.address, prop.base_price FROM propiedades prop";
-  conn.query(sql, function(err, result){
+  var sql = "SELECT prop.name, prop.description, prop.address, prop.base_price FROM propiedades prop";
+  conn.query(sql, function (err, result) {
     res.send(result);
     console.log(result);
   })
 })
 
 app.get('/propiedades/:id', (req, res) => {
-  var sql="SELECT * FROM propiedades prop WHERE prop.id="+req.params.id;
-  conn.query(sql, function(err, result){
+  var sql = "SELECT * FROM propiedades prop WHERE prop.id=" + req.params.id;
+  conn.query(sql, function (err, result) {
     res.send(result);
     console.log(result);
   })
 })
 
+app.post('/propiedades', function (req, res) {
+  var sql = "INSERT INTO propiedades (title,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.title + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
 app.post('/validatetoken', (req, res) => {
-    try {
-      var decoded = jwt.verify(req.body.token, 'shhhhh');
-      res.send(true);
-    } catch(err) {
-      res.send(false);
-    }
+  try {
+    var decoded = jwt.verify(req.body.token, 'shhhhh');
+    res.send(true);
+  } catch (err) {
+    res.send(false);
+  }
 })
 
-app.post('/register', function(req, res) {
-    //console.log(req.body.data);
-    var contraseña=bcrypt.hashSync(req.body.data.password,8);
-    //falta chequear si el email ya existe
-    var sql="INSERT INTO usuarios (email,password,name,surname) VALUES ('"+req.body.data.email+"','"+contraseña+"','"+req.body.data.name+"','"+req.body.data.surname+"')";
-    console.log(sql);
-    conn.query(sql, function (err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
+app.post('/register', function (req, res) {
+  //console.log(req.body.data);
+  var contraseña = bcrypt.hashSync(req.body.data.password, 8);
+  //falta chequear si el email ya existe
+  var sql = "INSERT INTO usuarios (email,password,name,surname) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "')";
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
   });
+});
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
