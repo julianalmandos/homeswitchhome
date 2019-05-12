@@ -18,6 +18,7 @@ import { mapState } from "vuex";
 import axios from "axios";
 import propertyCard from "@/components/propertyCard/propertyCard.vue";
 
+
 export default {
   name: "listOfProperties",
   components: {

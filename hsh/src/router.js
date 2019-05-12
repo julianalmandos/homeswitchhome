@@ -24,6 +24,11 @@ export default new Router({
       path: '/contacto',
       name: 'contacto',
       component: () => import('./components/contact/contact.vue')
+    },
+    {
+      path: '/detalle',
+      name: 'detalle',
+      component: () => import('./components/propertyDetails/propertyDetails.vue')
     }
   ]
 })
