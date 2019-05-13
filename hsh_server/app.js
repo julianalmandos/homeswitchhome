@@ -54,18 +54,19 @@ app.post('/login', (req, res) => {
 })
 
 app.get('/propiedades', (req, res) => {
-  var sql="SELECT prop.name, prop.description, prop.address, prop.base_price FROM propiedades prop";
+  var sql="SELECT prop.name, prop.description, prop.address, prop.base_price, prop.id FROM propiedades prop";
   conn.query(sql, function(err, result){
     res.send(result);
-    console.log(result);
   })
 })
 
 app.get('/propiedades/:id', (req, res) => {
+  console.log(req.params.id);
   var sql="SELECT * FROM propiedades prop WHERE prop.id="+req.params.id;
   conn.query(sql, function(err, result){
     res.send(result);
     console.log(result);
+    console.log(err);
   })
 })
 

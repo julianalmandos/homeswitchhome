@@ -1,6 +1,6 @@
 <template>
   <div class="property-card">
-    <b-button href = "#" variant = "link" to="/detalle">
+    <router-link v-bind:to= "'/detalle/' + properties[index].id ">
       <b-card
         no-body
         style="max-width: 15rem;margin-bottom:1.25rem"
@@ -8,11 +8,11 @@
         img-alt="Image"
         img-top
       >
-        <h7
+        <h6
           slot="header"
           class="d-inline-block text-truncate"
           style="max-width: 200px;"
-        >{{ properties[index].name }}</h7>
+        >{{ properties[index].name }}</h6>
         <b-card-body>
           <b-card-sub-title
             class="mb-2 d-inline-block text-truncate"
@@ -20,7 +20,7 @@
           >Ubicación : {{ properties[index].address }}</b-card-sub-title>
         </b-card-body>
       </b-card>
-    </b-button>
+    </router-link>
   </div>
 </template>
 
