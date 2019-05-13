@@ -1,48 +1,38 @@
 <template>
   <div class="publish-property">
-    <form>
+    <form @submit.prevent="registerProperty">
       <div class="form-group">
-        <label for="propery-title">Ingrese el nombre de la propiedad</label>
-        <input type="property-title" id="property-title" name="property-title">
-      </div>
-
-      <div class="form-group">
-        <label for="propery-description">Ingrese la descripción de la propiedad</label>
-        <input type="property-description" id="property-description" name="property-description">
+        <label for="property-title">Ingrese el nombre de la propiedad</label>
+        <input type="title" id="title" v-model="dataRegisterProperty.name" required>
       </div>
 
       <div class="form-group">
-        <label for="propery-address">Ingrese la dirección de la propiedad</label>
-        <input type="property-address" id="property-address" name="property-address">
+        <label for="property-description">Ingrese la descripción de la propiedad</label>
+        <input type="description" id="description" v-model="dataRegisterProperty.description" required>
       </div>
 
       <div class="form-group">
-        <label for="propery-country">Ingrese el país de la propiedad</label>
-        <input type="property-country" id="property-country" name="property-country">
+        <label for="property-address">Ingrese la dirección de la propiedad</label>
+        <input type="address" id="address" v-model="dataRegisterProperty.address"
+                    required>
       </div>
 
       <div class="form-group">
-        <label for="propery-province">Ingrese la provincia de la propiedad</label>
-        <input type="property-province" id="property-province" name="property-province">
+        <label for="property-country">Ingrese el país de la propiedad</label>
+        <input type="country" id="country" v-model="dataRegisterProperty.country" required>
       </div>
 
       <div class="form-group">
-        <label for="propery-locality">Ingrese la localidad de la propiedad</label>
-        <input type="property-locality" id="property-locality" name="property-locality">
+        <label for="property-province">Ingrese la provincia de la propiedad</label>
+        <input type="province" id="province" v-model="dataRegisterProperty.province" required>
       </div>
 
-      <div class="row">
-        <div class="col-sm-6 col-md-4">
-          <div class="thumbnail">
-            <img data-src="..." alt="...">
-            <div class="caption">
-              <a href="#" class="btn btn-primary" role="button">Editar imagen</a>
-            </div>
-          </div>
-        </div>
+      <div class="form-group">
+        <label for="property-locality">Ingrese la localidad de la propiedad</label>
+        <input type="locality" id="locality" v-model="dataRegisterProperty.locality" required>
       </div>
 
-      <button type="submit" class="btn btn-primary">Enviar</button>
+      <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="dark">Registrar</b-button>
     </form>
   </div>
 </template>
@@ -51,7 +41,40 @@
 import { mapState } from "vuex";
 
 export default {
-  name: "publishProperty"
-};
+  name: "publishProperty",
+  data() {
+            return {
+                dataRegisterProperty: {
+                    name: '',
+                    description: '',
+                    address: '',
+                    base_price: '',
+                    country: '',
+                    province: '',
+                    locality: '',
+                },
+            }
+  },
+  methods: {
+    registerProperty(){
+                axios.post('http://localhost:3000/propiedades', {
+                    data: this.dataRegister,
+                })
+                .then(response => {
+                    localStorage.setItem('user',JSON.stringify(response.data.user));
+                    localStorage.setItem('jwt',response.data.token);
+                    this.loginUserAction(response.data.user);
+
+                    if (localStorage.getItem('jwt') != null){
+                        if(this.$route.params.nextUrl != null){
+                            this.$router.push(this.$route.params.nextUrl); //No esta funcionando no se por qué
+                        }else{
+                            this.$router.push('/');
+                        }
+                    }
+                })
+            }
+  }
+}
 </script>
 
