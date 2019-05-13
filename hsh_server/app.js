@@ -55,7 +55,7 @@ app.post('/login', (req, res) => {
 })
 
 app.get('/propiedades', (req, res) => {
-  var sql = "SELECT prop.name, prop.description, prop.address, prop.base_price FROM propiedades prop";
+  var sql = "SELECT * FROM propiedades prop";
   conn.query(sql, function (err, result) {
     res.send(result);
     console.log(result);
@@ -70,8 +70,9 @@ app.get('/propiedades/:id', (req, res) => {
   })
 })
 
-app.post('/propiedades', function (req, res) {
-  var sql = "INSERT INTO propiedades (title,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.title + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
+app.post('/propiedades/crear', function (req, res) {
+  console.log(req.body)
+  var sql = "INSERT INTO propiedades (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.name + "','" + req.body.description + "','" + req.body.address + "','" + req.body.base_price + "','" + req.body.country + "','" + req.body.province + "','" + req.body.locality + "')";
   console.log(sql);
   conn.query(sql, function (err, result) {
     if (err) throw err;
