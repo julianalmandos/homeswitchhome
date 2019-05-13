@@ -40,7 +40,50 @@
        <label for="property-locality">Ingrese la localidad de la propiedad</label>
        <input type="locality" id="locality" v-model="dataRegisterProperty.locality" required>
      </div>
-      <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="dark">Registrar</b-button>
+    <div class="form-group">
+      <b-form-file
+        required
+        accept="image/*"
+        v-model="dataRegisterProperty.files[0]"
+        :state="Boolean(dataRegisterProperty.files[0])"
+        placeholder="Seleccione una imagen para subir"
+        drop-placeholder="Arrastre una imagen para subir"
+      ></b-form-file>
+      <div class="mt-3">Selected file: {{ dataRegisterProperty.files[0] ? dataRegisterProperty.files[0].name : '' }}</div>
+      <b-form-file
+        accept="image/*"
+        v-model="dataRegisterProperty.files[1]"
+        :state="Boolean(dataRegisterProperty.files[1])"
+        placeholder="Seleccione una imagen para subir"
+        drop-placeholder="Arrastre una imagen para subir"
+      ></b-form-file>
+      <div class="mt-3">Selected file: {{ dataRegisterProperty.files[1] ? dataRegisterProperty.files[1].name : '' }}</div>
+      <b-form-file
+        accept="image/*"
+        v-model="dataRegisterProperty.files[2]"
+        :state="Boolean(dataRegisterProperty.files[2])"
+        placeholder="Seleccione una imagen para subir"
+        drop-placeholder="Arrastre una imagen para subir"
+      ></b-form-file>
+      <div class="mt-3">Selected file: {{ dataRegisterProperty.files[2] ? dataRegisterProperty.files[2].name : '' }}</div>
+      <b-form-file
+        accept="image/*"
+        v-model="dataRegisterProperty.files[3]"
+        :state="Boolean(dataRegisterProperty.files[3])"
+        placeholder="Seleccione una imagen para subir"
+        drop-placeholder="Arrastre una imagen para subir"
+      ></b-form-file>
+      <div class="mt-3">Selected file: {{ dataRegisterProperty.files[3] ? dataRegisterProperty.files[3].name : '' }}</div>
+      <b-form-file
+        accept="image/*"
+        v-model="dataRegisterProperty.files[4]"
+        :state="Boolean(dataRegisterProperty.files[4])"
+        placeholder="Seleccione una imagen para subir"
+        drop-placeholder="Arrastre una imagen para subir"
+      ></b-form-file>
+      <div class="mt-3">Selected file: {{ dataRegisterProperty.files[4] ? dataRegisterProperty.files[4].name : '' }}</div>
+    </div>
+    <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="dark">Registrar</b-button>
     </form>
   </div>
 </template>
@@ -49,7 +92,7 @@
 import { mapState } from "vuex";
 import axios from 'axios';
 
-export default {
+export default { 
   name: "publishProperty",
   data() {
     return {
@@ -60,13 +103,26 @@ export default {
         base_price: "",
         country: "",
         province: "",
-        locality: ""
-      }
+        locality: "",
+        files: [],
+      },
     };
   },
   methods: {
     registerProperty() {
-      axios.post("http://localhost:3000/propiedades", {
+      var imagesArray=[];
+      console.log('entra');
+      this.dataRegisterProperty.files.forEach(archivo => {
+        var reader = new FileReader();
+        reader.onloadend = function() {
+          imagesArray.push(reader.result);
+        }
+        reader.readAsDataURL(archivo);
+      });
+      console.log("hola");
+      console.log("soy vacio");
+      this.dataRegisterProperty.file = imagesArray;
+      axios.post("http://localhost:3000/properties/publish", {
         data: this.dataRegisterProperty
       });
     }

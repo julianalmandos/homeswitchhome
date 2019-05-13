@@ -2,7 +2,6 @@
   <div class="home">
     <h1>Propiedades</h1>
     <listOfProperties/>
-    <publishProperty/>
   </div>
 </template>
 

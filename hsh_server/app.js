@@ -54,7 +54,7 @@ app.post('/login', (req, res) => {
   });
 })
 
-app.get('/propiedades', (req, res) => {
+app.get('/properties', (req, res) => {
   var sql = "SELECT * FROM propiedades prop";
   conn.query(sql, function (err, result) {
     res.send(result);
@@ -62,7 +62,7 @@ app.get('/propiedades', (req, res) => {
   })
 })
 
-app.get('/propiedades/:id', (req, res) => {
+app.get('/properties/:id', (req, res) => {
   var sql = "SELECT * FROM propiedades prop WHERE prop.id=" + req.params.id;
   conn.query(sql, function (err, result) {
     res.send(result);
@@ -70,9 +70,13 @@ app.get('/propiedades/:id', (req, res) => {
   })
 })
 
-app.post('/propiedades', function (req, res) {
+app.post('/properties/publish', function (req, res) {
   var sql = "INSERT INTO propiedades (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
-  console.log(sql)
+  var sqlIm ;
+  req.body.data.files.forEach(element => {
+    sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + sql.id + "','" + element + "')"
+  });
+  console.log(sql+sqlIm);
   conn.query(sql, function (err, result) {
     if (err) throw err;
     res.send(result);

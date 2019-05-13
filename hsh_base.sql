@@ -53,6 +53,17 @@ CREATE TABLE `propiedades`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
+-- -----------------------------------------
+-- Table structure for images of properties
+-- -----------------------------------------
+DROP TABLE IF EXISTS `images`;
+CREATE TABLE `images`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idProperty` decimal(10,2) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+  ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
 -- ----------------------------
 -- Table structure for provincias
 -- ----------------------------
