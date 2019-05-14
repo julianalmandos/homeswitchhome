@@ -32,6 +32,7 @@ export default {
       .get("http://localhost:3000/propiedades")
       .then(response => {
         this.listProperties(response.data);
+        console.log(response.data);
       })
       .catch(error => {
         console.log(error);

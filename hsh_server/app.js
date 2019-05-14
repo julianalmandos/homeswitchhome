@@ -61,12 +61,17 @@ app.get('/propiedades', (req, res) => {
 })
 
 app.get('/propiedades/:id', (req, res) => {
-  console.log(req.params.id);
   var sql="SELECT * FROM propiedades prop WHERE prop.id="+req.params.id;
   conn.query(sql, function(err, result){
     res.send(result);
+  })
+})
+
+app.get('/weeks/:id', (req, res) => {
+  var sql="SELECT * FROM weeks WHERE weeks.idproperty="+req.params.id;
+  conn.query(sql, function(err, result){
+    res.send(result);
     console.log(result);
-    console.log(err);
   })
 })
 
