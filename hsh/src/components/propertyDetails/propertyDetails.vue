@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <b-button block variant="outline-primary">Editar Propiedad</b-button>
+    <b-button  block variant="outline-primary">Editar Propiedad</b-button>
     <h1>{{property.name}}</h1>
     <div class="center-block">
       <b-carousel
@@ -24,9 +24,9 @@
       <p>Precio base: {{property.base_price}}</p>
     </div>
     <b-card-group deck>
-      <div v-for="(week, index) of weeks" :key="index">
+      <div v-for="(week, index) of weeks" :key="index" >
         <div class="">
-          <weekCard :week="week[index]"></weekCard>
+          <weekCard :week="week" ></weekCard>
         </div>
       </div>
     </b-card-group>
@@ -36,34 +36,39 @@
 <script>
 import Vuex from 'vuex';
 import axios from 'axios';
-import { mapState } from "vuex";
 import weekCard from "@/components/weekCard/weekCard.vue";
 
     export default {
       name: 'propertyDetails',
+      components: {
+        weekCard
+      },
       data() {
         return{
           property: {},
-          weeks:{},
-          
+          weeks: {}, 
         }
       },
       beforeCreate(){
         axios.get("http://localhost:3000/propiedades/"+ this.$route.params.id)
           .then(response => {
             this.property = response.data[0];
+            console.log(this.property)
+            console.log("hola");
           })
           .catch(error => {
             console.log(error);
           });
         axios.get("http://localhost:3000/weeks/"+ this.$route.params.id)
           .then(response => {
-            this.weeks = response.data;
+            this.weeks = response.data; 
+            console.log(this.weeks);
+            console.log("hola");
           })
           .catch(error => {
             console.log(error);
-          });
-      }
+          }); 
+      }, 
     }    
 </script>
 

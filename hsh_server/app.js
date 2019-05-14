@@ -71,7 +71,6 @@ app.get('/weeks/:id', (req, res) => {
   var sql="SELECT * FROM weeks WHERE weeks.idproperty="+req.params.id;
   conn.query(sql, function(err, result){
     res.send(result);
-    console.log(result);
   })
 })
 
