@@ -91,7 +91,8 @@ app.post('/register', function(req, res) {
   });
 
 app.post('/properties/:id/edit', function(req, res) {
-  var sql="UPDATE properties p SET (p.description) VALUES "+req.body.data.description;
+  console.log(req.body.data.description)
+  var sql=("UPDATE propiedades p SET (p.description='"+req.body.data.description+"') WHERE p.id='"+req.body.data.id+"");
   console.log(sql);
   conn.query(sql, function (err, result) {
     if (err) throw err;

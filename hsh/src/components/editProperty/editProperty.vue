@@ -1,18 +1,15 @@
 <template>
-  <div class="editProperty">
-    <b-button v-b-modal.modal-1>Launch demo modal</b-button>
+  <div class="editProperty"> 
 
-    <b-modal id="editPropertyModal" :title="'Editar Propiedad N°'+this.property.id">
-      <form @submit.stop.prevent="editProperty">
-        <b-form-group id="descripcion" label="Descripcion" label-for="input-2">
-        <b-form-input
-          id="input-2"
-          v-model="this.property.description"
-          required
-        ></b-form-input>
-        <b-button type="submit" variant="dark">Editar!</b-button>
+    <b-modal
+      id="editPropertyModal"
+      :title="'Editar Propiedad N°'+this.property.id"
+      ok-title="Editar"
+      @ok="propertyEdition"
+    >
+      <b-form-group id="descripcion" label="Descripcion" label-for="input-1">
+        <b-form-input id="input-1"  required></b-form-input>
       </b-form-group>
-      </form>
     </b-modal>
   </div>
 </template>
@@ -23,24 +20,25 @@ import axios from "axios";
 
 export default {
   name: "editProperty",
-  props: [
-    'property'
-  ],
+  props: ["property"],
   data() {
-    return {
-    }
+    return {};
   },
   methods: {
-    editProperty(){
+    propertyEdition() {
+      console.log("holaaaaaaaaaaaaaaa");
+      console.log(this.property.id);
       axios
-        .post('//localhost:3000/propiedades/'+this.property.id+'/edit', {
-          data: this.property,
-        }).then(response => {
-          console.log('Propiedad editada correctamente');
-        }).catch(error => {
-          console.log(error);
+        .post("http://localhost:3000/properties/" + this.property.id + "/edit", {
+          data: this.property
         })
-    }   
+        .then(response => {
+          console.log("Propiedad editada correctamente");
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   }
 };
 </script>
