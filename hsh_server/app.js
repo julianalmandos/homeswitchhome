@@ -70,17 +70,15 @@ app.get('/properties/:id', (req, res) => {
   })
 })
 
-app.post('/properties/publish', function (req, res) {
+app.post('/properties/publish', function (req, res) { 
+  console.log(req.body.data)
   var sql = "INSERT INTO propiedades (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
-  var sqlIm ;
-  req.body.data.files.forEach(element => {
-    sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + sql.id + "','" + element + "')"
-  });
-  console.log(sql+sqlIm);
+  var sqlIm;
   conn.query(sql, function (err, result) {
     if (err) throw err;
     res.send(result);
-  });
+    var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + result.id + "','" + req.body.data.files[1] + "')"
+  }); 
 });
 
 app.post('/validatetoken', (req, res) => {
