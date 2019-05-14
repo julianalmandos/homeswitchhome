@@ -24,6 +24,11 @@ export default new Router({
       path: '/contacto',
       name: 'contacto',
       component: () => import('./components/contact/contact.vue')
+    },
+    {
+      path: '/properties/:id/edit',
+      name: 'editProperty',
+      component: () => import('./components/editProperty/editProperty.vue')
     }
   ]
 })

@@ -90,6 +90,15 @@ app.post('/register', function(req, res) {
     });
   });
 
+app.post('/properties/:id/edit', function(req, res) {
+  var sql="UPDATE properties p SET (p.description) VALUES "+req.body.data.description;
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
