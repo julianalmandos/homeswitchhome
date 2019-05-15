@@ -16,7 +16,7 @@ export default {
   data (){
     return{
       dataRegisterWeek:{
-        id:3,
+        id:1,
         idProperty:1,
         date:23
       }

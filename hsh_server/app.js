@@ -70,19 +70,38 @@ app.get('/propiedades/:id', (req, res) => {
   })
 })
 
-
-app.post('/week/:id/bid', function (req, res) {
-  var highestBid = "SELECT MAX(price) FROM bids WHERE idWeek=" + req.params.id;
-  if (req.body.data.base_price < req.body.data.price & highestBid < req.body.data.price) {
-    var sql = "INSERT INTO bid (price, idWeek) VALUES ('" + req.body.data.price + "','" + req.body.data.idWeek+"')";
-    console.log(sql);
-    conn.query(sql, function (err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
-  }
-  
+app.get('/pepe/:id', (req, res) => {
+  console.log("soy maximo");
+  var sql = "SELECT IFNULL(MAX(price),0) FROM bids WHERE idWeek=" + req.params.id;
+  conn.query(sql, function (err, result) {
+    res.send(result);
+    console.log(result);
+  })
 })
+
+
+
+
+app.post('/week/:id/bid', function (req, res) {   
+  var sql = "SELECT (MAX(price)) FROM bids WHERE idWeek=" + req.params.id;
+  conn.query(sql, [true],function (err, result) { 
+    var pepe = JSON.parse(JSON.stringify(result[0]['(MAX(price))'])); 
+    console.log(pepe) 
+    if (pepe===null){ 
+      pepe = -1;
+    }
+    else{}; 
+    if (pepe < req.body.data.price && req.body.data.base_price < req.body.data.price) {
+      console.log("Entre al otro if");
+      var sql = "INSERT INTO bids (price, idWeek) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "')";
+      console.log(sql);
+      conn.query(sql, function (err, result) {
+        if (err) throw err;
+        res.send(result);
+      });
+    }else{res.send()}})
+
+  })
 
 app.post('/validatetoken', (req, res) => {
   try {
