@@ -74,6 +74,20 @@ app.get('/weeks/:id', (req, res) => {
   })
 })
 
+app.get('/openAuction/:id', (req, res) => {
+  var sql="UPDATE weeks SET weeks.auction = 1 WHERE weeks.id="+req.params.id;
+  conn.query(sql, function(err, result){
+    res.send(result);
+  })
+})
+
+app.get('/closeAuction/:id', (req, res) => {
+  var sql="UPDATE weeks SET weeks.auction = 0 WHERE weeks.id="+req.params.id;
+  conn.query(sql, function(err, result){
+    res.send(result);
+  })
+})
+
 app.post('/validatetoken', (req, res) => {
     try {
       var decoded = jwt.verify(req.body.token, 'shhhhh');
