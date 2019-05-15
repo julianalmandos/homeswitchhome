@@ -8,7 +8,7 @@
       @ok="propertyEdition"
     >
       <b-form-group id="descripcion" label="Descripcion" label-for="input-1">
-        <b-form-input id="input-1"  required></b-form-input>
+        <b-form-input id="input-1" v-model="property.description"  required></b-form-input>
       </b-form-group>
     </b-modal>
   </div>
@@ -25,9 +25,7 @@ export default {
     return {};
   },
   methods: {
-    propertyEdition() {
-      console.log("holaaaaaaaaaaaaaaa");
-      console.log(this.property.id);
+    propertyEdition() { 
       axios
         .post("http://localhost:3000/properties/" + this.property.id + "/edit", {
           data: this.property

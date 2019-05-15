@@ -2,6 +2,7 @@
   <div class="home">
     <h1>Propiedades</h1>
     <b-button v-b-modal.editPropertyModal>Editar</b-button>
+
     <editProperty :property="dataRegisterProperty"/>
     <listOfProperties/>
   </div>
