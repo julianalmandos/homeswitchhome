@@ -53,8 +53,6 @@ import weekCard from "@/components/weekCard/weekCard.vue";
         axios.get("http://localhost:3000/propiedades/"+ this.$route.params.id)
           .then(response => {
             this.property = response.data[0];
-            console.log(this.property)
-            console.log("hola");
           })
           .catch(error => {
             console.log(error);
@@ -62,13 +60,20 @@ import weekCard from "@/components/weekCard/weekCard.vue";
         axios.get("http://localhost:3000/weeks/"+ this.$route.params.id)
           .then(response => {
             this.weeks = response.data; 
-            console.log(this.weeks);
-            console.log("hola");
           })
           .catch(error => {
             console.log(error);
           }); 
-      }, 
+      },
+      updated(){
+        axios.get("http://localhost:3000/weeks/"+ this.$route.params.id)
+          .then(response => {
+            this.weeks = response.data; 
+          })
+          .catch(error => {
+            console.log(error);
+          });  
+      } 
     }    
 </script>
 
