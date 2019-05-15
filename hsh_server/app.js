@@ -2,7 +2,7 @@ var express = require('express');
 var mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const nodemailer = require('nodemailer');
 var app = express();
 var conn = mysql.createConnection({
   host: 'localhost',
@@ -66,42 +66,67 @@ app.get('/propiedades/:id', (req, res) => {
   var sql = "SELECT * FROM propiedades prop WHERE prop.id=" + req.params.id;
   conn.query(sql, function (err, result) {
     res.send(result);
-    console.log(result);
   })
 })
 
-app.get('/pepe/:id', (req, res) => {
-  console.log("soy maximo");
-  var sql = "SELECT IFNULL(MAX(price),0) FROM bids WHERE idWeek=" + req.params.id;
-  conn.query(sql, function (err, result) {
-    res.send(result);
-    console.log(result);
-  })
-})
+/* 
+  PRUEBA PARA MANDAR UN EMAIL
+exports.sendEmail = function (req, res) {
+      // Definimos el transporter
+      var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'orianarevalos@gmail.com',
+          pass: 'Milanesaconpure12'
+        }
+      });
+      console.log("Estoy mandando el mail");
+      // Definimos el email
+      var mailOptions = {
+        from: 'orianarevalos@gmail.com',
+        to: 'orianarevalos@gmail.com',
+        subject: 'Subastas',
+        text: 'Contenido del email'
+      };
+      // Enviamos el email
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+          res.send(500, err.message);
+        } else {
+          console.log("Email sent");
+          res.status(200).jsonp(req.body);
+        }
+      });
+    };
+    console.log("Enviando"); 
+    res.send("hola")
+  })*/
 
-
-
-
-app.post('/week/:id/bid', function (req, res) {   
+app.post('/week/:id/bid', function (req, res) {
   var sql = "SELECT (MAX(price)) FROM bids WHERE idWeek=" + req.params.id;
-  conn.query(sql, [true],function (err, result) { 
-    var pepe = JSON.parse(JSON.stringify(result[0]['(MAX(price))'])); 
-    console.log(pepe) 
-    if (pepe===null){ 
+  conn.query(sql, [true], function (err, result) {
+    var pepe = JSON.parse(JSON.stringify(result[0]['(MAX(price))']));
+    if (pepe === null) {
       pepe = -1;
     }
-    else{}; 
+    else { };
+    console.log(req.body.data.price, pepe, req.body.data.base_price)
     if (pepe < req.body.data.price && req.body.data.base_price < req.body.data.price) {
-      console.log("Entre al otro if");
-      var sql = "INSERT INTO bids (price, idWeek) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "')";
-      console.log(sql);
+      var sql = "INSERT INTO bids (price, idWeek, email) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "','" + req.body.data.email + "')";
       conn.query(sql, function (err, result) {
-        if (err) throw err;
+        if (err) { throw err; }
         res.send(result);
       });
-    }else{res.send()}})
-
+    } else {
+      console.log("Va por el else");
+      res.send()
+    }
   })
+}
+)
+
+
 
 app.post('/validatetoken', (req, res) => {
   try {

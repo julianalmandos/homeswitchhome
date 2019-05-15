@@ -10,7 +10,7 @@
         <b-form-input id="input-1" v-model="price" required></b-form-input>
       </b-form-group>
       <b-form-group id="email" label="Ingrese su email" label-for="input-2">
-        <b-form-input id="input-2" required></b-form-input>
+        <b-form-input id="input-2" v-model="email" required></b-form-input>
       </b-form-group>
     </b-modal>
   </div>
@@ -26,15 +26,11 @@ export default {
     return {
       property: {},
       price: 0,
-      max : 12
+      email: "", 
     }
   },
-  beforeCreate() { 
-    
-  },
-  methods: {
-    placeABidForAWeek() { 
-      console.log(this.week.idProperty);
+  beforeMount() { 
+    console.log(this.week.idProperty);
       axios
       .get("http://localhost:3000/propiedades/" + this.week.idProperty)
       .then(response => {
@@ -42,7 +38,10 @@ export default {
       })
       .catch(error => {
         console.log(error);
-      }); 
+      });  
+  },
+  methods: {
+    placeABidForAWeek() {  
       /*axios
       .get("http://localhost:3000/pepe/" + this.week.id )
       .then(response => {
@@ -69,7 +68,6 @@ export default {
         .catch(error => {
           console.log(error);
         });
-
     }, 
   }
 };
