@@ -1,7 +1,7 @@
 <template>
     <div class= "weekCard">
         <b-card v-if= ((!week.reserved)&compare(week.date)) border-variant="light" class="text-center">
-            <h6>PMA: {{maxBid}}</h6>
+            <h6>PMA: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
                 <b-button v-if="week.auction" v-on:click="closeAuction" block variant="outline-primary">Cerrar subasta</b-button>
@@ -36,8 +36,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
         created(){
             axios.get("http://localhost:3000/week/"+ this.week.id+'/maxbid')
                 .then(response => {
-                    this.maxBid=response.data;
-                    console.log(response.data);
+                    this.maxBid=response.data.data;
+                    console.log(response.data.data);
                     this.$emit('edited');
                 })
                 .catch(error => {

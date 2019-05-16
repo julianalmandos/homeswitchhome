@@ -87,16 +87,18 @@ app.get('/weeks/:id', (req, res) => {
 
 app.get('/week/:id/maxbid', function (req,res) {
   var sql = "SELECT MAX(price) FROM bids WHERE idWeek=" + req.params.id;
+  var pepe;
   conn.query(sql, function (err, result) {
-    if(result[0]==null){ //NO ESTA FUNCIONANDO
-      /*var sql = "SELECT p.base_price FROM bids b INNER JOIN weeks w ON (b.idWeek=w.id) INNER JOIN properties p ON (w.idProperty=p.id) WHERE bidWeek=" + req.params.id;
+    pepe = JSON.parse(JSON.stringify(result[0]['MAX(price)']));
+    if(pepe==null){ //NO ESTA FUNCIONANDO
+      var sql = "SELECT p.base_price FROM bids b INNER JOIN weeks w ON (b.idWeek=w.id) INNER JOIN properties p ON (w.idProperty=p.id) WHERE bidWeek=" + req.params.id;
       conn.query(sql, function (err, result) {
-        res.send(result);
-      })*/
+        res.status(200).send({data: result});
+      })
     }
     if (err) throw err;
     console.log(result);
-    res.send(result);
+    res.status(200).send({data: pepe});
   });
 })
 
