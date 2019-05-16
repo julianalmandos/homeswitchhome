@@ -68,9 +68,8 @@ app.get('/propiedades/:id', (req, res) => {
     res.send(result);
   })
 })
-
-/* 
-  PRUEBA PARA MANDAR UN EMAIL
+/*
+app.get('/pepe', (req, res) => {
 exports.sendEmail = function (req, res) {
       // Definimos el transporter
       var transporter = nodemailer.createTransport({
