@@ -39,6 +39,13 @@ export default {
       .catch(error => {
         console.log(error);
       });  
+      /*axios
+      .get("http://localhost:3000/pepe")
+      .then(response => {  
+      })
+      .catch(error => {
+        console.log(error);
+      });  */
   },
   methods: {
     placeABidForAWeek() {  
