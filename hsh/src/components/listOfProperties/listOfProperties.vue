@@ -1,6 +1,7 @@
 <template>
   <div class="list-of-properties">
     <div class="container">
+      <h1>Propiedades</h1> 
       <b-card-group deck>
         <div v-for="property of properties" :key="property.id">
           <div class="">

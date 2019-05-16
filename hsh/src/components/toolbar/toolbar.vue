@@ -33,6 +33,7 @@
             <template slot="button-content">{{user.surname}}, {{user.name}}</template>
             <!--<b-dropdown-item href="#">Perfil</b-dropdown-item>
             <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
+            <b-dropdown-item href="#"><router-link to="/administration">Panel de Administracion</router-link></b-dropdown-item>
             <b-dropdown-item @click="logoutUser">Cerrar Sesión</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>

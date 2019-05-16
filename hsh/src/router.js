@@ -3,7 +3,8 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-export default new Router({
+var router;
+export default router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -39,6 +40,14 @@ export default new Router({
       path: '/properties/:id/edit',
       name: 'editProperty',
       component: () => import('./components/editProperty/editProperty.vue')
+    },
+    {
+      path: '/administration',
+      name: 'administration',
+      component: () => import('./components/administrationPanel/administrationPanel.vue'),
+      meta: {
+        admin:true,
+      }
     }
   ]
 })

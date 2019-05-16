@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <h1>Propiedades</h1> 
     <listOfProperties/>
   </div>
 </template>
