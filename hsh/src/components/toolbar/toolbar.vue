@@ -11,12 +11,12 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-form>
-            <!--<b-input-group>
+            <b-input-group>
               <b-form-input size="sm" style="width:400px;" placeholder="Buscar propiedad..."></b-form-input>
               <b-input-group-append>
                 <b-button size="sm" class="my-2 my-sm-0 botonAzul" type="submit">Buscar</b-button>
               </b-input-group-append>              
-            </b-input-group>-->
+            </b-input-group>
           </b-nav-form>
         </b-navbar-nav>
 
@@ -33,13 +33,12 @@
             <template slot="button-content">{{user.surname}}, {{user.name}}</template>
             <!--<b-dropdown-item href="#">Perfil</b-dropdown-item>
             <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
-            <b-dropdown-item href="#"><router-link to="/administration">Panel de Administracion</router-link></b-dropdown-item>
-            <b-dropdown-item @click="logoutUser">Cerrar Sesión</b-dropdown-item>
+            <b-dropdown-item @click="viewAdministrationPanel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
+            <b-dropdown-item @click="logoutUser"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Cerrar Sesión</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <router-view class="mt-sm-5"/>
 
   </div>
 
@@ -66,6 +65,9 @@
       ]),
       logoutUser(){
         this.logoutUserAction();
+      },
+      viewAdministrationPanel() {
+        this.$router.push('/administration');
       }
     }
   }

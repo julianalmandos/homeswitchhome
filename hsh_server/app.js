@@ -117,7 +117,7 @@ app.post('/week/:id/bid', function (req, res) {
       });
     } else {
       console.log("Va por el else");
-      res.send()
+      res.status(401).send();
     }
   })
 })
@@ -135,7 +135,7 @@ app.get('/closeAuction/:id', (req, res) => {
     res.send(result);
   })
 })
-/*
+
 app.get('/pepe', (req, res) => {
 exports.sendEmail = function (req, res) {
       // Definimos el transporter
@@ -167,7 +167,7 @@ exports.sendEmail = function (req, res) {
     };
     console.log("Enviando"); 
     res.send("hola")
-  })*/
+  })
 
 app.post('/properties/publish', function (req, res) { 
   console.log(req.body.data)

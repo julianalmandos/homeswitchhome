@@ -17,10 +17,13 @@
                     required
                     placeholder="Ingrese una contraseña:"
                 ></b-form-input>
+                <b-alert class="mt-sm-3" v-model="showInvalidData" variant="danger" dismissible>
+                    <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> El e-mail o la contraseña son incorrectos.
+                </b-alert>
                 <b-button size="sm" class="my-2 my-sm-3 mr-3 btn-block" type="submit" variant="dark">Iniciar Sesión</b-button>
             </b-nav-form>
         </b-col>
-        <!--<b-col align-self="start">
+        <b-col align-self="start">
             <h3>Registrarse</h3>
             <b-nav-form class="mx-sm-3" @submit.prevent="registerUser">
                 <b-form-input size="sm" class="mr-sm-2 my-sm-3"
@@ -53,7 +56,7 @@
                 ></b-form-input>
                 <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="dark">Registrarse</b-button>
             </b-nav-form>
-        </b-col>-->
+        </b-col>    
         
     </div>
 </template>
@@ -75,7 +78,8 @@
                 dataLogin: {
                     email: '',
                     password: '',
-                }
+                },
+                showInvalidData: false,
             }
         },
         computed: {
@@ -104,6 +108,7 @@
                 })
                 .catch(error => {
                     console.log(error);
+                    this.showInvalidData=true;
                 })
             },
             registerUser(){

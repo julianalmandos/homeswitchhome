@@ -4,7 +4,7 @@
       id="placeABidModal"
       :title="'Pujar para la fecha: '+this.week.date.substring(0,10)"
       ok-title="Pujar"
-      @ok="placeABidForAWeek"
+      @ok.prevent="placeABidForAWeek"
     >
       <b-form-group id="bid" label="Ingrese una puja" label-for="input-1">
         <b-form-input id="input-1" v-model="price" required></b-form-input>
@@ -12,6 +12,12 @@
       <b-form-group id="email" label="Ingrese su email" label-for="input-2">
         <b-form-input id="input-2" v-model="email" required></b-form-input>
       </b-form-group>
+      <b-alert class="mt-sm-3" v-model="showPlacedBid" variant="success" dismissible>
+        <font-awesome-icon icon="check"></font-awesome-icon> La puja fue realizada correctamente.
+      </b-alert>
+      <b-alert class="mt-sm-3" v-model="showErrorPlacingBid" variant="danger" dismissible>
+        <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> El monto de la puja es demasiado bajo.
+      </b-alert>
     </b-modal>
   </div>
 </template>
@@ -25,8 +31,10 @@ export default {
   data() {
     return {
       property: {},
-      price: 0,
+      price: '',
       email: "", 
+      showPlacedBid: false,
+      showErrorPlacingBid: false,
     }
   },
   beforeMount() { 
@@ -38,27 +46,15 @@ export default {
       })
       .catch(error => {
         console.log(error);
-      });  
-      /*axios
-      .get("http://localhost:3000/pepe")
-      .then(response => {  
-      })
-      .catch(error => {
-        console.log(error);
-      });  */
+      }); 
+  },
+  mounted() {
+    this.$root.$on('bv::modal::hidden', (bvEvent, modalId) => {
+      this.resetModal()
+    })
   },
   methods: {
     placeABidForAWeek() {  
-      /*axios
-      .get("http://localhost:3000/pepe/" + this.week.id )
-      .then(response => {
-        this.max = response.data;  
-      })
-      .catch(error => {
-        console.log(error);
-      }); 
-      console.log("soy el maximo");
-      console.log(this.max)*/
      axios
         .post("http://localhost:3000/week/" + this.week.id + "/bid", {
           data: {
@@ -70,12 +66,21 @@ export default {
           }
         })
         .then(response => {
-          console.log("Propiedad editada correctamente");
+          this.showPlacedBid=true;
+          console.log("Puja realizada con exito");
         })
         .catch(error => {
+          this.showErrorPlacingBid=true;
           console.log(error);
         });
-    }, 
+    },
+    resetModal() {
+      this.showPlacedBid=false;
+      this.showErrorPlacingBid=false;
+      this.email='';
+      this.price='';
+      console.log('asd');
+    },
   }
 };
 </script>
