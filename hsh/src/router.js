@@ -29,6 +29,11 @@ export default new Router({
       path: '/properties/publish',
       name: 'publish',
       component: () => import('./components/publishProperty/publishProperty.vue')
+    },
+    {
+      path: '/properties/:id/edit',
+      name: 'editProperty',
+      component: () => import('./components/editProperty/editProperty.vue')
     }
   ]
 })

@@ -2,7 +2,7 @@ var express = require('express');
 var mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const nodemailer = require('nodemailer');
 var app = express();
 var conn = mysql.createConnection({
   host: 'localhost',
@@ -66,10 +66,43 @@ app.get('/properties/:id', (req, res) => {
   var sql = "SELECT * FROM propiedades prop WHERE prop.id=" + req.params.id;
   conn.query(sql, function (err, result) {
     res.send(result);
-    console.log(result);
   })
 })
+/*
+app.get('/pepe', (req, res) => {
+exports.sendEmail = function (req, res) {
+      // Definimos el transporter
+      var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: 'orianarevalos@gmail.com',
+          pass: 'Milanesaconpure12'
+        }
+      });
+      console.log("Estoy mandando el mail");
+      // Definimos el email
+      var mailOptions = {
+        from: 'orianarevalos@gmail.com',
+        to: 'orianarevalos@gmail.com',
+        subject: 'Subastas',
+        text: 'Contenido del email'
+      };
+      // Enviamos el email
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+          res.send(500, err.message);
+        } else {
+          console.log("Email sent");
+          res.status(200).jsonp(req.body);
+        }
+      });
+    };
+    console.log("Enviando"); 
+    res.send("hola")
+  })*/
 
+<<<<<<< HEAD
 app.post('/properties/publish', function (req, res) { 
   console.log(req.body.data)
   var sql = "INSERT INTO propiedades (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
@@ -80,6 +113,32 @@ app.post('/properties/publish', function (req, res) {
     var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + result.id + "','" + req.body.data.files[1] + "')"
   }); 
 });
+=======
+app.post('/week/:id/bid', function (req, res) {
+  var sql = "SELECT (MAX(price)) FROM bids WHERE idWeek=" + req.params.id;
+  conn.query(sql, [true], function (err, result) {
+    var pepe = JSON.parse(JSON.stringify(result[0]['(MAX(price))']));
+    if (pepe === null) {
+      pepe = -1;
+    }
+    else { };
+    console.log(req.body.data.price, pepe, req.body.data.base_price)
+    if (pepe < req.body.data.price && req.body.data.base_price < req.body.data.price) {
+      var sql = "INSERT INTO bids (price, idWeek, email) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "','" + req.body.data.email + "')";
+      conn.query(sql, function (err, result) {
+        if (err) { throw err; }
+        res.send(result);
+      });
+    } else {
+      console.log("Va por el else");
+      res.send()
+    }
+  })
+}
+)
+
+
+>>>>>>> master
 
 app.post('/validatetoken', (req, res) => {
   try {
@@ -90,6 +149,11 @@ app.post('/validatetoken', (req, res) => {
   }
 })
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> master
 app.post('/register', function (req, res) {
   //console.log(req.body.data);
   var contraseña = bcrypt.hashSync(req.body.data.password, 8);
@@ -99,8 +163,23 @@ app.post('/register', function (req, res) {
   conn.query(sql, function (err, result) {
     if (err) throw err;
     res.send(result);
+<<<<<<< HEAD
   });
 });
+=======
+  });
+});
+
+app.post('/properties/:id/edit', function(req, res) {
+  console.log(req.body.data.description)
+  var sql="UPDATE propiedades p SET p.description = '"+ req.body.data.description +"' WHERE p.id="+req.body.data.id;
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
+>>>>>>> master
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');

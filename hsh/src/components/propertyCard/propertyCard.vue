@@ -7,11 +7,11 @@
       img-alt="Image"
       img-top
     >
-      <h7
+      <h6
         slot="header"
         class="d-inline-block text-truncate"
         style="max-width: 200px;"
-      >{{ properties[index].name }}</h7>
+      >{{ properties[index].name }}</h6>
       <b-card-body>
         <b-card-sub-title
           class="mb-2 d-inline-block text-truncate"
