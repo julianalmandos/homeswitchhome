@@ -182,6 +182,16 @@ app.post('/properties/publish', function (req, res) {
   }); 
 });
 
+app.get('/properties/:id/delete', function (req, res){
+  var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + "AND NOT EXIST (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"
+  conn.query(sql, function(err, result){
+    if (result.data = null){
+      var sqlRemove = "DELETE FROM properties WHERE id=" + req.params.id;
+    }
+    res.send(result);
+  })
+})
+
 app.post('/validatetoken', (req, res) => {
   try {
     var decoded = jwt.verify(req.body.token, 'shhhhh');
