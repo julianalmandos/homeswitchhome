@@ -11,19 +11,19 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-form>
-            <b-input-group>
+            <!--<b-input-group>
               <b-form-input size="sm" style="width:400px;" placeholder="Buscar propiedad..."></b-form-input>
               <b-input-group-append>
                 <b-button size="sm" class="my-2 my-sm-0 botonAzul" type="submit">Buscar</b-button>
               </b-input-group-append>              
-            </b-input-group>
+            </b-input-group>-->
           </b-nav-form>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item to="/acerca-de">Acerca De</b-nav-item>
-          <b-nav-item to="/contacto">Contacto</b-nav-item>
+          <!--<b-nav-item to="/acerca-de">Acerca De</b-nav-item>
+          <b-nav-item to="/contacto">Contacto</b-nav-item>-->
           <b-nav-item-dropdown v-if="user==null" right>
             <template slot="button-content">Acceder</template>
             <access/>
@@ -31,8 +31,8 @@
           <b-nav-item-dropdown v-else right>
             <!-- Using 'button-content' slot -->
             <template slot="button-content">{{user.surname}}, {{user.name}}</template>
-            <b-dropdown-item href="#">Perfil</b-dropdown-item>
-            <b-dropdown-item href="#">Configuración</b-dropdown-item>
+            <!--<b-dropdown-item href="#">Perfil</b-dropdown-item>
+            <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
             <b-dropdown-item @click="logoutUser">Cerrar Sesión</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
