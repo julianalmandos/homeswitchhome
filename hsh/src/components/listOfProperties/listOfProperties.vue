@@ -2,9 +2,9 @@
   <div class="list-of-properties">
     <div class="container">
       <b-card-group deck>
-        <div v-for="(property, index) of properties" :key="property.id">
+        <div v-for="property of properties" :key="property.id">
           <div class="">
-            <propertyCard :index="index"></propertyCard>
+            <propertyCard :property="property"></propertyCard>
           </div>
         </div>
       </b-card-group>
@@ -14,7 +14,6 @@
 
 <script>
 import Vuex from "vuex";
-import { mapState } from "vuex";
 import axios from "axios";
 import propertyCard from "@/components/propertyCard/propertyCard.vue";
 
@@ -24,23 +23,22 @@ export default {
   components: {
     propertyCard
   },
-  computed: {
-    ...mapState(["properties"])
+  data() {
+    return {
+      properties: {},
+    }
   },
   beforeCreate(){
     axios
-      .get("http://localhost:3000/propiedades")
+      .get("http://localhost:3000/properties")
       .then(response => {
-        this.listProperties(response.data);
+        this.properties=response.data;
         console.log(response.data);
       })
       .catch(error => {
         console.log(error);
       });
   },
-  methods: {
-    ...Vuex.mapActions(["listProperties"]),
-  }
 };
 </script>
 

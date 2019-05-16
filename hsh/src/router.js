@@ -26,8 +26,8 @@ export default new Router({
       component: () => import('./components/contact/contact.vue')
     },
     {
-      path: '/detalle/:id',
-      name: 'detalle',
+      path: '/details/:id',
+      name: 'details',
       component: () => import('./components/propertyDetails/propertyDetails.vue')
     },
     {

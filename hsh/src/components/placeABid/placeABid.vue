@@ -2,7 +2,7 @@
   <div class="placeABid">
     <b-modal
       id="placeABidModal"
-      :title="'Pujar para la fecha:'+this.week.date"
+      :title="'Pujar para la fecha: '+this.week.date.substring(0,10)"
       ok-title="Pujar"
       @ok="placeABidForAWeek"
     >
@@ -32,7 +32,7 @@ export default {
   beforeMount() { 
     console.log(this.week.idProperty);
       axios
-      .get("http://localhost:3000/propiedades/" + this.week.idProperty)
+      .get("http://localhost:3000/properties/" + this.week.idProperty)
       .then(response => {
         this.property = response.data[0]; 
       })

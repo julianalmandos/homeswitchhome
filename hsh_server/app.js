@@ -23,7 +23,7 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', function (req, res) {
-  var sql = "SELECT * FROM usuarios";
+  var sql = "SELECT * FROM users";
   conn.query(sql, function (err, result) {
     if (err) throw err;
     res.send(result);
@@ -32,7 +32,7 @@ app.get('/', function (req, res) {
 
 app.post('/login', (req, res) => {
   console.log(req.body.data);
-  var sql = "SELECT * FROM usuarios us WHERE us.email='" + req.body.data.email + "'";
+  var sql = "SELECT * FROM users us WHERE us.email='" + req.body.data.email + "'";
   conn.query(sql, function (err, result) {
     console.log(result);
     if (err) throw err;
@@ -55,23 +55,70 @@ app.post('/login', (req, res) => {
 })
 
 app.get('/properties', (req, res) => {
-  var sql = "SELECT * FROM propiedades prop";
+  var sql = "SELECT * FROM properties prop";
   conn.query(sql, function (err, result) {
     res.send(result);
   })
 })
 
 app.get('/properties/:id', (req, res) => {
-  var sql = "SELECT * FROM propiedades prop WHERE prop.id=" + req.params.id;
+  var sql = "SELECT * FROM properties prop WHERE prop.id=" + req.params.id;
   conn.query(sql, function (err, result) {
     res.send(result);
   })
+})
+
+app.post('/properties/:id/edit', function(req, res) {
+  console.log(req.body.data.description)
+  var sql="UPDATE properties p SET p.description = '"+ req.body.data.description +"' WHERE p.id="+req.params.id;
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
 })
 
 app.get('/weeks/:id', (req, res) => {
   var sql="SELECT * FROM weeks WHERE weeks.idproperty="+req.params.id;
   conn.query(sql, function(err, result){
     res.send(result);
+  })
+})
+
+app.get('/week/:id/maxbid', function (req,res) {
+  var sql = "SELECT MAX(price) FROM bids WHERE idWeek=" + req.params.id;
+  conn.query(sql, function (err, result) {
+    if(result[0]==null){ //NO ESTA FUNCIONANDO
+      /*var sql = "SELECT p.base_price FROM bids b INNER JOIN weeks w ON (b.idWeek=w.id) INNER JOIN properties p ON (w.idProperty=p.id) WHERE bidWeek=" + req.params.id;
+      conn.query(sql, function (err, result) {
+        res.send(result);
+      })*/
+    }
+    if (err) throw err;
+    console.log(result);
+    res.send(result);
+  });
+})
+
+app.post('/week/:id/bid', function (req, res) {
+  var sql = "SELECT (MAX(price)) FROM bids WHERE idWeek=" + req.params.id;
+  conn.query(sql, function (err, result) {
+    var pepe = JSON.parse(JSON.stringify(result[0]['(MAX(price))']));
+    if (pepe === null) {
+      pepe = -1;
+    }
+    else { };
+    console.log(req.body.data.price, pepe, req.body.data.base_price)
+    if (pepe < req.body.data.price && req.body.data.base_price < req.body.data.price) {
+      var sql = "INSERT INTO bids (price, idWeek, email) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "','" + req.body.data.email + "')";
+      conn.query(sql, function (err, result) {
+        if (err) { throw err; }
+        res.send(result);
+      });
+    } else {
+      console.log("Va por el else");
+      res.send()
+    }
   })
 })
 
@@ -124,7 +171,7 @@ exports.sendEmail = function (req, res) {
 
 app.post('/properties/publish', function (req, res) { 
   console.log(req.body.data)
-  var sql = "INSERT INTO propiedades (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
+  var sql = "INSERT INTO properties (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
   var sqlIm;
   conn.query(sql, function (err, result) {
     if (err) throw err;
@@ -132,30 +179,6 @@ app.post('/properties/publish', function (req, res) {
     var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + result.id + "','" + req.body.data.files[1] + "')"
   }); 
 });
-app.post('/week/:id/bid', function (req, res) {
-  var sql = "SELECT (MAX(price)) FROM bids WHERE idWeek=" + req.params.id;
-  conn.query(sql, [true], function (err, result) {
-    var pepe = JSON.parse(JSON.stringify(result[0]['(MAX(price))']));
-    if (pepe === null) {
-      pepe = -1;
-    }
-    else { };
-    console.log(req.body.data.price, pepe, req.body.data.base_price)
-    if (pepe < req.body.data.price && req.body.data.base_price < req.body.data.price) {
-      var sql = "INSERT INTO bids (price, idWeek, email) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "','" + req.body.data.email + "')";
-      conn.query(sql, function (err, result) {
-        if (err) { throw err; }
-        res.send(result);
-      });
-    } else {
-      console.log("Va por el else");
-      res.send()
-    }
-  })
-}
-)
-
-
 
 app.post('/validatetoken', (req, res) => {
   try {
@@ -166,29 +189,17 @@ app.post('/validatetoken', (req, res) => {
   }
 })
 
-
-
 app.post('/register', function (req, res) {
   //console.log(req.body.data);
   var contraseña = bcrypt.hashSync(req.body.data.password, 8);
   //falta chequear si el email ya existe
-  var sql = "INSERT INTO usuarios (email,password,name,surname) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "')";
+  var sql = "INSERT INTO users (email,password,name,surname) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "')";
   console.log(sql);
   conn.query(sql, function (err, result) {
     if (err) throw err;
     res.send(result);
   });
 });
-
-app.post('/properties/:id/edit', function(req, res) {
-  console.log(req.body.data.description)
-  var sql="UPDATE propiedades p SET p.description = '"+ req.body.data.description +"' WHERE p.id="+req.body.data.id;
-  console.log(sql);
-  conn.query(sql, function (err, result) {
-    if (err) throw err;
-    res.send(result);
-  });
-})
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');

@@ -1,6 +1,6 @@
 <template>
   <div class="property-card">
-    <router-link v-bind:to= "'/detalle/' + properties[index].id ">
+    <router-link v-bind:to= "'/details/' + property.id ">
       <b-card
         no-body
         style="max-width: 15rem;margin-bottom:1.25rem"
@@ -12,12 +12,12 @@
           slot="header"
           class="d-inline-block text-truncate"
           style="max-width: 200px;"
-        >{{ properties[index].name }}</h6>
+        >{{ property.name }}</h6>
         <b-card-body>
           <b-card-sub-title
             class="mb-2 d-inline-block text-truncate"
             style="max-width: 200px;"
-          >Ubicación : {{ properties[index].address }}</b-card-sub-title>
+          >Ubicación : {{ property.address }}</b-card-sub-title>
         </b-card-body>
       </b-card>
     </router-link>
@@ -25,14 +25,15 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import axios from 'axios';
 
 export default {
   name: "propertyCard",
-  props: ["index"],
-  computed: {
-    ...mapState(["properties"])
-  }
+  props: ["property"],
+  data(){
+    return {
+    }
+  },
 };
 </script>
 
