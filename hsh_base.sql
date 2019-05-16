@@ -47,6 +47,31 @@ CREATE TABLE `propiedades`  (
   `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `address` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `base_price` decimal(10, 2) NOT NULL,
+  `country` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `province` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `locality` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
+-- -----------------------------------------
+-- Table structure for images of properties
+-- -----------------------------------------
+DROP TABLE IF EXISTS `images`;
+CREATE TABLE `images`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idProperty` decimal(10,2) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+  ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+-- ------------------------
+-- Table structure for bids
+-- ------------------------
+DROP TABLE IF EXISTS `bids`;
+CREATE TABLE `bids`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `price` decimal(10, 2) NOT NULL,
+  `idWeek` decimal(10, 2) NOT NULL,
+  `email` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
@@ -93,10 +118,10 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ----------------------------
 -- Records of propiedades
 -- ----------------------------
-INSERT INTO `propiedades` VALUES (1, 'Casa de Oriana', 'Casa con patio', '500 N°16122', '1234');
-INSERT INTO `propiedades` VALUES (2, 'Casa de Julián', 'Casa sin patio', '44 N°1062', '1235');
-INSERT INTO `propiedades` VALUES (3, 'Casa de Cande', 'Casa de cande', '477 N°2696', '1236');
-INSERT INTO `propiedades` VALUES (4, 'Casa de Nico', 'Casa en berisso', '540 N°1622', '1237');
-INSERT INTO `propiedades` VALUES (5, 'Casa de Tomi', 'Casa en la plata', '506 N°1122', '1238');
-INSERT INTO `propiedades` VALUES (6, 'Casa de Mauri', 'Casa grande', '5120 N°162', '1239');
+INSERT INTO `propiedades` VALUES (1, 'Casa de Oriana', 'Casa con patio', '500 N°16122', '1234','asd','fds','fds');
+INSERT INTO `propiedades` VALUES (2, 'Casa de Julián', 'Casa sin patio', '44 N°1062', '1235','asd','fds','fds');
+INSERT INTO `propiedades` VALUES (3, 'Casa de Cande', 'Casa de cande', '477 N°2696', '1236','asd','fds','fds');
+INSERT INTO `propiedades` VALUES (4, 'Casa de Nico', 'Casa en berisso', '540 N°1622', '1237','asd','fds','fds');
+INSERT INTO `propiedades` VALUES (5, 'Casa de Tomi', 'Casa en la plata', '506 N°1122', '1238','asd','fds','fds');
+INSERT INTO `propiedades` VALUES (6, 'Casa de Mauri', 'Casa grande', '5120 N°162', '1239','asd','fds','fds');
 

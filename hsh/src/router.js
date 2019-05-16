@@ -16,19 +16,29 @@ export default new Router({
       }*/
     },
     {
-      path: '/acerca-de',
-      name: 'acerca-de',
+      path: '/about',
+      name: 'about',
       component: () => import('./components/about/about.vue')
     },
     {
-      path: '/contacto',
-      name: 'contacto',
+      path: '/contact',
+      name: 'contact',
       component: () => import('./components/contact/contact.vue')
     },
     {
       path: '/detalle/:id',
       name: 'detalle',
       component: () => import('./components/propertyDetails/propertyDetails.vue')
+    },
+    {
+      path: '/properties/publish',
+      name: 'publish',
+      component: () => import('./components/publishProperty/publishProperty.vue')
+    },
+    {
+      path: '/properties/:id/edit',
+      name: 'editProperty',
+      component: () => import('./components/editProperty/editProperty.vue')
     }
   ]
 })
