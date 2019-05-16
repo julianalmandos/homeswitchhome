@@ -50,6 +50,18 @@ CREATE TABLE `propiedades`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
+-- ------------------------
+-- Table structure for bids
+-- ------------------------
+DROP TABLE IF EXISTS `bids`;
+CREATE TABLE `bids`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `price` decimal(10, 2) NOT NULL,
+  `idWeek` decimal(10, 2) NOT NULL,
+  `email` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+
 -- ----------------------------
 -- Table structure for provincias
 -- ----------------------------
