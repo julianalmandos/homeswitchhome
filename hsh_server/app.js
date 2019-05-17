@@ -46,7 +46,7 @@ app.post('/login', (req, res) => {
         return res.status(401).send({ auth: false, token: null, msg: 'Contraseña incorrecta.' });
       }
       let token = jwt.sign({ id: result[0].id }, 'shhhhh', {
-        expiresIn: 86.400 // 10 minutos de sesión
+        expiresIn: 86400 // 10 minutos de sesión
       });
       console.log(token);
       res.status(200).send({ auth: true, token: token, user: result[0] });
