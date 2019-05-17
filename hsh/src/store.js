@@ -28,7 +28,7 @@ export default new Vuex.Store({
       localStorage.removeItem('jwt');
       localStorage.removeItem('user');
       commit('logoutUserMutation');
-      router.push('');
+      router.push('/');
     },
     listProperties({ commit }, data) {
       commit('listPropertiesMutation', data);

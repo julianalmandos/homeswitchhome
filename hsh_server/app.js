@@ -46,7 +46,7 @@ app.post('/login', (req, res) => {
         return res.status(401).send({ auth: false, token: null, msg: 'Contraseña incorrecta.' });
       }
       let token = jwt.sign({ id: result[0].id }, 'shhhhh', {
-        expiresIn: 600 // 10 minutos de sesión
+        expiresIn: 86.400 // 10 minutos de sesión
       });
       console.log(token);
       res.status(200).send({ auth: true, token: token, user: result[0] });
@@ -87,16 +87,19 @@ app.get('/weeks/:id', (req, res) => {
 
 app.get('/week/:id/maxbid', function (req,res) {
   var sql = "SELECT MAX(price) FROM bids WHERE idWeek=" + req.params.id;
+  var pepe;
   conn.query(sql, function (err, result) {
-    if(result[0]==null){ //NO ESTA FUNCIONANDO
-      /*var sql = "SELECT p.base_price FROM bids b INNER JOIN weeks w ON (b.idWeek=w.id) INNER JOIN properties p ON (w.idProperty=p.id) WHERE bidWeek=" + req.params.id;
-      conn.query(sql, function (err, result) {
-        res.send(result);
-      })*/
-    }
     if (err) throw err;
-    console.log(result);
-    res.send(result);
+    pepe = JSON.parse(JSON.stringify(result[0]['MAX(price)']));
+    if(pepe==null){ //NO ESTA FUNCIONANDO
+      var sql = "SELECT p.base_price FROM bids b INNER JOIN weeks w ON (b.idWeek=w.id) INNER JOIN properties p ON (w.idProperty=p.id) WHERE bidWeek=" + req.params.id;
+      conn.query(sql, function (err, result) {
+        res.status(200).send({data: result});
+      })
+    }else{
+      console.log(result);
+      res.status(200).send({data: pepe});
+    }
   });
 })
 
@@ -117,7 +120,7 @@ app.post('/week/:id/bid', function (req, res) {
       });
     } else {
       console.log("Va por el else");
-      res.send()
+      res.status(401).send();
     }
   })
 })
@@ -135,7 +138,7 @@ app.get('/closeAuction/:id', (req, res) => {
     res.send(result);
   })
 })
-/*
+
 app.get('/pepe', (req, res) => {
 exports.sendEmail = function (req, res) {
       // Definimos el transporter
@@ -167,7 +170,7 @@ exports.sendEmail = function (req, res) {
     };
     console.log("Enviando"); 
     res.send("hola")
-  })*/
+  })
 
 app.post('/properties/publish', function (req, res) { 
   console.log(req.body.data)

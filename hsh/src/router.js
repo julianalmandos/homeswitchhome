@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store.js'
+import axios from 'axios'
 
 Vue.use(Router)
 
@@ -12,9 +14,6 @@ export default router = new Router({
       path: '/',
       name: 'home',
       component: () => import('./components/home/home.vue'),
-      /*meta: {
-        requiresAuth: true,
-      }*/
     },
     {
       path: '/about',
@@ -29,63 +28,73 @@ export default router = new Router({
     {
       path: '/details/:id',
       name: 'details',
-      component: () => import('./components/propertyDetails/propertyDetails.vue')
+      component: () => import('./components/propertyDetails/propertyDetails.vue'),
     },
     {
       path: '/properties/publish',
       name: 'publish',
-      component: () => import('./components/publishProperty/publishProperty.vue')
+      component: () => import('./components/publishProperty/publishProperty.vue'),
+      meta: {
+        requiresAdmin:true,
+      }
     },
     {
-      path: '/properties/:id/edit',
-      name: 'editProperty',
-      component: () => import('./components/editProperty/editProperty.vue')
-    },
-    {
-      path: '/administration',
-      name: 'administration',
+      path: '/panel',
+      name: 'panel',
       component: () => import('./components/administrationPanel/administrationPanel.vue'),
       meta: {
-        admin:true,
+        requiresAdmin:true,
+      }
+    },
+    {
+      path: '/panel/properties',
+      name: 'panelProperties',
+      component: () => import('./components/administrationPanel/listOfProperties.vue'),
+      meta: {
+        requiresAdmin:true,
+      }
+    },
+    {
+      path: '/panel/bookings',
+      name: 'panelBookings',
+      component: () => import('./components/administrationPanel/listOfBookings.vue'),
+      meta: {
+        requiresAdmin:true,
       }
     }
   ]
 })
 
-/*router.beforeEach((to, from, next) => {
-  if(localStorage.getItem('jwt')!=null){
-    if(to.matched.some(record => record.meta.requiresAuth)){
+router.beforeEach((to, from, next) => {
+  //if(localStorage.getItem('jwt')!=null){
+    if(to.matched.some(record => record.meta.requiresAdmin)){
       console.log('entra');
       var tokenValido=false;
-      axios.post('//localhost:3000/validartoken', {
+      axios.post('//localhost:3000/validatetoken', {
         token: localStorage.getItem('jwt')
       })
       .then(response => {
         console.log('response: '+response.data);
         if(response.data){
-          console.log('sigueentra');
-          next();
+          if(store.state.user.role==2){
+            console.log('sigueentra');
+            next();
+          }
         }else{
           console.log('sigueelse')
           //desloguear usuario y redirigir a login
-          store.dispatch('cerrarSesionUsuario');
-          next({
-            path: '/login',
-            params: { nextUrl: to.fullPath }
-          });
+          store.dispatch('logoutUserAction');
+          next('/');
         }
+      })
+      .catch(error => {
+        console.log(error);
       });
-      console.log('sigue')
       //chequeo si no esta vencido y dependiendo la ruta hago lo que sea
     }else{
-      next({
-        path: '/',
-      });
+      next();
     }
-  }else {
-    next({
-      path: '/login',
-      params: { nextUrl: to.fullPath }
-    });
-  }
-})*/
+  //}else{
+  //  next();
+  //}
+})

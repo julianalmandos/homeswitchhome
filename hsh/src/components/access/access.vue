@@ -17,6 +17,9 @@
                     required
                     placeholder="Ingrese una contraseña:"
                 ></b-form-input>
+                <b-alert class="mt-sm-3" v-model="showInvalidData" variant="danger" dismissible>
+                    <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> El e-mail o la contraseña son incorrectos.
+                </b-alert>
                 <b-button size="sm" class="my-2 my-sm-3 mr-3 btn-block" type="submit" variant="dark">Iniciar Sesión</b-button>
             </b-nav-form>
         </b-col>
@@ -53,7 +56,7 @@
                 ></b-form-input>
                 <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="dark">Registrarse</b-button>
             </b-nav-form>
-        </b-col>-->
+        </b-col>    -->
         
     </div>
 </template>
@@ -75,7 +78,8 @@
                 dataLogin: {
                     email: '',
                     password: '',
-                }
+                },
+                showInvalidData: false,
             }
         },
         computed: {
@@ -94,16 +98,17 @@
                     localStorage.setItem('jwt',response.data.token);
                     this.loginUserAction(response.data.user);
 
-                    if (localStorage.getItem('jwt') != null){
+                    /*if (localStorage.getItem('jwt') != null){
                         if(this.$route.params.nextUrl != null){
                             this.$router.push(this.$route.params.nextUrl); //No esta funcionando no se por qué
                         }else{
                             this.$router.push('/');
                         }
-                    }
+                    }*/
                 })
                 .catch(error => {
                     console.log(error);
+                    this.showInvalidData=true;
                 })
             },
             registerUser(){
