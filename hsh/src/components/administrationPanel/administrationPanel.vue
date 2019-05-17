@@ -1,7 +1,7 @@
 <template>
   <div class="administration-panel">
     <b-container>
-      <h1>Panel de Administración</h1><br>
+      <h1 class="titulo">Panel de Administración</h1><br>
       <b-card-group deck>
           <b-card class="tarjeta text-center" @click="openPropertiesList" bg-variant="light" >
               <font-awesome-icon class="fa-5x" icon="list-alt"></font-awesome-icon>

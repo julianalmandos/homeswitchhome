@@ -1,12 +1,12 @@
 <template>
-    <div class= "weekCard">
-        <b-card v-if= ((!week.reserved)&compare(week.date)) border-variant="light" class="text-center">
+    <div class="weekCard">
+        <b-card v-if= ((!week.reserved)&compare(week.date)) border-variant="dark" class="text-center">
             <h6>PMA: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
-                <b-button v-if="week.auction && isAdmin" v-on:click="closeAuction" block variant="outline-primary">Cerrar subasta</b-button>
-                <b-button v-else-if="isAdmin" v-on:click="openAuction" block variant="outline-primary">Abrir subasta</b-button>
-                <b-button v-if="week.auction" v-b-modal.placeABidModal block variant="outline-primary">Pujar</b-button>
+                <b-button class="transparentButton btn-block" v-if="week.auction && isAdmin" v-on:click="closeAuction">Cerrar subasta</b-button>
+                <b-button class="transparentButton btn-block" v-else-if="isAdmin" v-on:click="openAuction">Abrir subasta</b-button>
+                <b-button class="transparentButton btn-block" v-if="week.auction" v-b-modal.placeABidModal>Pujar</b-button>
             </b-card-text>
         </b-card>
         <b-card v-if= ((week.reserved)||!compare(week.date)) bg-variant="secondary" text-variant="white" class="text-center">
