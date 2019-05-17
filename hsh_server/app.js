@@ -82,7 +82,14 @@ app.get('/weeks/:id', (req, res) => {
   var sql="SELECT * FROM weeks WHERE weeks.idproperty="+req.params.id;
   conn.query(sql, function(err, result){
     res.send(result);
-  })
+  });
+})
+
+app.get('/images/:id', (req, res) => {
+  var sql="SELECT images.image FROM images WHERE images.idproperty="+req.params.id;
+  conn.query(sql, function(err, result){
+    res.send(result);
+  });
 })
 
 app.get('/week/:id/maxbid', function (req,res) {
@@ -131,8 +138,8 @@ app.get('/openAuction/:id', (req, res) => {
   })
 })
 
-app.get('/closeAuction/:id', (req, res) => {
-  var sql="UPDATE weeks SET weeks.auction = 0 WHERE weeks.id="+req.params.id;
+app.post('/closeAuction/:id', (req, res) => {
+  var sql="UPDATE weeks SET weeks.auction = 0, weeks.reserved ="+ req.body.data.reserved +", weeks.idle="+req.body.data.idle +"WHERE weeks.id="+req.params.id;
   conn.query(sql, function(err, result){
     res.send(result);
   })

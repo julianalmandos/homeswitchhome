@@ -8,17 +8,22 @@
           <b-carousel
             id="carousel-fade"
             fade
+            controls
             img-width="600px"
             img-height="480px"
             class="center-block"
           >
+          <div v-for="image of images" :key="image.id">
+          
             <b-carousel-slide
-              img-src="https://i.blogs.es/8e8f64/lo-de-que-comprar-una-casa-es-la-mejor-inversion-hay-generaciones-que-ya-no-lo-ven-ni-de-lejos---1/450_1000.jpg" style="width:600px;height:410px;"
+              :img-src="image.image" style="width:600px;height:410px;"
             ></b-carousel-slide>
-            <b-carousel-slide
-              img-src="https://www.alonsorodriguez.org/images/articles/comprar-casa-sin-contratiempos.jpg" style="width:600px;height:410px;"
-            ></b-carousel-slide>
+          </div>
+
+                    
           </b-carousel>
+
+      
         </div>
       </b-col>
       <b-col>
@@ -56,6 +61,7 @@ import editProperty from "@/components/editProperty/editProperty.vue";
         return{
           property: {},
           weeks: {}, 
+          images: {},
         }
       },
       beforeCreate(){
@@ -73,16 +79,14 @@ import editProperty from "@/components/editProperty/editProperty.vue";
           .catch(error => {
             console.log(error);
           }); 
-      },
-      updated(){
-        /*  
-        axios.get("http://localhost:3000/properties/"+ this.$route.params.id)
+        axios.get("http://localhost:3000/images/"+ this.$route.params.id)
           .then(response => {
-            this.property = response.data[0];
+            this.images = response.data; 
+            console.log(response.data)
           })
           .catch(error => {
             console.log(error);
-          });*/ 
+          }); 
       },
       methods: {
         reloadProperty() {

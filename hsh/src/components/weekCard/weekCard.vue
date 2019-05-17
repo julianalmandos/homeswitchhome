@@ -31,6 +31,9 @@ import placeABid from '@/components/placeABid/placeABid.vue';
         data() {
             return {
                 maxBid: '',
+                property: {},
+                idle: 0,
+                reserved: 0,
             }
         },
         created(){
@@ -49,14 +52,37 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 return aDate > (new Date).toISOString()
             },
             closeAuction: function (){
-                axios.get("http://localhost:3000/closeAuction/"+ this.week.id)
-                .then(response => {
-                    console.log(response.data);
-                    this.$emit('edited');
+                axios.get("http://localhost:3000/properties/"+ this.$route.params.id)
+                    .then(response => {
+                    this.property = response.data[0];
                 })
                 .catch(error => {
                     console.log(error);
                 });
+                if (this.maxBid==this.property.base_price){
+                    this.reserved= 0;
+                    this.idle= 1;
+                    console.log ("hola");
+                } else {
+                    // Mandar mail de superación de puja
+                    this.idle = 0;
+                    this.reserved = 1;
+                    console-log("chau");
+                }
+                // no hace el post
+                axios
+                    .post("http://localhost:3000/closeAuction/" + this.week.id , {
+                        data: {
+                            reserved: this.reserved,
+                            idle: this.idle,
+                        }
+                    })
+                    .then(response => {
+                        this.$emit('edited');
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
             },
             openAuction: function (){
                 axios.get("http://localhost:3000/openAuction/"+ this.week.id)
