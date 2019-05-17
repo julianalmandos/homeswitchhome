@@ -97,15 +97,15 @@ app.get('/week/:id/maxbid', function (req,res) {
   var pepe;
   conn.query(sql, function (err, result) {
     pepe = JSON.parse(JSON.stringify(result[0]['MAX(price)']));
-    if(pepe==null){ //NO ESTA FUNCIONANDO
-      var sql = "SELECT p.base_price FROM bids b INNER JOIN weeks w ON (b.idWeek=w.id) INNER JOIN properties p ON (w.idProperty=p.id) WHERE bidWeek=" + req.params.id;
+    if(pepe==null){ 
+      var sql = "SELECT p.base_price FROM weeks w INNER JOIN properties p ON (w.idProperty=p.id) WHERE w.id=" + req.params.id;
       conn.query(sql, function (err, result) {
-        res.status(200).send({data: result});
+        res.status(200).send({data: result[0].base_price});
       })
-    }
-    if (err) throw err;
+    }else{
     console.log(result);
     res.status(200).send({data: pepe});
+    }
   });
 })
 
@@ -121,7 +121,7 @@ app.post('/week/:id/bid', function (req, res) {
     if (pepe < req.body.data.price && req.body.data.base_price < req.body.data.price) {
       var sql = "INSERT INTO bids (price, idWeek, email) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "','" + req.body.data.email + "')";
       conn.query(sql, function (err, result) {
-        if (err) { throw err; }
+        if (err)  throw err;
         res.send(result);
       });
     } else {
@@ -139,7 +139,7 @@ app.get('/openAuction/:id', (req, res) => {
 })
 
 app.post('/closeAuction/:id', (req, res) => {
-  var sql="UPDATE weeks SET weeks.auction = 0, weeks.reserved ="+ req.body.data.reserved +", weeks.idle="+req.body.data.idle +"WHERE weeks.id="+req.params.id;
+  var sql="UPDATE weeks SET weeks.auction = 0, weeks.reserved ='"+ req.body.data.reserved +"', weeks.idle='"+req.body.data.idle +"'WHERE weeks.id="+req.params.id;
   conn.query(sql, function(err, result){
     res.send(result);
   })
