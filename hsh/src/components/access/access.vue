@@ -23,7 +23,7 @@
                 <b-button size="sm" class="my-2 my-sm-3 mr-3 btn-block" type="submit" variant="dark">Iniciar Sesión</b-button>
             </b-nav-form>
         </b-col>
-        <b-col align-self="start">
+        <!--<b-col align-self="start">
             <h3>Registrarse</h3>
             <b-nav-form class="mx-sm-3" @submit.prevent="registerUser">
                 <b-form-input size="sm" class="mr-sm-2 my-sm-3"
@@ -56,7 +56,7 @@
                 ></b-form-input>
                 <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="dark">Registrarse</b-button>
             </b-nav-form>
-        </b-col>    
+        </b-col>    -->
         
     </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <div class="list-of-properties">
     <div class="container">
-      <h1>Propiedades</h1><br>
+      <h1 class="titulo">Propiedades</h1><br>
       <b-card-group deck>
         <div v-for="property of properties" :key="property.id">
           <div class="">
@@ -42,5 +42,15 @@ export default {
   },
 };
 </script>
+
+<style>
+  .titulo {
+    background-color: rgba(0,161,225,0.5);
+    color:#f2f2f2;
+    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+</style>
+
 
 
