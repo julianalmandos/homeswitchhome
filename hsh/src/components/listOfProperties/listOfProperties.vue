@@ -2,6 +2,7 @@
   <div class="list-of-properties">
     <div class="container">
       <h1 class="titulo">Propiedades</h1><br>
+      <h3>Selecciona una propiedad, elegí una semana y pujá. <br> ¡Nunca había sido tan sencillo!</h3><br>
       <b-card-group deck>
         <div v-for="property of properties" :key="property.id">
           <div class="">
