@@ -58,7 +58,7 @@
         >
       </div>
 
-      <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="dark">Registrar</b-button>
+      <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="outline-primary">Publicar propiedad</b-button>
     </form>
   </div>
 </template>
