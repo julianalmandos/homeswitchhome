@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <editProperty :property="this.property" @edited="reloadProperty"/>
+    <editProperty :property="this.property" :images="this.images" @edited="reloadProperty"/>
     <b-button v-if="isAdmin" v-b-modal.editPropertyModal block variant="outline-primary">Editar Propiedad</b-button> 
     <b-row>
       <b-col>
@@ -56,6 +56,7 @@ import editProperty from "@/components/editProperty/editProperty.vue";
         return{
           property: {},
           weeks: {}, 
+          images: ["https://i.blogs.es/8e8f64/lo-de-que-comprar-una-casa-es-la-mejor-inversion-hay-generaciones-que-ya-no-lo-ven-ni-de-lejos---1/450_1000.jpg","https://www.alonsorodriguez.org/images/articles/comprar-casa-sin-contratiempos.jpg"],
         }
       },
       computed: {
