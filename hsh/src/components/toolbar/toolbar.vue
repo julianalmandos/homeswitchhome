@@ -67,7 +67,7 @@
         this.logoutUserAction();
       },
       viewAdministrationPanel() {
-        this.$router.push('/administration');
+        this.$router.push('/panel');
       }
     }
   }

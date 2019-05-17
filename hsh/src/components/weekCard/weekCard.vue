@@ -4,8 +4,8 @@
             <h6>PMA: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
-                <b-button v-if="week.auction" v-on:click="closeAuction" block variant="outline-primary">Cerrar subasta</b-button>
-                <b-button v-else v-on:click="openAuction" block variant="outline-primary">Abrir subasta</b-button>
+                <b-button v-if="week.auction && isAdmin" v-on:click="closeAuction" block variant="outline-primary">Cerrar subasta</b-button>
+                <b-button v-else-if="isAdmin" v-on:click="openAuction" block variant="outline-primary">Abrir subasta</b-button>
                 <b-button v-if="week.auction" v-b-modal.placeABidModal block variant="outline-primary">Pujar</b-button>
             </b-card-text>
         </b-card>
@@ -32,6 +32,11 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             return {
                 maxBid: '',
             }
+        },
+        computed: {
+            isAdmin() {
+                return (this.$store.state.user!=null && this.$store.state.user.role==2);
+            },
         },
         created(){
             axios.get("http://localhost:3000/week/"+ this.week.id+'/maxbid')

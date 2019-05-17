@@ -98,13 +98,13 @@
                     localStorage.setItem('jwt',response.data.token);
                     this.loginUserAction(response.data.user);
 
-                    if (localStorage.getItem('jwt') != null){
+                    /*if (localStorage.getItem('jwt') != null){
                         if(this.$route.params.nextUrl != null){
                             this.$router.push(this.$route.params.nextUrl); //No esta funcionando no se por qué
                         }else{
                             this.$router.push('/');
                         }
-                    }
+                    }*/
                 })
                 .catch(error => {
                     console.log(error);

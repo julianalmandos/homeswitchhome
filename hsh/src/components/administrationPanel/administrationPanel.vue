@@ -23,10 +23,10 @@ export default {
   name: 'administrationPanel',
   methods: {
     openPropertiesList() {
-      this.$router.push('/administration/listOfProperties');
+      this.$router.push('/panel/properties');
     },
     openBookingList() {
-      this.$router.push('/administration/listOfBookings');
+      this.$router.push('/panel/bookings');
     }
   }
 }
