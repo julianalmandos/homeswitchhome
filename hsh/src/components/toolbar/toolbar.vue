@@ -1,6 +1,6 @@
 <template>
   <div class="toolbar">
-    <b-navbar toggleable="lg" type="dark" style="background-color:#f2f2f2">
+    <b-navbar id="navigationBar" toggleable="lg" type="dark">
       <b-navbar-brand to="/">
         <img src="@/assets/HSH-Logo.svg" alt="" style="height:30px">
         <img src="@/assets/HSH-Text.svg" alt="" style="height:30px">
@@ -9,21 +9,22 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
+        <!--<b-navbar-nav>
           <b-nav-form>
             <b-input-group>
               <b-form-input size="sm" style="width:400px;" placeholder="Buscar propiedad..."></b-form-input>
               <b-input-group-append>
-                <b-button size="sm" class="my-2 my-sm-0 botonAzul" type="submit">Buscar</b-button>
+                <b-button size="sm" class="my-2 my-sm-0 blueButton" type="submit">Buscar</b-button>
               </b-input-group-append>              
             </b-input-group>
           </b-nav-form>
-        </b-navbar-nav>
+        </b-navbar-nav>-->
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <!--<b-nav-item to="/acerca-de">Acerca De</b-nav-item>
           <b-nav-item to="/contacto">Contacto</b-nav-item>-->
+          
           <b-nav-item-dropdown v-if="user==null" right>
             <template slot="button-content">Acceder</template>
             <access/>
@@ -67,44 +68,68 @@
         this.logoutUserAction();
       },
       viewAdministrationPanel() {
-        this.$router.push('/administration');
+        this.$router.push('/panel');
       }
     }
   }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+  }
+  #nav {
+    padding: 30px;
+  }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+  #nav a {
+    font-weight: bold;
+    color: #2c3e50;
+  }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+  #nav a.router-link-exact-active {
+    color: #42b983;
+  }
 
-.nav-link{
-  color: #4c4d4f!important;
-}
+  .nav-link{
+    color: #4c4d4f!important;
+  }
 
-.botonAzul{
-  background-color:#00a1e1!important;
-}
+  .blueButton{
+    background-color:rgba(0,161,225,0.5)!important;
+  }
 
-.botonAzul:hover{
-  background-color:white!important;
-  color:black!important;
-}
+  .blueButton:hover{
+    background-color:white!important;
+    color:black!important;
+  }
+
+  .transparentButton {
+    border: 1px solid black;
+    color:black!important;
+    background-color:white!important;
+  }
+
+  .transparentButton:hover {
+    background-color:rgba(0,161,225,0.5)!important;
+    color:white!important;
+  }
+
+  #navigationBar {
+    background-color:#f2f2f2;
+    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+  }
+
+  #logo {
+    position: relative;
+    position: absolute;
+    left: 50%;
+    margin-left: -206.79px !important;
+    display: block;
+  }
 
 </style>

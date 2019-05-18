@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <editProperty :property="this.property" @edited="reloadProperty"/>
-    <b-button v-b-modal.editPropertyModal block variant="outline-primary">Editar Propiedad</b-button> 
+    <b-button v-if="isAdmin" v-b-modal.editPropertyModal block variant="outline-primary">Editar Propiedad</b-button> 
     <b-row>
       <b-col>
         <div class="center-block">
@@ -69,6 +69,11 @@ import placeABid from '@/components/placeABid/placeABid.vue';
           showPlaceABidModal: false,
         }
       },
+      computed: {
+        isAdmin() {
+          return (this.$store.state.user!=null && this.$store.state.user.role==2);
+        },
+      },
       beforeCreate(){
         axios.get("http://localhost:3000/properties/"+ this.$route.params.id)
           .then(response => {
@@ -119,7 +124,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             .catch(error => {
               console.log(error);
             });
-        }
+        },
       },
     }    
 </script>

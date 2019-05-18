@@ -46,7 +46,7 @@ app.post('/login', (req, res) => {
         return res.status(401).send({ auth: false, token: null, msg: 'Contraseña incorrecta.' });
       }
       let token = jwt.sign({ id: result[0].id }, 'shhhhh', {
-        expiresIn: 600 // 10 minutos de sesión
+        expiresIn: 86400 // 10 minutos de sesión
       });
       console.log(token);
       res.status(200).send({ auth: true, token: token, user: result[0] });
@@ -96,6 +96,7 @@ app.get('/week/:id/maxbid', function (req,res) {
   var sql = "SELECT MAX(price) FROM bids WHERE idWeek=" + req.params.id;
   var pepe;
   conn.query(sql, function (err, result) {
+    if (err) throw err;
     pepe = JSON.parse(JSON.stringify(result[0]['MAX(price)']));
     if(pepe==null){ 
       var sql = "SELECT p.base_price FROM weeks w INNER JOIN properties p ON (w.idProperty=p.id) WHERE w.id=" + req.params.id;
@@ -103,8 +104,8 @@ app.get('/week/:id/maxbid', function (req,res) {
         res.status(200).send({data: result[0].base_price});
       })
     }else{
-    console.log(result);
-    res.status(200).send({data: pepe});
+      console.log(result);
+      res.status(200).send({data: pepe});
     }
   });
 })
