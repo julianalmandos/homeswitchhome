@@ -30,9 +30,9 @@
             v-on:click="deleteImage(index)"
           >Eliminar</b-button>
 
-          <div style="display:none">
-            <form @submit.prevent="editImage">
-              <div class="form-group">
+          <div id="urlImageInput" style="display:none">
+            <form >
+              <div class="form-group"> 
                 <input type="images[index]" id="images[index]" v-model="images[index]">
               </div>
             </form>
@@ -42,12 +42,14 @@
               class="my-2 my-sm-3"
               type="submit"
               variant="outline-primary"
+              v-on:click="confirmImageChange(index)"
             >Confirmar</b-button>
             <b-button
               size="sm"
               class="my-2 my-sm-3"
               type="submit"
               variant="outline-primary"
+              v-on:click="displayNone(index)"
             >Cancelar</b-button> 
 
           </div>
@@ -85,7 +87,6 @@
 <script>
 import Vuex from "vuex";
 import axios from "axios";
-
 export default {
   name: "editProperty",
   props: ["property", "images"],
@@ -93,14 +94,18 @@ export default {
     return {
       description: this.property.description,
       successfulEdition: false,
-      failEdition: false
+      failEdition: false,
+      arrayAux: new Array(5),
     };
   },
-  beforeMount() {
-    console.log("hola");
+  beforeMount() { 
     for (var i = this.images.length; i < 5; i++) {
       this.images[i] = "https://lightwidget.com/widgets/empty-photo.jpg";
     }
+    axios
+          .post(
+            "https://localhost:3000/pepe"
+          )
   },
   mounted() {
     this.$root.$on("bv::modal::hidden", (bvEvent, modalId) => {
@@ -108,8 +113,38 @@ export default {
     });
   },
   methods: {
+    confirmImageChange(index){
+      this.images[index]=this.arrayAux[index];
+      this.arrayAux[index]="";
+      var element = document.getElementById("urlImageInput");
+     element.style.display = "none";
+     axios
+          .post(
+            "http://localhost:3000/properties/" + this.property.id + "/edit/images",
+            {
+              data: {
+                image: this.images[index]
+              }
+            }
+          )
+    },
+    displayNone(index){
+      this.images[index]="https://lightwidget.com/widgets/empty-photo.jpg";
+     var element = document.getElementById("urlImageInput");
+     element.style.display = "none";
+     axios
+          .post(
+            "http://localhost:3000/properties/" + this.property.id + "/edit/images",
+            {
+              data: {
+                image: this.images[index]
+              }
+            }
+          )
+   },
     editImage(index) {
-      style="display:block";
+      var element = document.getElementById("urlImageInput");
+     element.style.display = "block";
     },
     deleteImage(index) {
       this.images[index] = "https://lightwidget.com/widgets/empty-photo.jpg";
@@ -122,18 +157,18 @@ export default {
         }
       });
       if (contador !== 5) {
+        this.successfulEdition = true;
         axios
           .post(
             "http://localhost:3000/properties/" + this.property.id + "/edit",
             {
               data: {
                 description: this.description,
-                images: this.images
+                files: this.images
               }
             }
           )
           .then(response => {
-            this.successfulEdition = true;
             console.log("Propiedad editada correctamente");
             this.$emit("edited");
           })
@@ -148,6 +183,7 @@ export default {
       this.successfulEdition = false;
       this.failEdition = false;
       this.description = this.property.description;
+      this.arrayAux = new Array(5)
     }
   }
 };
