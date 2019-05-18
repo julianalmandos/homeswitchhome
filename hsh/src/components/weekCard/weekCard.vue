@@ -1,6 +1,6 @@
 <template>
     <div class="weekCard">
-        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="text-center">
+        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem">
             <h6>PMA: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
@@ -9,7 +9,7 @@
                 <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
             </b-card-text>
         </b-card>
-        <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle)) bg-variant="secondary" text-variant="white" class="text-center">
+        <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle))   class="card1">
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
             </b-card-text>
@@ -127,3 +127,14 @@ import placeABid from '@/components/placeABid/placeABid.vue';
     }
 
 </script>
+<style>
+  .card1 {
+    background-color:#bfbfbf;
+    color:#f2f2f2;
+    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+    
+  }
+  .card2 {
+    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+  }
+</style>

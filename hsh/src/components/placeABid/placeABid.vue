@@ -83,7 +83,6 @@ export default {
       this.showErrorPlacingBid=false;
       this.email='';
       this.price='';
-      console.log('asd');
     },
   }
 };

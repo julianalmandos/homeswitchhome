@@ -2,6 +2,7 @@
   <div class="container">
     <editProperty :property="this.property" @edited="reloadProperty"/>
     <b-button v-if="isAdmin" v-b-modal.editPropertyModal block variant="outline-primary">Editar Propiedad</b-button> 
+    <br>
     <b-row>
       <b-col>
         <div class="center-block">
@@ -9,21 +10,23 @@
             id="carousel-fade"
             fade
             controls
-            img-width="600px"
-            img-height="480px"
+            background="#ababab"
+            img-width="200"
+            img-height="100"
             class="center-block"
           >
           <div v-for="image of images" :key="image.id">
-          
-            <b-carousel-slide
-              :img-src="image.image" style="width:600px;height:410px;"
-            ></b-carousel-slide>
-          </div>
-
-                    
+            <b-carousel-slide>
+              <img
+                slot="img"
+                width="600"
+                height="400"
+                :src="image.image"
+                alt="image slot"
+              >
+            </b-carousel-slide>
+          </div>           
           </b-carousel>
-
-      
         </div>
       </b-col>
       <b-col>
@@ -35,9 +38,10 @@
         </div>
       </b-col>
     </b-row>
+    <br>
     <b-card-group deck>
       <div v-for="(week, index) of this.weeks" :key="index" >
-        <div class="">
+        <div class="mb-3">
           <weekCard :week="week" @edited="reloadWeeks" @placingBid="openPlaceABidModal"></weekCard>
         </div>
       </div>
