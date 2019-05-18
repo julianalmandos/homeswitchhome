@@ -72,10 +72,19 @@ app.post('/properties/:id/edit', function (req, res) {
   console.log(req.body.data.description)
   var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
   console.log(sql);
-  conn.query(sql, function (err, result) {
-    if (err) throw err;
-    res.send(result);
+  conn.query(sql, function (err, result) { 
   });
+  var sqlIm = "DELETE FROM images im WHERE idProperty = '"+ req.params.id +"'"
+  conn.query(sqlIm, function (err, result) { 
+  });
+  req.body.data.files.forEach(function (file) { 
+    if(file !== "https://lightwidget.com/widgets/empty-photo.jpg"){
+    var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + req.body.data.images + "')";
+    conn.query(sqlIm, function (err, result) {
+      if (err) throw err; 
+      res.send(result)
+    });
+    };
 })
 
 app.get('/weeks/:id', (req, res) => {
