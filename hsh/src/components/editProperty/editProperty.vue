@@ -11,29 +11,54 @@
       </b-form-group>
 
       <b-card-group class="row">
-        <div v-for="(file,index) in images" :key="index"> 
-          <img :src="file" width="125" height="100"> 
-            <b-button v-if="file=='https://lightwidget.com/widgets/empty-photo.jpg'"
+        <div v-for="(file,index) in images" :key="index">
+          <img :src="file" width="125" height="100">
+          <b-button
+            v-if="file=='https://lightwidget.com/widgets/empty-photo.jpg'"
+            size="sm"
+            class="my-2 my-sm-3"
+            type="submit"
+            variant="outline-primary"
+            v-on:click="editImage(index)"
+          >Agregar</b-button>
+          <b-button
+            v-if="file!=='https://lightwidget.com/widgets/empty-photo.jpg'"
+            size="sm"
+            class="my-2 my-sm-3"
+            type="submit"
+            variant="outline-primary"
+            v-on:click="deleteImage(index)"
+          >Eliminar</b-button>
+
+          <div style="display:none">
+            <form @submit.prevent="editImage">
+              <div class="form-group">
+                <input type="images[index]" id="images[index]" v-model="images[index]">
+              </div>
+            </form>
+
+            <b-button
               size="sm"
               class="my-2 my-sm-3"
               type="submit"
               variant="outline-primary"
-              v-on:click="editImage(index)" 
-            >Agregar</b-button> 
-            <b-button v-if="file!=='https://lightwidget.com/widgets/empty-photo.jpg'"
+            >Confirmar</b-button>
+            <b-button
               size="sm"
               class="my-2 my-sm-3"
               type="submit"
               variant="outline-primary"
-              v-on:click="deleteImage(index)"
-            >Eliminar</b-button> 
+            >Cancelar</b-button> 
+
+          </div>
+
         </div>
       </b-card-group>
       <b-alert class="mt-sm-3" v-model="successfulEdition" variant="success" dismissible>
-        <font-awesome-icon icon="check"></font-awesome-icon> La edición fue realizada correctamente
+        <font-awesome-icon icon="check"></font-awesome-icon>La edición fue realizada correctamente
       </b-alert>
       <b-alert class="mt-sm-3" v-model="failEdition" variant="danger" dismissible>
-        <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> No se pudo realizar la edición
+        <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon>No se pudo realizar la edición
       </b-alert>
 
       <!-- 
@@ -67,9 +92,9 @@ export default {
   data() {
     return {
       description: this.property.description,
-      successfulEdition : false,
-      failEdition : false,
-    }; 
+      successfulEdition: false,
+      failEdition: false
+    };
   },
   beforeMount() {
     console.log("hola");
@@ -78,13 +103,13 @@ export default {
     }
   },
   mounted() {
-    this.$root.$on('bv::modal::hidden', (bvEvent, modalId) => {
-      this.resetModal()
-    })
+    this.$root.$on("bv::modal::hidden", (bvEvent, modalId) => {
+      this.resetModal();
+    });
   },
   methods: {
-    editImage(index) { 
-      this.images[index] = prompt("Ingrese la URL de la imagen");
+    editImage(index) {
+      style="display:block";
     },
     deleteImage(index) {
       this.images[index] = "https://lightwidget.com/widgets/empty-photo.jpg";
@@ -92,38 +117,38 @@ export default {
     propertyEdition() {
       var contador = 0;
       this.images.forEach(element => {
-        if (element == "https://lightwidget.com/widgets/empty-photo.jpg"){
+        if (element == "https://lightwidget.com/widgets/empty-photo.jpg") {
           contador++;
         }
       });
-      if(contador !== 5){
-      axios
-        .post(
-          "http://localhost:3000/properties/" + this.property.id + "/edit",
-          {
-            data: {
-              description: this.description,
-              images: this.images
+      if (contador !== 5) {
+        axios
+          .post(
+            "http://localhost:3000/properties/" + this.property.id + "/edit",
+            {
+              data: {
+                description: this.description,
+                images: this.images
+              }
             }
-          }
-        )
-        .then(response => {
-          this.successfulEdition = true;
-          console.log("Propiedad editada correctamente");
-          this.$emit("edited");
-        })
-        .catch(error => {
-          console.log(error);
-        });
-      }else{
+          )
+          .then(response => {
+            this.successfulEdition = true;
+            console.log("Propiedad editada correctamente");
+            this.$emit("edited");
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
         this.failEdition = true;
       }
     },
     resetModal() {
-      this.successfulEdition=false;
-      this.failEdition=false;
-      this.description=this.property.description; 
-    },
+      this.successfulEdition = false;
+      this.failEdition = false;
+      this.description = this.property.description;
+    }
   }
 };
 </script>
