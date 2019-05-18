@@ -6,7 +6,7 @@
             <b-card-text>
                 <b-button class="transparentButton btn-block" v-if="week.auction && isAdmin" v-on:click="closeAuction">Cerrar subasta</b-button>
                 <b-button class="transparentButton btn-block" v-else-if="isAdmin" v-on:click="openAuction">Abrir subasta</b-button>
-                <b-button class="transparentButton btn-block" v-if="week.auction" v-b-modal.placeABidModal>Pujar</b-button>
+                <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
             </b-card-text>
         </b-card>
         <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle)) bg-variant="secondary" text-variant="white" class="text-center">
@@ -96,7 +96,6 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     this.reserved = 1;
                     console.log("chau");
                 }
-                // no hace el post
                 axios
                     .post("http://localhost:3000/closeAuction/" + this.week.id , {
                         data: {
