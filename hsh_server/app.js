@@ -66,6 +66,15 @@ app.get('/properties/:id', (req, res) => {
   conn.query(sql, function (err, result) {
     res.send(result);
   })
+});
+
+app.post('/properties/:id/edit/images', function (req, res){
+  console.log("acaaaaaaaaaaaaaaaa");
+  console.log(req.body.data.image)
+  var sql = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + req.body.data.image + "')";
+  conn.query(sql, function (err, result) {
+    res.send(result);
+  })
 })
 
 app.post('/properties/:id/edit', function (req, res) {
@@ -83,9 +92,10 @@ app.post('/properties/:id/edit', function (req, res) {
     conn.query(sqlIm, function (err, result) {
       if (err) throw err; 
       res.send(result)
-    });
-    };
-})
+    })
+  }
+    })
+});
 
 app.get('/weeks/:id', (req, res) => {
   var sql = "SELECT * FROM weeks WHERE weeks.idproperty=" + req.params.id;
@@ -152,19 +162,19 @@ app.get('/closeAuction/:id', (req, res) => {
 })
 
 app.get('/pepe', (req, res) => {
-  exports.sendEmail = function (req, res) {
+  sendEmail = function (req, res) {
     // Definimos el transporter
     var transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: 'orianarevalos@gmail.com',
-        pass: 'Milanesaconpure12'
+        user: 'homeswitchhome23@gmail.com',
+        pass: 'grupoing23'
       }
     });
     console.log("Estoy mandando el mail");
     // Definimos el email
     var mailOptions = {
-      from: 'orianarevalos@gmail.com',
+      from: 'homeswitchhome23@gmail.com',
       to: 'orianarevalos@gmail.com',
       subject: 'Subastas',
       text: 'Contenido del email'
@@ -181,6 +191,7 @@ app.get('/pepe', (req, res) => {
     });
   };
   console.log("Enviando");
+  sendEmail();
   res.send("hola")
 })
 
@@ -228,4 +239,3 @@ app.post('/properties/publish', function (req, res) {
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
   });
-
