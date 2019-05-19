@@ -30,11 +30,11 @@
         </div>
       </b-col>
       <b-col>
-        <div>
-          <h1>{{this.property.name}}</h1>
-          <p>Descripción: {{this.property.description}}</p>
-          <p>Ubicación: {{this.property.address}}</p>
-          <p>Precio base: {{this.property.base_price}}</p>
+        <div class="profile">
+          <h1 class="title">{{this.property.name}}</h1>
+          <p class="text">Descripción: {{this.property.description}}</p>
+          <p class="text">Ubicación: {{this.property.address}}</p>
+          <p class="text">Precio base: {{this.property.base_price}}</p>
         </div>
       </b-col>
     </b-row>
@@ -132,5 +132,21 @@ import placeABid from '@/components/placeABid/placeABid.vue';
       },
     }    
 </script>
+<style>
+  .profile {
+    background-color:rgba(0,161,225,0.5);
+    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+    height: 400px;
+  }
+  .title {
+    color:#f2f2f2;
+    font-family: "Times New Roman", Times, serif;
+  }
+  .text {
+    color:#f2f2f2;
+    text-align: left;
+    text-indent: 25px;
+  }
+</style>
 
 
