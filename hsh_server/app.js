@@ -78,7 +78,7 @@ app.post('/properties/:id/edit', function (req, res) {
   });
 })
 
-app.get('/properties/:id/delete', function (req, res){
+app.post('/properties/:id/delete', function (req, res){
   var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + " AND NOT EXISTS (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"
   conn.query(sql, function(err, result){
     if (err) throw err;
