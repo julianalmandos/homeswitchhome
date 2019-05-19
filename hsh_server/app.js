@@ -183,10 +183,15 @@ app.post('/properties/publish', function (req, res) {
 });
 
 app.get('/properties/:id/delete', function (req, res){
-  var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + "AND NOT EXIST (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"
+  var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + " AND NOT EXISTS (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"
   conn.query(sql, function(err, result){
-    if (result.data = null){
+    if (err) throw err;
+    console.log(result);
+    if (result.length > 0){
       var sqlRemove = "DELETE FROM properties WHERE id=" + req.params.id;
+      conn.query(sqlRemove, function(err, result){
+        if (err) throw err;
+      })
     }
     res.send(result);
   })
