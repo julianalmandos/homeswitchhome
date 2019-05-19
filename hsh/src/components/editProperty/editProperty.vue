@@ -104,7 +104,10 @@ export default {
     }
     axios
           .post(
-            "https://localhost:3000/pepe"
+            "http://localhost:3000/sendMail",
+            {
+                hola: "Hola"
+            }
           )
   },
   mounted() {

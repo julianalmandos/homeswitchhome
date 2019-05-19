@@ -161,7 +161,7 @@ app.get('/closeAuction/:id', (req, res) => {
   })
 })
 
-app.get('/pepe', (req, res) => {
+app.post('/sendMail', (req, res) => {
   sendEmail = function (req, res) {
     // Definimos el transporter
     var transporter = nodemailer.createTransport({
@@ -177,7 +177,7 @@ app.get('/pepe', (req, res) => {
       from: 'homeswitchhome23@gmail.com',
       to: 'orianarevalos@gmail.com',
       subject: 'Subastas',
-      text: 'Contenido del email'
+      text: 'joli del email'
     };
     // Enviamos el email
     transporter.sendMail(mailOptions, function (error, info) {
