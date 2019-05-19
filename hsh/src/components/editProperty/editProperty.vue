@@ -1,7 +1,8 @@
 <template>
   <div class="editProperty"> 
 
-    <b-modal
+
+    <b-modal 
       id="editPropertyModal"
       :title="'Editar Propiedad N°'+property.id"
       ok-title="Editar"
@@ -10,6 +11,13 @@
       <b-form-group id="descripcion" label="Descripcion" label-for="input-1">
         <b-form-input id="input-1" v-model="description" required></b-form-input>
       </b-form-group>
+      <div v-for="index in 5" :key="index">
+        <b-form-group id="descripcion" :label="'Imagen N°'+index" label-for="input-1">
+          <b-form-input v-if="index==0" id="input-1" v-model="images[index-1]" required></b-form-input>
+          <b-form-input v-else id="input-1" v-model="images[index-1]"></b-form-input>
+        </b-form-group>
+        
+        </div> 
     </b-modal>
   </div>
 </template>
@@ -20,28 +28,30 @@ import axios from "axios";
 
 export default {
   name: "editProperty",
-  props: ["property"],
-  data() {
-    return {
-      description: '',
-    };
-  },
+  props: ["property", "description", "images"],
+  
   methods: {
+    
+
     propertyEdition() { 
+      
+      console.log("entre a esto")
+      console.log(this.description)
       axios
         .post("http://localhost:3000/properties/" + this.property.id + "/edit", {
           data: {
             description: this.description,
+    
           } 
         })
         .then(response => {
-          console.log("Propiedad editada correctamente");
           this.$emit('edited');
+          
         })
         .catch(error => {
           console.log(error);
-        });      
+        }); 
     }
-  }
+  }  
 };
 </script>

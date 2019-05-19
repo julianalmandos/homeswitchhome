@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <editProperty :property="this.property" @edited="reloadProperty"/>
-    <b-button v-if="isAdmin" v-b-modal.editPropertyModal block variant="outline-primary">Editar Propiedad</b-button> 
+    <editProperty :property="this.property" :images="this.img" :description="this.description" @edited="reloadProperty"/>
+    <b-button v-if="isAdmin" v-on:click="chargeImages" v-b-modal.editPropertyModal block variant="outline-primary">Editar Propiedad</b-button> 
     <b-row>
       <b-col>
         <div class="center-block">
@@ -67,6 +67,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
           images: {},
           actualWeek: {},
           showPlaceABidModal: false,
+          description: '',
+          img: new Array(5),
         }
       },
       computed: {
@@ -98,7 +100,15 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             console.log(error);
           }); 
       },
+
+  
       methods: {
+        chargeImages(){
+          for (var i=0; i<this.images.length;i++){
+            this.img[i]= this.images[i].image
+          }
+          this.description= this.property.description;
+        },
         togglePlaceABidModal() {
           this.showPlaceABidModal=true;
         },

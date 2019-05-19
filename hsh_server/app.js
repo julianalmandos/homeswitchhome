@@ -68,15 +68,6 @@ app.get('/properties/:id', (req, res) => {
   })
 })
 
-app.post('/properties/:id/edit', function (req, res) {
-  console.log(req.body.data.description)
-  var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
-  console.log(sql);
-  conn.query(sql, function (err, result) {
-    if (err) throw err;
-    res.send(result);
-  });
-})
 
 app.get('/properties/:id/delete', function (req, res){
   var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + " AND NOT EXISTS (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"
@@ -213,6 +204,38 @@ app.post('/properties/publish', function (req, res) {
     res.send(result)
   });
 })
+
+app.post('/properties/:id/edit', function (req, res) {
+  console.log(req.body.data.description)
+  var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
+
+app.post('/properties/:id/edit/hola', function (req, res) {
+  if (req.body.data.description !== "" && req.body.data.files.legth > 0 && req.body.data.description !== undefined) {
+    var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
+    conn.query(sql, function (err, result) {
+    });
+    var sqlIm = "DELETE FROM images im WHERE idProperty = '" + req.params.id + "'"
+    conn.query(sqlIm, function (err, result) {
+    });
+    req.body.data.files.forEach(function (file) {
+      if ((file !== undefined)&&(file !== "")) {
+        var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + files + "')";
+        conn.query(sqlIm, function (err, result) {
+          if (err) throw err;
+          res.send(result)
+        })
+      }
+    })
+  }else{
+    res.send(404);
+  }
+});
 
   app.post('/validatetoken', (req, res) => {
     try {
