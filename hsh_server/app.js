@@ -235,6 +235,14 @@ app.post('/properties/publish', function (req, res) {
     });
   });
 
+  app.get('/bookings', function (req, res) {
+    var sql="SELECT w.date,p.name,b.email,b.price FROM weeks w INNER JOIN (SELECT idWeek,email,MAX(price) AS price FROM bids GROUP BY idWeek) b ON (w.id=b.idWeek) INNER JOIN properties p ON (w.idProperty=p.id) WHERE w.reserved=1";
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      res.send(result);
+    });
+  })
+
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
   });
