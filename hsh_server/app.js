@@ -82,7 +82,14 @@ app.get('/weeks/:id', (req, res) => {
   var sql = "SELECT * FROM weeks WHERE weeks.idproperty=" + req.params.id;
   conn.query(sql, function (err, result) {
     res.send(result);
-  })
+  });
+})
+
+app.get('/images/:id', (req, res) => {
+  var sql="SELECT images.image FROM images WHERE images.idproperty="+req.params.id;
+  conn.query(sql, function(err, result){
+    res.send(result);
+  });
 })
 
 app.get('/week/:id/maxbid', function (req, res) {
@@ -91,13 +98,10 @@ app.get('/week/:id/maxbid', function (req, res) {
   conn.query(sql, function (err, result) {
     if (err) throw err;
     pepe = JSON.parse(JSON.stringify(result[0]['MAX(price)']));
-    console.log(pepe)
-    if (pepe === null) {
-      var hola = "SELECT p.base_price FROM properties p ON (w.idProperty=p.id) WHERE w.id=" + req.params.id;
-      conn.query(hola, function (err, result) {
-        console.log("soy el resultado")
-        console.log(result)
-        res.status(200).send({ data: result });
+    if(pepe==null){ 
+      var sql = "SELECT p.base_price FROM weeks w INNER JOIN properties p ON (w.idProperty=p.id) WHERE w.id=" + req.params.id;
+      conn.query(sql, function (err, result) {
+        res.status(200).send({data: result[0].base_price});
       })
     } else {
       console.log(result);
@@ -118,7 +122,7 @@ app.post('/week/:id/bid', function (req, res) {
     if (pepe < req.body.data.price && req.body.data.base_price < req.body.data.price) {
       var sql = "INSERT INTO bids (price, idWeek, email) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "','" + req.body.data.email + "')";
       conn.query(sql, function (err, result) {
-        if (err) { throw err; }
+        if (err)  throw err;
         res.send(result);
       });
     } else {
@@ -135,9 +139,9 @@ app.get('/openAuction/:id', (req, res) => {
   })
 })
 
-app.get('/closeAuction/:id', (req, res) => {
-  var sql = "UPDATE weeks SET weeks.auction = 0 WHERE weeks.id=" + req.params.id;
-  conn.query(sql, function (err, result) {
+app.post('/closeAuction/:id', (req, res) => {
+  var sql="UPDATE weeks SET weeks.auction = 0, weeks.reserved ='"+ req.body.data.reserved +"', weeks.idle='"+req.body.data.idle +"'WHERE weeks.id="+req.params.id;
+  conn.query(sql, function(err, result){
     res.send(result);
   })
 })
