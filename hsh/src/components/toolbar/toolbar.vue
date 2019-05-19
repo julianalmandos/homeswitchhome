@@ -108,6 +108,15 @@
     color:black!important;
   }
 
+  .redButton {
+    background-color:rgba(255, 102, 102,0.5)!important;
+  }
+
+  .redButton:hover {
+    background-color:white!important;
+    color:black!important;
+  }
+
   .transparentButton {
     border: 1px solid black;
     color:black!important;

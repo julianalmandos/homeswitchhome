@@ -50,6 +50,8 @@ export default {
     color:#f2f2f2;
     box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    border-bottom-left-radius: 50% 40%;
+    border-bottom-right-radius: 50% 40%;
   }
 </style>
 
