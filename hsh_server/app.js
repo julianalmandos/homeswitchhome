@@ -206,36 +206,30 @@ app.post('/properties/publish', function (req, res) {
 })
 
 app.post('/properties/:id/edit', function (req, res) {
-  console.log(req.body.data.description)
+  if (req.body.data.description !== "" && req.body.data.description !== undefined) {
   var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
-  console.log(sql);
   conn.query(sql, function (err, result) {
-    if (err) throw err;
-    res.send(result);
+
   });
+  }
+  if ((req.body.data.files).length>0){
+  var sqlIm = "DELETE FROM images WHERE idProperty ="  + req.params.id 
+    conn.query(sqlIm, function (err, result) {
+      console.log("borre")
+  });
+  req.body.data.files.forEach(function (file) {
+    if ((file !== undefined)&&(file !== "")&&(file!==null)) {
+      var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + file + "')";
+      conn.query(sqlIm, function (err, result) {
+        if (err) throw err;
+
+      })
+    }
+  })
+  
+}
 })
 
-app.post('/properties/:id/edit/hola', function (req, res) {
-  if (req.body.data.description !== "" && req.body.data.files.legth > 0 && req.body.data.description !== undefined) {
-    var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
-    conn.query(sql, function (err, result) {
-    });
-    var sqlIm = "DELETE FROM images im WHERE idProperty = '" + req.params.id + "'"
-    conn.query(sqlIm, function (err, result) {
-    });
-    req.body.data.files.forEach(function (file) {
-      if ((file !== undefined)&&(file !== "")) {
-        var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + files + "')";
-        conn.query(sqlIm, function (err, result) {
-          if (err) throw err;
-          res.send(result)
-        })
-      }
-    })
-  }else{
-    res.send(404);
-  }
-});
 
   app.post('/validatetoken', (req, res) => {
     try {

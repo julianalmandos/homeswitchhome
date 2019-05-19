@@ -34,13 +34,14 @@ export default {
     
 
     propertyEdition() { 
-      
       console.log("entre a esto")
       console.log(this.description)
+      console.log(this.images)
       axios
         .post("http://localhost:3000/properties/" + this.property.id + "/edit", {
           data: {
             description: this.description,
+            files: this.images,
     
           } 
         })
