@@ -61,25 +61,7 @@
       </b-alert>
       <b-alert class="mt-sm-3" v-model="failEdition" variant="danger" dismissible>
         <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon>No se pudo realizar la edición
-      </b-alert>
-
-      <!-- 
-        <div class="form-group" v-for="(image, index) of this.imagesArray" :key="index">
-        <label for="property-files[index]">Ingrese el link de la imagen</label>
-        <input
-          v-if="index==0"
-          type="files[index]"
-          id="files[index]"
-          v-model="dataRegisterProperty.files[index]" 
-          required
-        >
-        <input 
-          v-else
-          type="files[index]"
-          id="files[index]"
-          v-model="dataRegisterProperty.files[index]"
-        >
-      -->
+      </b-alert> 
     </b-modal>
   </div>
 </template>
@@ -159,8 +141,8 @@ export default {
           contador++;
         }
       });
-      if (contador !== 5) {
-        this.successfulEdition = true;
+      if (contador !== 5 && this.description !== "" && this.description !== undefined) {
+        this.successfulEdition = true; 
         axios
           .post(
             "http://localhost:3000/properties/" + this.property.id + "/edit",
@@ -168,6 +150,7 @@ export default {
               data: {
                 description: this.description,
                 files: this.images
+                
               }
             }
           )

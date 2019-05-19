@@ -68,7 +68,7 @@ app.get('/properties/:id', (req, res) => {
   })
 });
 
-app.post('/properties/:id/edit/images', function (req, res){
+app.post('/properties/:id/edit/images', function (req, res) {
   console.log("acaaaaaaaaaaaaaaaa");
   console.log(req.body.data.image)
   var sql = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + req.body.data.image + "')";
@@ -78,23 +78,28 @@ app.post('/properties/:id/edit/images', function (req, res){
 })
 
 app.post('/properties/:id/edit', function (req, res) {
-  console.log(req.body.data.description)
-  var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
-  console.log(sql);
-  conn.query(sql, function (err, result) { 
-  });
-  var sqlIm = "DELETE FROM images im WHERE idProperty = '"+ req.params.id +"'"
-  conn.query(sqlIm, function (err, result) { 
-  });
-  req.body.data.files.forEach(function (file) { 
-    if(file !== "https://lightwidget.com/widgets/empty-photo.jpg"){
-    var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + req.body.data.images + "')";
+  console.log("acaaaaa back");
+  console.log(req.body.data.description);
+  if (req.body.data.description !== "" && req.body.data.files.legth > 0 && req.body.data.description !== undefined) {
+    var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
+    console.log(sql);
+    conn.query(sql, function (err, result) {
+    });
+    var sqlIm = "DELETE FROM images im WHERE idProperty = '" + req.params.id + "'"
     conn.query(sqlIm, function (err, result) {
-      if (err) throw err; 
-      res.send(result)
+    });
+    req.body.data.files.forEach(function (file) {
+      if (file !== "https://lightwidget.com/widgets/empty-photo.jpg") {
+        var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + req.body.data.images + "')";
+        conn.query(sqlIm, function (err, result) {
+          if (err) throw err;
+          res.send(result)
+        })
+      }
     })
+  }else{
+    res.send(404);
   }
-    })
 });
 
 app.get('/weeks/:id', (req, res) => {
@@ -201,41 +206,41 @@ app.post('/properties/publish', function (req, res) {
   var sqlIm;
   conn.query(sql, function (err, result) {
     console.log(result["insertId"]);
-    console.log("aqui") 
+    console.log("aqui")
     var idPropertyIm = result["insertId"];
     console.log(idPropertyIm);
     req.body.data.files.forEach(function (file) {
       console.log(file);
       var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + idPropertyIm + "','" + file + "')";
       conn.query(sqlIm, function (err, result) {
-        if (err) throw err; 
+        if (err) throw err;
       });
     })
     res.send(result)
   });
 })
 
-  app.post('/validatetoken', (req, res) => {
-    try {
-      var decoded = jwt.verify(req.body.token, 'shhhhh');
-      res.send(true);
-    } catch (err) {
-      res.send(false);
-    }
-  })
+app.post('/validatetoken', (req, res) => {
+  try {
+    var decoded = jwt.verify(req.body.token, 'shhhhh');
+    res.send(true);
+  } catch (err) {
+    res.send(false);
+  }
+})
 
-  app.post('/register', function (req, res) {
-    //console.log(req.body.data);
-    var contraseña = bcrypt.hashSync(req.body.data.password, 8);
-    //falta chequear si el email ya existe
-    var sql = "INSERT INTO users (email,password,name,surname) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "')";
-    console.log(sql);
-    conn.query(sql, function (err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
+app.post('/register', function (req, res) {
+  //console.log(req.body.data);
+  var contraseña = bcrypt.hashSync(req.body.data.password, 8);
+  //falta chequear si el email ya existe
+  var sql = "INSERT INTO users (email,password,name,surname) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "')";
+  console.log(sql);
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
   });
+});
 
-  app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-  });
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+});
