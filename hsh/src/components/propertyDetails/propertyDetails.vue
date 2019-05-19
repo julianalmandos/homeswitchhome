@@ -34,7 +34,7 @@
           <h1 class="title">{{this.property.name}}</h1>
           <p class="text">Descripción: {{this.property.description}}</p>
           <p class="text">Ubicación: {{this.property.address}}</p>
-          <p class="text">Precio base: {{this.property.base_price}}</p>
+          <p class="text">Precio base: ${{this.property.base_price}}</p>
         </div>
       </b-col>
     </b-row>
@@ -134,18 +134,23 @@ import placeABid from '@/components/placeABid/placeABid.vue';
 </script>
 <style>
   .profile {
-    background-color:rgba(0,161,225,0.5);
+    background-color:  rgba(0,161,225,0.5); 
     box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
     height: 400px;
+    
   }
   .title {
     color:#f2f2f2;
     font-family: "Times New Roman", Times, serif;
+    font-size: 4vw;
   }
   .text {
     color:#f2f2f2;
     text-align: left;
     text-indent: 25px;
+    line-height: 3.8;
+    font-size: 1.6vw;
+    font-family: "Times New Roman", Times, serif;
   }
 </style>
 
