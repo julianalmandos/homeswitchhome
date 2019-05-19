@@ -1,5 +1,5 @@
 <template>
-    <b-card img-src="https://placekitten.com/300/300" img-alt="Card image" img-left class="mb-3" style="text-align:start;height:200px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+    <b-card :img-src="this.images[0].image" img-alt="Card image" img-left class="mb-3" style="text-align:start;height:200px;width:350px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
       <b-card-text>
         <b-row>
             <b-col sm="10">
@@ -54,6 +54,17 @@
         props: {
             property: {},
         },
+        data() {
+            return {
+                images: [],
+            }
+        },
+        beforeCreate() {
+            axios.get('//localhost:3000/images/'+this.property.id)
+                .then(response => {
+                    this.images=response.data;
+                })
+        }
         
     }
 </script>
