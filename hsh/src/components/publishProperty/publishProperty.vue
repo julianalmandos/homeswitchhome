@@ -39,61 +39,26 @@
       <div class="form-group">
         <label for="property-locality">Ingrese la localidad de la propiedad</label>
         <input type="locality" id="locality" v-model="dataRegisterProperty.locality" required>
-      </div>
-      <div class="form-group">
-        <b-form-file
+      </div> 
+
+      <div class="form-group" v-for="(image, index) of this.imagesArray" :key="index">
+        <label for="property-files[index]">Ingrese el link de la imagen</label>
+        <input
+          v-if="index==0"
+          type="files[index]"
+          id="files[index]"
+          v-model="dataRegisterProperty.files[index]" 
           required
-          accept="image/*"
-          v-model="imagesArray[0]"
-          :state="Boolean(imagesArray[0])"
-          placeholder="Seleccione una imagen para subir"
-          drop-placeholder="Arrastre una imagen para subir"
-        ></b-form-file>
-        <div
-          class="mt-3"
-        >Selected file: {{ imagesArray[0] ? imagesArray[0].name : '' }}</div>
-        <b-form-file
-          accept="image/*"
-          v-model="imagesArray[1]"
-          :state="Boolean(imagesArray[1])"
-          placeholder="Seleccione una imagen para subir"
-          drop-placeholder="Arrastre una imagen para subir"
-        ></b-form-file>
-        <div
-          class="mt-3"
-        >Selected file: {{ imagesArray[1] ? imagesArray[1].name : '' }}</div>
-        <b-form-file
-          accept="image/*"
-          v-model="imagesArray[2]"
-          :state="Boolean(imagesArray[2])"
-          placeholder="Seleccione una imagen para subir"
-          drop-placeholder="Arrastre una imagen para subir"
-        ></b-form-file>
-        <div
-          class="mt-3"
-        >Selected file: {{ imagesArray[2] ? imagesArray[2].name : '' }}</div>
-        <b-form-file
-          accept="image/*"
-          v-model="imagesArray[3]"
-          :state="Boolean(imagesArray[3])"
-          placeholder="Seleccione una imagen para subir"
-          drop-placeholder="Arrastre una imagen para subir"
-        ></b-form-file>
-        <div
-          class="mt-3"
-        >Selected file: {{ imagesArray[3] ? imagesArray[3].name : '' }}</div>
-        <b-form-file
-          accept="image/*"
-          v-model="imagesArray[4]"
-          :state="Boolean(imagesArray[4])"
-          placeholder="Seleccione una imagen para subir"
-          drop-placeholder="Arrastre una imagen para subir"
-        ></b-form-file>
-        <div
-          class="mt-3"
-        >Selected file: {{ imagesArray[4] ? imagesArray[4].name : '' }}</div>
+        >
+        <input 
+          v-else
+          type="files[index]"
+          id="files[index]"
+          v-model="dataRegisterProperty.files[index]"
+        >
       </div>
-      <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="dark">Registrar</b-button>
+
+      <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="outline-primary">Publicar propiedad</b-button>
     </form>
   </div>
 </template>
@@ -114,34 +79,15 @@ export default {
         country: "",
         province: "",
         locality: "",
-        files: [],
+        files: [], 
       },
-      imagesArray: [],
+      imagesArray: new Array(5)
     };
   },
   methods: {
-    getArray() {
-      var archivos=[];
-      this.dataRegisterProperty.files=[];
-      this.imagesArray.forEach((archivo,index) => {
-          var reader = new FileReader();
-          reader.onloadend = () => {
-            //this.$set(this.dataRegisterProperty.files,index,reader.result);
-            archivos.push(reader.result);
-          };
-          reader.readAsDataURL(archivo);
-          console.log('pasada ');
-          console.log(this.dataRegisterProperty.files);
-          console.log(archivos);
-      });
-      console.log(this.imagesArray);
-      this.dataRegisterProperty.files=archivos;
-      console.log(this.dataRegisterProperty.files);
-    },
     registerProperty() {
-      this.getArray();
       axios.post("http://localhost:3000/properties/publish", {
-        data: this.dataRegisterProperty,
+        data: this.dataRegisterProperty
       });
     }
   }

@@ -27,7 +27,10 @@ import Vuex from "vuex";
 import axios from "axios";
 export default {
   name: "placeABid",
-  props: ["week"],
+  props: {
+    week: Object,
+    weekModal: String,
+  },
   data() {
     return {
       property: {},
@@ -67,6 +70,7 @@ export default {
         })
         .then(response => {
           this.showPlacedBid=true;
+          this.$emit('placed');
           console.log("Puja realizada con exito");
         })
         .catch(error => {
