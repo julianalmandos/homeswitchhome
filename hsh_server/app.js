@@ -93,7 +93,7 @@ app.post('/properties/:id/delete', function (req, res){
 })
 
 app.get('/weeks/:id', (req, res) => {
-  var sql = "SELECT * FROM weeks WHERE weeks.idproperty=" + req.params.id;
+  var sql = "SELECT * FROM weeks WHERE weeks.idproperty='" + req.params.id+ "' ORDER BY weeks.date";
   conn.query(sql, function (err, result) {
     res.send(result);
   });
