@@ -80,14 +80,14 @@ app.get('/properties/:id', (req, res) => {
 app.post('/properties/:id/delete', function (req, res){
   var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + " AND NOT EXISTS (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"
   conn.query(sql, function(err, result){
-    if (err) throw err;
-    console.log(result);
     if (result.length > 0){
       var sqlRemove = "DELETE FROM properties WHERE id=" + req.params.id;
       conn.query(sqlRemove, function(err, result){
         if (err) throw err;
         res.send(result);
       })
+    }else{
+      res.sendStatus(400);
     }
   })
 })
