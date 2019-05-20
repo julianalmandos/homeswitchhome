@@ -16,7 +16,7 @@
         <b-card-sub-title
           class="mb-2 d-inline-block text-truncate"
           style="max-width: 200px;"
-        >Ubicación : {{ property.locality }}</b-card-sub-title>
+        >Ubicación: {{ property.locality }}, {{property.province}}, {{property.country}}</b-card-sub-title>
       </b-card-body>
     </b-card>
   </div>
