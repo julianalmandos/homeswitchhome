@@ -143,6 +143,17 @@ app.post('/checkWinner', function(req,res){
   })
 })
 
+app.get('/properties/:id/bookings', function(req,res){
+  var sql= "SELECT * FROM properties p INNER JOIN weeks w ON (p.id = w.idProperty) WHERE p.id='"+ req.params.id +"' AND w.reserved=1";
+  conn.query(sql,function (err,result){
+    if (result.length==0){
+      res.status(200).send({data:false});
+    }else{
+      res.status(200).send({data:true});
+    }
+  })
+})
+
 app.post('/makeReservation',function(req,res){
   var sql= "INSERT INTO bookings (idMaxBid) VALUES ('"+req.body.data.id+"')";
   conn.query(sql,function(err, result){
@@ -263,10 +274,11 @@ app.post('/properties/publish', function (req, res) {
 })
 
 app.post('/properties/:id/edit', function (req, res) {
-  if (req.body.data.description !== "" && req.body.data.description !== undefined) {
-  var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
+  console.log("acata")
+  if (req.body.data.property.description !== "" && req.body.data.property.description !== undefined) {
+  var sql = "UPDATE properties p SET p.description = '" + req.body.data.property.description + "',p.name = '" + req.body.data.property.name + "',p.base_price = '" + req.body.data.property.base_price + "',p.locality = '" + req.body.data.property.locality + "',p.country = '" + req.body.data.property.country + "',p.province= '" + req.body.data.property.province + "'  WHERE p.id='" + req.params.id+"'";
   conn.query(sql, function (err, result) {
-
+    
   });
   }
   if ((req.body.data.files).length>0){

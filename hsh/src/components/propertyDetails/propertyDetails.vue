@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <editProperty :property="this.property" :images="this.img" :description="this.description" @edited="reloadProperty"/>
     <!--<b-button v-if="isAdmin" v-on:click="chargeImages" v-b-modal.editPropertyModal block class="blueButton">Editar Propiedad</b-button>--> 
     <br>
     <b-row>
@@ -60,14 +59,12 @@
 import Vuex from 'vuex';
 import axios from 'axios';
 import weekCard from "@/components/weekCard/weekCard.vue";
-import editProperty from "@/components/editProperty/editProperty.vue";
 import placeABid from '@/components/placeABid/placeABid.vue';
 
     export default {
       name: 'propertyDetails',
       components: {
         weekCard,
-        editProperty,
         placeABid
       },
       data() {

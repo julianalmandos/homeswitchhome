@@ -33,7 +33,7 @@ export default router = new Router({
     {
       path: '/details/:id/edit',
       name: 'edit',
-      component: () => import('./components/editProperty/editProperty2.vue'),
+      component: () => import('./components/editProperty/editProperty.vue'),
       meta: {
         requiresAdmin:true,
       }
