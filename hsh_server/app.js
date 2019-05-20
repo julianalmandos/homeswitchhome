@@ -236,7 +236,7 @@ app.post('/properties/publish', function (req, res) {
   });
 
   app.get('/bookings', function (req, res) {
-    var sql="SELECT w.date,p.name,b.email,b.price FROM weeks w INNER JOIN (SELECT idWeek,email,MAX(price) AS price FROM bids GROUP BY idWeek) b ON (w.id=b.idWeek) INNER JOIN properties p ON (w.idProperty=p.id) WHERE w.reserved=1";
+    var sql="SELECT w.date,p.name,b.email,b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty)"
     conn.query(sql, function (err, result) {
       if (err) throw err;
       res.send(result);
