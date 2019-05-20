@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <editProperty :property="this.property" @edited="reloadProperty"/>
-    <b-button v-if="isAdmin" v-b-modal.editPropertyModal block variant="outline-primary">Editar Propiedad</b-button> 
+    <editProperty :property="this.property" :images="this.img" :description="this.description" @edited="reloadProperty"/>
+    <!--<b-button v-if="isAdmin" v-on:click="chargeImages" v-b-modal.editPropertyModal block class="blueButton">Editar Propiedad</b-button>--> 
+    <br>
     <b-row>
       <b-col>
         <div class="center-block">
@@ -9,35 +10,44 @@
             id="carousel-fade"
             fade
             controls
-            img-width="600px"
-            img-height="480px"
+            background="#ababab"
+            img-width="200"
+            img-height="100"
             class="center-block"
           >
           <div v-for="image of images" :key="image.id">
-          
-            <b-carousel-slide
-              :img-src="image.image" style="width:600px;height:410px;"
-            ></b-carousel-slide>
-          </div>
-
-                    
+            <b-carousel-slide>
+              <img
+                slot="img"
+                width="600"
+                height="400"
+                :src="image.image"
+                alt="image slot"
+              >
+            </b-carousel-slide>
+          </div>           
           </b-carousel>
-
-      
         </div>
       </b-col>
       <b-col>
-        <div>
-          <h1>{{this.property.name}}</h1>
-          <p>Descripción: {{this.property.description}}</p>
-          <p>Ubicación: {{this.property.address}}</p>
-          <p>Precio base: {{this.property.base_price}}</p>
+        <div class="profile">
+          <h3 class="titulo">{{this.property.name}}</h3> 
+          <b-col class="mt-5">
+            <p class="text"><strong>Descripción: </strong>{{this.property.description}}</p>
+            <p class="text"><strong>Ubicación: </strong>{{this.property.address}}</p>
+            <p class="text"><strong>Localidad: </strong>{{this.property.locality}}</p>
+            <p class="text"><strong>Provincia: </strong>{{this.property.province}}</p>
+            <p class="text"><strong>País: </strong>{{this.property.country}}</p>
+            <p class="text"><strong>Precio Base: </strong>${{this.property.base_price}}</p>
+            <b-button v-if="isAdmin" :to="{ name: 'edit', params: { id: this.$route.params.id }}" block class="blueButton">Editar Propiedad</b-button>
+          </b-col>
         </div>
       </b-col>
     </b-row>
+    <br>
     <b-card-group deck>
       <div v-for="(week, index) of this.weeks" :key="index" >
-        <div class="">
+        <div class="mb-3">
           <weekCard :week="week" @edited="reloadWeeks" @placingBid="openPlaceABidModal"></weekCard>
         </div>
       </div>
@@ -67,6 +77,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
           images: {},
           actualWeek: {},
           showPlaceABidModal: false,
+          description: '',
+          img: new Array(5),
         }
       },
       computed: {
@@ -99,6 +111,12 @@ import placeABid from '@/components/placeABid/placeABid.vue';
           }); 
       },
       methods: {
+        chargeImages(){
+          for (var i=0; i<this.images.length;i++){
+            this.img[i]= this.images[i].image
+          }
+          this.description= this.property.description;
+        },
         togglePlaceABidModal() {
           this.showPlaceABidModal=true;
         },
@@ -119,6 +137,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
         reloadWeeks() {
           axios.get("http://localhost:3000/weeks/"+ this.$route.params.id)
             .then(response => {
+              console.log('recarga semanas');
+              console.log(this.weeks);
               this.weeks = response.data; 
             })
             .catch(error => {
@@ -128,5 +148,19 @@ import placeABid from '@/components/placeABid/placeABid.vue';
       },
     }    
 </script>
+<style>
+  .profile {
+    background-color: rgb(242,242,242);
+    border-radius:10px;
+    height: 400px;
+    
+  }
+  .title {
+    color:black;
+  }
+  .text {
+    color:black;
+  }
+</style>
 
 

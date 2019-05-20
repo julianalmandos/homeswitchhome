@@ -4,11 +4,9 @@
       no-body
       class="tarjeta"
       style="max-width: 15rem;margin-bottom:1.25rem"
-      img-src="https://i.blogs.es/8e8f64/lo-de-que-comprar-una-casa-es-la-mejor-inversion-hay-generaciones-que-ya-no-lo-ven-ni-de-lejos---1/450_1000.jpg"
-      img-alt="Image"
-      img-top
       @click="viewPropertyDetails"
     >
+    <b-card-img :src="this.image.image" alt="Image" top height="150"></b-card-img>
       <h6
         slot="header"
         class="d-inline-block text-truncate"
@@ -18,7 +16,7 @@
         <b-card-sub-title
           class="mb-2 d-inline-block text-truncate"
           style="max-width: 200px;"
-        >Ubicación : {{ property.address }}</b-card-sub-title>
+        >Ubicación : {{ property.locality }}</b-card-sub-title>
       </b-card-body>
     </b-card>
   </div>
@@ -32,12 +30,23 @@ export default {
   props: ["property"],
   data(){
     return {
+      image: {},
     }
   },
   methods: {
     viewPropertyDetails() {
       this.$router.push('/details/'+this.property.id);
     }
+  },
+  created(){
+    axios.get("http://localhost:3000/images/"+ this.property.id)
+      .then(response => {
+        this.image = response.data[0]; 
+        console.log(response.data)
+      })
+      .catch(error => {
+        console.log(error);
+      }); 
   }
 };
 </script>

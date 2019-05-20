@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
     <b-container>
         <h1 class="titulo">Lista de Reservas</h1><br>
         <b-table 
@@ -65,3 +66,20 @@
     }
 </script>
 
+=======
+    
+</template>
+
+<script>
+    import axios from 'axios';
+
+    export default {
+        name: 'listOfBookings',
+    }
+
+</script>
+
+<style scoped>
+    
+</style>
+>>>>>>> master

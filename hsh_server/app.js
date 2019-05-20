@@ -15,6 +15,14 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'homeswitchhome23@gmail.com',
+    pass: 'grupoing23'
+  }
+});
+
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -68,28 +76,19 @@ app.get('/properties/:id', (req, res) => {
   })
 })
 
-app.post('/properties/:id/edit', function (req, res) {
-  console.log(req.body.data.description)
-  var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
-  console.log(sql);
-  conn.query(sql, function (err, result) {
-    if (err) throw err;
-    res.send(result);
-  });
-})
 
-app.get('/properties/:id/delete', function (req, res){
+app.post('/properties/:id/delete', function (req, res){
   var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + " AND NOT EXISTS (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"
   conn.query(sql, function(err, result){
-    if (err) throw err;
-    console.log(result);
     if (result.length > 0){
       var sqlRemove = "DELETE FROM properties WHERE id=" + req.params.id;
       conn.query(sqlRemove, function(err, result){
         if (err) throw err;
+        res.send(result);
       })
+    }else{
+      res.sendStatus(400);
     }
-    res.send(result);
   })
 })
 
@@ -125,19 +124,63 @@ app.get('/week/:id/maxbid', function (req, res) {
   });
 })
 
-app.post('/week/:id/bid', function (req, res) {
-  var sql = "SELECT (MAX(price)) FROM bids WHERE idWeek=" + req.params.id;
+app.get('/week/:id/winner', function (req, res) {
+  var sql = "SELECT * FROM bids WHERE idWeek='" + req.params.id +"'AND price=(SELECT MAX(price) FROM bids WHERE idWeek='" + req.params.id+"')";
   conn.query(sql, function (err, result) {
-    var pepe = JSON.parse(JSON.stringify(result[0]['(MAX(price))']));
-    if (pepe === null) {
-      pepe = -1;
+    if (err) throw err;
+    res.send(result);
+  });
+})
+
+app.post('/checkWinner', function(req,res){
+  var sql= "SELECT * FROM bookings b INNER JOIN bids bi ON (bi.id = b.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE w.date='"+ req.body.data.date +"' AND bi.email='"+req.body.data.winner+"'";
+  conn.query(sql,function (err,result){
+    if (result.length==0){
+      res.status(200).send({data:false});
+    }else{
+      res.status(200).send({data:true});
+    }
+  })
+})
+
+app.get('/makeReservation/:id',function(req,res){
+  var sql= "INSERT INTO bookings (idMaxBid) VALUES ('"+req.params.id+"')";
+  conn.query(sql,function(err, result){
+    res.send(result);
+  })
+})
+
+app.get('/deleteBid/:winner',function(req,res){
+  var sql= "DELETE FROM bids WHERE id="+req.params.winner;
+  conn.query(sql,function(err, result){
+    res.send(result);
+  })
+})
+
+app.post('/week/:id/bid', function (req, res) {
+  //BUSCO LA PUJA MAS ALTA PARA LA SEMANA Y ME QUEDO CON EL EMAIL DEL PUJANTE PARA MANDARLE UN AVISO
+  var sql = "SELECT email,price FROM bids WHERE idWeek=" + req.params.id + ' AND price=(SELECT MAX(price) FROM bids WHERE idWeek='+req.params.id+')';
+  conn.query(sql, function (err, result) {
+    var maxEmail=result[0]['email'];
+    var maxPrice = JSON.parse(JSON.stringify(result[0]['price']));
+    if (maxPrice === null) {
+      maxPrice = -1;
     }
     else { };
-    console.log(req.body.data.price, pepe, req.body.data.base_price)
-    if (pepe < req.body.data.price && req.body.data.base_price < req.body.data.price) {
+    console.log(req.body.data.price, maxPrice, req.body.data.base_price)
+    if (maxPrice < req.body.data.price && req.body.data.base_price < req.body.data.price) {
+      //SI LA PUJA FUE MAYOR AL PRECIO BASE Y A LA ULTIMA PUJA, ENTONCES INSERTO LA NUEVA PUJA
       var sql = "INSERT INTO bids (price, idWeek, email) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "','" + req.body.data.email + "')";
       conn.query(sql, function (err, result) {
         if (err)  throw err;
+        //HAGO UNA CONSULTA PARA SABER LA PROPIEDAD}
+        var sql="SELECT p.name,p.id FROM properties p INNER JOIN weeks w ON (w.idProperty=p.id) WHERE w.id="+req.params.id;
+        conn.query(sql, function(err, result){
+          console.log('entra envio email');
+          console.log(maxEmail);
+          console.log(result);
+          sendEmail(maxEmail,'Puja por "'+result[0]['name']+'" superada','Usted está recibiendo este e-mail porque su puja por la propiedad "'+result[0]['name']+'" fue superada. Para volver a pujar, puede ingresar a http://localhost:8080/details/'+result[0]['id']);
+        })        
         res.send(result);
       });
     } else {
@@ -161,38 +204,24 @@ app.post('/closeAuction/:id', (req, res) => {
   })
 })
 
-app.get('/pepe', (req, res) => {
-  exports.sendEmail = function (req, res) {
-    // Definimos el transporter
-    var transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: 'orianarevalos@gmail.com',
-        pass: 'Milanesaconpure12'
-      }
-    });
-    console.log("Estoy mandando el mail");
-    // Definimos el email
-    var mailOptions = {
-      from: 'orianarevalos@gmail.com',
-      to: 'orianarevalos@gmail.com',
-      subject: 'Subastas',
-      text: 'Contenido del email'
-    };
-    // Enviamos el email
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-        res.send(500, err.message);
-      } else {
-        console.log("Email sent");
-        res.status(200).jsonp(req.body);
-      }
-    });
+function sendEmail(to,subject,text){
+  console.log("Estoy mandando el mail");
+  // Definimos el email
+  var mailOptions = {
+    from: 'homeswitchhome23@gmail.com',
+    to: to,
+    subject: subject,
+    text: text
   };
-  console.log("Enviando");
-  res.send("hola")
-})
+  // Enviamos el email
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      return error;
+    } else {
+      return 0;
+    }
+  });
+}
 
 app.post('/properties/publish', function (req, res) {
   console.log(req.body.data)
@@ -213,6 +242,32 @@ app.post('/properties/publish', function (req, res) {
     res.send(result)
   });
 })
+
+app.post('/properties/:id/edit', function (req, res) {
+  if (req.body.data.description !== "" && req.body.data.description !== undefined) {
+  var sql = "UPDATE properties p SET p.description = '" + req.body.data.description + "' WHERE p.id=" + req.params.id;
+  conn.query(sql, function (err, result) {
+
+  });
+  }
+  if ((req.body.data.files).length>0){
+  var sqlIm = "DELETE FROM images WHERE idProperty ="  + req.params.id 
+    conn.query(sqlIm, function (err, result) {
+      console.log("borre")
+  });
+  req.body.data.files.forEach(function (file) {
+    if ((file !== undefined)&&(file !== "")&&(file!==null)) {
+      var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + req.params.id + "','" + file + "')";
+      conn.query(sqlIm, function (err, result) {
+        if (err) throw err;
+
+      })
+    }
+  })
+  
+}
+})
+
 
   app.post('/validatetoken', (req, res) => {
     try {

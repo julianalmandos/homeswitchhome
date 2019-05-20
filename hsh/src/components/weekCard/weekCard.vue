@@ -1,6 +1,6 @@
 <template>
     <div class="weekCard">
-        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="text-center">
+        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem">
             <h6>PMA: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
@@ -9,7 +9,7 @@
                 <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
             </b-card-text>
         </b-card>
-        <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle)) bg-variant="secondary" text-variant="white" class="text-center">
+        <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle))   class="card1">
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
             </b-card-text>
@@ -33,6 +33,9 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 property: {},
                 idle: 0,
                 reserved: 0,
+                ok: true,
+                hasBooking: false,
+                winner: {},
             }
         },
         computed: {
@@ -56,10 +59,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 });
         },
-        mounted() {
-            this.$root.$on('placeABidModal::hidden', (bvEvent, modalId) => {
-                this.reloadMaxBid();
-            })
+        updated() {
+            this.reloadMaxBid();
         },
         methods:{
             compare(aDate){
@@ -82,20 +83,39 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 });
             },
+            reloadMaxBid2(){
+                console.log('reload');
+                axios.get("http://localhost:3000/week/"+ this.week.id+'/maxbid')
+                .then(response => {
+                    this.maxBid=response.data.data;
+                    console.log(response.data.data);
+                    console.log("relodee")
+                    this.closeAuction()
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            },
             closeAuction: function (){
-                
                 if (this.maxBid==this.property.base_price){
                     this.reserved= 0;
                     this.idle= 1;
-                    console.log ("hola");
+                    this.closeAu();
                 } else {
-                    // Mandar mail de que ganó la subasta
-                    console.log(this.maxBid);
-                    console.log(this.property.base_price);
-                    this.idle = 0;
-                    this.reserved = 1;
-                    console.log("chau");
+                    axios.get("http://localhost:3000/week/"+this.week.id+"/winner")
+                        .then(response => {
+                            this.winner=response.data[0];
+                            console.log("consulte el winner y es: ", this.winner.email)
+                            this.checkWinner();
+                    })
+                         .catch(error => {
+                          console.log(error);
+                   })                            
                 }
+        
+            },
+
+            closeAu(){
                 axios
                     .post("http://localhost:3000/closeAuction/" + this.week.id , {
                         data: {
@@ -110,6 +130,53 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                         console.log(error);
                     });
             },
+
+            checkWinner(){
+                axios.post("http://localhost:3000/checkWinner",{
+                        data:{
+                            winner: this.winner.email,
+                            date: (this.week.date).substring(0,10),
+                        }
+                    })
+                        .then(response => {
+                            this.hasBooking=response.data.data;
+                            console.log("Me fije si el ganador tiene otras reservas para la misma semana: ", this.hasBooking)
+                            this.makeReservation()
+                    })
+                         .catch(error => {
+                          console.log(error);
+                   })
+            },
+            makeReservation(){
+                if (!this.hasBooking){
+                        this.idle = 0;
+                        this.reserved = 1;
+                        console.log(this.winner.id);
+                        axios.get("http://localhost:3000/makeReservation/"+this.winner.id)
+                        .then(response => {
+                            console.log("guarde la reserva")
+                    })
+                         .catch(error => {
+                          console.log(error);
+                   })
+                    this.closeAu()
+
+                    }else{
+                        this.deleteBid();
+                    }
+          
+            },
+            deleteBid(){
+                axios.get("http://localhost:3000/deleteBid/"+ this.winner.id)
+                .then(response => {
+                    console.log("elimine maxBid");
+                    this.reloadMaxBid2();
+                })
+                .catch(error => {
+                    console.log(error);
+                })        
+            },
+
             openAuction: function (){
                 axios.get("http://localhost:3000/openAuction/"+ this.week.id)
                 .then(response => {
@@ -121,9 +188,19 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 }); 
 
             },
-
         }
-
     }
+   
 
 </script>
+<style>
+  .card1 {
+    background-color:#bfbfbf;
+    color:#f2f2f2;
+    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+    
+  }
+  .card2 {
+    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+  }
+</style>
