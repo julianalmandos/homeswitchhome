@@ -116,6 +116,39 @@ app.get('/week/:id/maxbid', function (req, res) {
   });
 })
 
+app.get('/week/:id/winner', function (req, res) {
+  var sql = "SELECT * FROM bids WHERE idWeek='" + req.params.id +"'AND price=(SELECT MAX(price) FROM bids WHERE idWeek='" + req.params.id+"')";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
+
+app.post('/checkWinner', function(req,res){
+  var sql= "SELECT * FROM bookings b INNER JOIN bids bi ON (bi.id = b.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE w.date='"+ req.body.data.date +"' AND bi.email='"+req.body.data.winner+"'";
+  conn.query(sql,function (err,result){
+    if (result.length==0){
+      res.status(200).send({data:false});
+    }else{
+      res.status(200).send({data:true});
+    }
+  })
+})
+
+app.get('/makeReservation/:id',function(req,res){
+  var sql= "INSERT INTO bookings (idMaxBid) VALUES ('"+req.params.id+"')";
+  conn.query(sql,function(err, result){
+    res.send(result);
+  })
+})
+
+app.get('/deleteBid/:winner',function(req,res){
+  var sql= "DELETE FROM bids WHERE id="+req.params.winner;
+  conn.query(sql,function(err, result){
+    res.send(result);
+  })
+})
+
 app.post('/week/:id/bid', function (req, res) {
   var sql = "SELECT (MAX(price)) FROM bids WHERE idWeek=" + req.params.id;
   conn.query(sql, function (err, result) {

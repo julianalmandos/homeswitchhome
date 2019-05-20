@@ -33,6 +33,9 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 property: {},
                 idle: 0,
                 reserved: 0,
+                ok: true,
+                hasBooking: false,
+                winner: {},
             }
         },
         computed: {
@@ -82,20 +85,39 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 });
             },
+            reloadMaxBid2(){
+                console.log('reload');
+                axios.get("http://localhost:3000/week/"+ this.week.id+'/maxbid')
+                .then(response => {
+                    this.maxBid=response.data.data;
+                    console.log(response.data.data);
+                    console.log("relodee")
+                    this.closeAuction()
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            },
             closeAuction: function (){
-                
                 if (this.maxBid==this.property.base_price){
                     this.reserved= 0;
                     this.idle= 1;
-                    console.log ("hola");
+                    this.closeAu();
                 } else {
-                    // Mandar mail de que ganó la subasta
-                    console.log(this.maxBid);
-                    console.log(this.property.base_price);
-                    this.idle = 0;
-                    this.reserved = 1;
-                    console.log("chau");
+                    axios.get("http://localhost:3000/week/"+this.week.id+"/winner")
+                        .then(response => {
+                            this.winner=response.data[0];
+                            console.log("consulte el winner y es: ", this.winner.email)
+                            this.checkWinner();
+                    })
+                         .catch(error => {
+                          console.log(error);
+                   })                            
                 }
+        
+            },
+
+            closeAu(){
                 axios
                     .post("http://localhost:3000/closeAuction/" + this.week.id , {
                         data: {
@@ -110,6 +132,53 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                         console.log(error);
                     });
             },
+
+            checkWinner(){
+                axios.post("http://localhost:3000/checkWinner",{
+                        data:{
+                            winner: this.winner.email,
+                            date: (this.week.date).substring(0,10),
+                        }
+                    })
+                        .then(response => {
+                            this.hasBooking=response.data.data;
+                            console.log("Me fije si el ganador tiene otras reservas para la misma semana: ", this.hasBooking)
+                            this.makeReservation()
+                    })
+                         .catch(error => {
+                          console.log(error);
+                   })
+            },
+            makeReservation(){
+                if (!this.hasBooking){
+                        this.idle = 0;
+                        this.reserved = 1;
+                        console.log(this.winner.id);
+                        axios.get("http://localhost:3000/makeReservation/"+this.winner.id)
+                        .then(response => {
+                            console.log("guarde la reserva")
+                    })
+                         .catch(error => {
+                          console.log(error);
+                   })
+                    this.closeAu()
+
+                    }else{
+                        this.deleteBid();
+                    }
+          
+            },
+            deleteBid(){
+                axios.get("http://localhost:3000/deleteBid/"+ this.winner.id)
+                .then(response => {
+                    console.log("elimine maxBid");
+                    this.reloadMaxBid2();
+                })
+                .catch(error => {
+                    console.log(error);
+                })        
+            },
+
             openAuction: function (){
                 axios.get("http://localhost:3000/openAuction/"+ this.week.id)
                 .then(response => {
@@ -121,10 +190,9 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 }); 
 
             },
-
         }
-
     }
+   
 
 </script>
 <style>

@@ -65,6 +65,7 @@ export default {
             price: this.price,
             base_price: this.property.base_price,
             idProperty: this.week.idProperty,
+            email:this.email,
             max: this.max
           }
         })
