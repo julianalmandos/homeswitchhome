@@ -1,7 +1,7 @@
 <template>
     <div class="weekCard">
         <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem">
-            <h6>PMA: ${{maxBid}}</h6>
+            <h6>Puja Más Alta: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
                 <b-button class="transparentButton btn-block" v-if="week.auction && isAdmin" v-on:click="closeAuction">Cerrar subasta</b-button>

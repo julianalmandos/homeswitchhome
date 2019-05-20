@@ -163,12 +163,14 @@ app.post('/week/:id/bid', function (req, res) {
   //BUSCO LA PUJA MAS ALTA PARA LA SEMANA Y ME QUEDO CON EL EMAIL DEL PUJANTE PARA MANDARLE UN AVISO
   var sql = "SELECT email,price FROM bids WHERE idWeek=" + req.params.id + ' AND price=(SELECT MAX(price) FROM bids WHERE idWeek='+req.params.id+')';
   conn.query(sql, function (err, result) {
-    var maxEmail=result[0]['email'];
-    var maxPrice = JSON.parse(JSON.stringify(result[0]['price']));
-    if (maxPrice === null) {
+    var maxPrice,maxEmail;
+    if(result[0]){
+      maxEmail=result[0]['email'];
+      maxPrice = JSON.parse(JSON.stringify(result[0]['price']));
+    }else{
       maxPrice = -1;
+      maxEmail = '';
     }
-    else { };
     console.log(req.body.data.price, maxPrice, req.body.data.base_price)
     if (maxPrice < req.body.data.price && req.body.data.base_price < req.body.data.price) {
       //SI LA PUJA FUE MAYOR AL PRECIO BASE Y A LA ULTIMA PUJA, ENTONCES INSERTO LA NUEVA PUJA
@@ -176,13 +178,15 @@ app.post('/week/:id/bid', function (req, res) {
       conn.query(sql, function (err, result) {
         if (err)  throw err;
         //HAGO UNA CONSULTA PARA SABER LA PROPIEDAD}
-        var sql="SELECT p.name,p.id FROM properties p INNER JOIN weeks w ON (w.idProperty=p.id) WHERE w.id="+req.params.id;
-        conn.query(sql, function(err, result){
-          console.log('entra envio email');
-          console.log(maxEmail);
-          console.log(result);
-          sendEmail(maxEmail,'Puja por "'+result[0]['name']+'" superada','Usted está recibiendo este e-mail porque su puja por la propiedad "'+result[0]['name']+'" fue superada. Para volver a pujar, puede ingresar a http://localhost:8080/details/'+result[0]['id']);
-        })        
+        if(maxEmail!=''){
+          var sql="SELECT p.name,p.id FROM properties p INNER JOIN weeks w ON (w.idProperty=p.id) WHERE w.id="+req.params.id;
+          conn.query(sql, function(err, result){
+            console.log('entra envio email');
+            console.log(maxEmail);
+            console.log(result);
+            sendEmail(maxEmail,'Puja por "'+result[0]['name']+'" superada','Usted está recibiendo este e-mail porque su puja por la propiedad "'+result[0]['name']+'" fue superada. Para volver a pujar, puede ingresar a http://localhost:8080/details/'+result[0]['id']);
+          })    
+        }    
         res.send(result);
       });
     } else {
@@ -230,6 +234,7 @@ app.post('/properties/publish', function (req, res) {
   var sql = "INSERT INTO properties (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
   var sqlIm;
   conn.query(sql, function (err, result) {
+    console.log(result);
     console.log(result["insertId"]);
     console.log("aqui") 
     var idPropertyIm = result["insertId"];
@@ -241,6 +246,18 @@ app.post('/properties/publish', function (req, res) {
         if (err) throw err; 
       });
     })
+    var fechaInicial=new Date()
+    while(fechaInicial.getDay()!=0){
+      console.log('entra');
+      fechaInicial.setDate(fechaInicial.getDate() + 1);
+    }
+    for(var i=0;i<12;i++){
+      var sql="INSERT INTO weeks (idProperty,date,auction,reserved,idle) VALUES ('"+idPropertyIm+"','"+fechaInicial.toISOString().substring(0,10)+"',0,0,0)";
+      conn.query(sql, function (err, result) {
+        if (err) throw err; 
+      });
+      fechaInicial.setDate(fechaInicial.getDate() + 7);
+    }
     res.send(result)
   });
 })
@@ -291,6 +308,14 @@ app.post('/properties/:id/edit', function (req, res) {
       res.send(result);
     });
   });
+
+  app.get('/bookings', function (req, res) {
+    var sql="SELECT w.date,p.name,b.email,b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty)"
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      res.send(result);
+    });
+  })
 
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
