@@ -1,66 +1,70 @@
 <template>
-  <div class="publish-property">
+  <b-container class="publish-property">
+    <h1 class="titulo">Publicar propiedad</h1><br>
     <form @submit.prevent="registerProperty">
-      <div class="form-group">
+      <b-form-group>
         <label for="property-name">Ingrese el nombre de la propiedad</label>
-        <input type="name" id="name" v-model="dataRegisterProperty.name" required>
-      </div>
+        <b-form-input type="name" id="name" v-model="dataRegisterProperty.name" required/>
+      </b-form-group>
 
-      <div class="form-group">
+      <b-form-group>
         <label for="property-description">Ingrese la descripción de la propiedad</label>
-        <input
+        <b-form-input
           type="description"
           id="description"
           v-model="dataRegisterProperty.description"
           required
-        >
-      </div>
+        />
+      </b-form-group>
 
-      <div class="form-group">
+      <b-form-group>
         <label for="property-address">Ingrese la dirección de la propiedad</label>
-        <input type="address" id="address" v-model="dataRegisterProperty.address" required>
-      </div>
+        <b-form-input type="text" id="property-address" v-model="dataRegisterProperty.address" required/>
+      </b-form-group>
 
-      <div class="form-group">
+      <b-form-group>
         <label for="property-base-price">Ingrese el precio base de la propiedad</label>
-        <input type="base_price" id="base_price" v-model="dataRegisterProperty.base_price" required>
-      </div>
+        <b-form-input type="text" id="property-base_price" v-model="dataRegisterProperty.base_price" required/>
+      </b-form-group>
 
-      <div class="form-group">
+      <b-form-group>
         <label for="property-country">Ingrese el país de la propiedad</label>
-        <input type="country" id="country" v-model="dataRegisterProperty.country" required>
-      </div>
+        <b-form-input type="text" id="property-country" v-model="dataRegisterProperty.country" required/>
+      </b-form-group>
 
-      <div class="form-group">
+      <b-form-group>
         <label for="property-province">Ingrese la provincia de la propiedad</label>
-        <input type="province" id="province" v-model="dataRegisterProperty.province" required>
-      </div>
+        <b-form-input type="text" id="property-province" v-model="dataRegisterProperty.province" required/>
+      </b-form-group>
 
-      <div class="form-group">
+      <b-form-group>
         <label for="property-locality">Ingrese la localidad de la propiedad</label>
-        <input type="locality" id="locality" v-model="dataRegisterProperty.locality" required>
-      </div> 
+        <b-form-input type="text" id="property-locality" v-model="dataRegisterProperty.locality" required/>
+      </b-form-group> 
 
-      <div class="form-group" v-for="(image, index) of this.imagesArray" :key="index">
+      <b-form-group v-for="(image, index) of this.imagesArray" :key="index">
         <label for="property-files[index]">Ingrese el link de la imagen</label>
-        <input
+        <b-form-input
           v-if="index==0"
-          type="files[index]"
+          type="text"
           id="files[index]"
           v-model="dataRegisterProperty.files[index]" 
           required
-        >
-        <input 
+        />
+        <b-form-input 
           v-else
-          type="files[index]"
+          type="text"
           id="files[index]"
           v-model="dataRegisterProperty.files[index]"
-        >
-      </div>
+        />
+      </b-form-group>
 
-      <b-button size="sm" class="my-2 my-sm-3" type="submit" variant="outline-primary">Publicar propiedad</b-button>
+      <b-row align-h="between">
+        <b-button to="/panel/properties" class="my-2 my-sm-3 blueButton"><font-awesome-icon icon="list-alt"></font-awesome-icon> Ver propiedades </b-button>
+        <b-button class="my-2 my-sm-3 blueButton" type="submit"><font-awesome-icon icon="home"></font-awesome-icon> Publicar propiedad</b-button>
+      </b-row>
     </form>
-  </div>
+  </b-container>
 </template>
 
 <script>
@@ -88,7 +92,26 @@ export default {
     registerProperty() {
       axios.post("http://localhost:3000/properties/publish", {
         data: this.dataRegisterProperty
+      })
+      .then(response => {
+        this.emptyForm();
+        this.$bvToast.toast('Propiedad agregada con éxito!', {
+          title: 'Operación exitosa',
+          variant: 'success',
+          autoHideDelay: 5000,
+          toaster: 'b-toaster-bottom-right',
+        });
       });
+    },
+    emptyForm() {
+      this.dataRegisterProperty.name='';
+      this.dataRegisterProperty.description='';
+      this.dataRegisterProperty.address='';
+      this.dataRegisterProperty.base_price='';
+      this.dataRegisterProperty.country='';
+      this.dataRegisterProperty.province='';
+      this.dataRegisterProperty.locality='';
+      this.dataRegisterProperty.files=[];
     }
   }
 };

@@ -26,7 +26,7 @@
                     this.properties=response.data;
                 })
                 .catch(error => {
-
+                    console.log(error);
                 })
         },
         methods: {
@@ -35,6 +35,12 @@
                     .then(response => {
                         console.log('anda');
                         this.properties=response.data;
+                        this.$bvToast.toast('Propiedad eliminada con éxito!', {
+                            title: 'Operación exitosa',
+                            variant: 'success',
+                            autoHideDelay: 5000,
+                            toaster: 'b-toaster-bottom-right',
+                        });
                     })
                     .catch(error => {
 

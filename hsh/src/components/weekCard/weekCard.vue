@@ -59,10 +59,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 });
         },
-        mounted() {
-            this.$root.$on('placeABidModal::hidden', (bvEvent, modalId) => {
-                this.reloadMaxBid();
-            })
+        updated() {
+            this.reloadMaxBid();
         },
         methods:{
             compare(aDate){
