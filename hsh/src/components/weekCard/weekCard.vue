@@ -152,7 +152,14 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                         this.idle = 0;
                         this.reserved = 1;
                         console.log(this.winner.id);
-                        axios.get("http://localhost:3000/makeReservation/"+this.winner.id)
+                        axios.post("http://localhost:3000/makeReservation/",{
+                                data: {
+                                    id: this.winner.id,
+                                    email: this.winner.email,
+                                    propertyName: this.property.name,
+                                    date: this.week.date,
+                                }
+                            })
                         .then(response => {
                             console.log("guarde la reserva")
                     })

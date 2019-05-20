@@ -143,9 +143,11 @@ app.post('/checkWinner', function(req,res){
   })
 })
 
-app.get('/makeReservation/:id',function(req,res){
-  var sql= "INSERT INTO bookings (idMaxBid) VALUES ('"+req.params.id+"')";
+app.post('/makeReservation',function(req,res){
+  var sql= "INSERT INTO bookings (idMaxBid) VALUES ('"+req.body.data.id+"')";
   conn.query(sql,function(err, result){
+    sendEmail(req.body.data.email,'Reserva confirmada para la propiedad '+req.body.data.propertyName,'Usted esta recibiendo este e-mail porque su reserva para la propiedad '
+      	  +req.body.data.propertyName+' de la semana del '+req.body.data.date.substring(0,10)+' fue confirmada. Gracias por confiar en nosotros. Disfrute su estadía.');
     res.send(result);
   })
 })
