@@ -31,6 +31,14 @@ export default router = new Router({
       component: () => import('./components/propertyDetails/propertyDetails.vue'),
     },
     {
+      path: '/details/:id/edit',
+      name: 'edit',
+      component: () => import('./components/editProperty/editProperty2.vue'),
+      meta: {
+        requiresAdmin:true,
+      }
+    },
+    {
       path: '/properties/publish',
       name: 'publish',
       component: () => import('./components/publishProperty/publishProperty.vue'),

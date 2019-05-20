@@ -9,6 +9,9 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item class="navLink" to="/"><strong>Inicio</strong></b-nav-item>
+        </b-navbar-nav>
         <!--<b-navbar-nav>
           <b-nav-form>
             <b-input-group>
@@ -139,6 +142,14 @@
     left: 50%;
     margin-left: -206.79px !important;
     display: block;
+  }
+
+  .navLink{
+    border-radius:5px;
+  }
+
+  .navLink:hover {
+    background-color: rgba(0,161,225,0.5)!important;
   }
 
 </style>

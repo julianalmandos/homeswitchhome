@@ -6,7 +6,7 @@
       style="max-width: 15rem;margin-bottom:1.25rem"
       @click="viewPropertyDetails"
     >
-    <b-card-img :src="image.image" alt="Image" top height="150"></b-card-img>
+    <b-card-img :src="this.image.image" alt="Image" top height="150"></b-card-img>
       <h6
         slot="header"
         class="d-inline-block text-truncate"
@@ -16,7 +16,7 @@
         <b-card-sub-title
           class="mb-2 d-inline-block text-truncate"
           style="max-width: 200px;"
-        >Ubicación : {{ property.address }}</b-card-sub-title>
+        >Ubicación : {{ property.locality }}</b-card-sub-title>
       </b-card-body>
     </b-card>
   </div>
@@ -40,13 +40,13 @@ export default {
   },
   created(){
     axios.get("http://localhost:3000/images/"+ this.property.id)
-          .then(response => {
-            this.image = response.data[0]; 
-            console.log(response.data)
-          })
-          .catch(error => {
-            console.log(error);
-          }); 
+      .then(response => {
+        this.image = response.data[0]; 
+        console.log(response.data)
+      })
+      .catch(error => {
+        console.log(error);
+      }); 
   }
 };
 </script>

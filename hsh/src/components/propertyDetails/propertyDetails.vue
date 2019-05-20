@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <editProperty :property="this.property" :images="this.img" :description="this.description" @edited="reloadProperty"/>
-    <b-button v-if="isAdmin" v-on:click="chargeImages" v-b-modal.editPropertyModal block variant="outline-primary">Editar Propiedad</b-button> 
+    <!--<b-button v-if="isAdmin" v-on:click="chargeImages" v-b-modal.editPropertyModal block class="blueButton">Editar Propiedad</b-button>--> 
+    <b-button v-if="isAdmin" :to="{ name: 'edit', params: { id: this.$route.params.id }}" block class="blueButton">Editar Propiedad</b-button>
     <br>
     <b-row>
       <b-col>
@@ -31,10 +32,15 @@
       </b-col>
       <b-col>
         <div class="profile">
-          <h1 class="title">{{this.property.name}}</h1>
-          <p class="text">Descripción: {{this.property.description}}</p>
-          <p class="text">Ubicación: {{this.property.address}}</p>
-          <p class="text">Precio base: ${{this.property.base_price}}</p>
+          <h3 class="titulo">{{this.property.name}}</h3> 
+          <b-col class="mt-5">
+            <p class="text"><strong>Descripción: </strong>{{this.property.description}}</p>
+            <p class="text"><strong>Ubicación: </strong>{{this.property.address}}</p>
+            <p class="text"><strong>Localidad: </strong>{{this.property.locality}}</p>
+            <p class="text"><strong>Provincia: </strong>{{this.property.province}}</p>
+            <p class="text"><strong>País: </strong>{{this.property.country}}</p>
+            <p class="text"><strong>Precio Base: </strong>${{this.property.base_price}}</p>
+          </b-col>
         </div>
       </b-col>
     </b-row>
@@ -144,23 +150,16 @@ import placeABid from '@/components/placeABid/placeABid.vue';
 </script>
 <style>
   .profile {
-    background-color:  rgba(0,161,225,0.5); 
-    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+    background-color: rgb(242,242,242);
+    border-radius:10px;
     height: 400px;
     
   }
   .title {
-    color:#f2f2f2;
-    font-family: "Times New Roman", Times, serif;
-    font-size: 4vw;
+    color:black;
   }
   .text {
-    color:#f2f2f2;
-    text-align: left;
-    text-indent: 25px;
-    line-height: 3.8;
-    font-size: 1.6vw;
-    font-family: "Times New Roman", Times, serif;
+    color:black;
   }
 </style>
 

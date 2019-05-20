@@ -9,7 +9,7 @@
       @ok="propertyEdition"
     >
       <b-form-group id="descripcion" label="Descripcion" label-for="input-1">
-        <b-form-input id="input-1" v-model="description" required></b-form-input>
+        <b-form-input id="input-1" v-model="newDescription" required></b-form-input>
       </b-form-group>
       <div v-for="index in 5" :key="index">
         <b-form-group id="descripcion" :label="'Imagen N°'+index" label-for="input-1">
@@ -29,7 +29,11 @@ import axios from "axios";
 export default {
   name: "editProperty",
   props: ["property", "description", "images"],
-  
+  data() {
+    return {
+      newDescription: this.description
+    }
+  },
   methods: {
     
 
@@ -40,7 +44,7 @@ export default {
       axios
         .post("http://localhost:3000/properties/" + this.property.id + "/edit", {
           data: {
-            description: this.description,
+            description: this.newDescription,
             files: this.images,
     
           } 

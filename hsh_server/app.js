@@ -78,9 +78,9 @@ app.post('/properties/:id/delete', function (req, res){
       var sqlRemove = "DELETE FROM properties WHERE id=" + req.params.id;
       conn.query(sqlRemove, function(err, result){
         if (err) throw err;
+        res.send(result);
       })
     }
-    res.send(result);
   })
 })
 
