@@ -2,7 +2,6 @@
   <div class="container">
     <editProperty :property="this.property" :images="this.img" :description="this.description" @edited="reloadProperty"/>
     <!--<b-button v-if="isAdmin" v-on:click="chargeImages" v-b-modal.editPropertyModal block class="blueButton">Editar Propiedad</b-button>--> 
-    <b-button v-if="isAdmin" :to="{ name: 'edit', params: { id: this.$route.params.id }}" block class="blueButton">Editar Propiedad</b-button>
     <br>
     <b-row>
       <b-col>
@@ -40,6 +39,7 @@
             <p class="text"><strong>Provincia: </strong>{{this.property.province}}</p>
             <p class="text"><strong>País: </strong>{{this.property.country}}</p>
             <p class="text"><strong>Precio Base: </strong>${{this.property.base_price}}</p>
+            <b-button v-if="isAdmin" :to="{ name: 'edit', params: { id: this.$route.params.id }}" block class="blueButton">Editar Propiedad</b-button>
           </b-col>
         </div>
       </b-col>
@@ -110,8 +110,6 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             console.log(error);
           }); 
       },
-
-  
       methods: {
         chargeImages(){
           for (var i=0; i<this.images.length;i++){
@@ -139,6 +137,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
         reloadWeeks() {
           axios.get("http://localhost:3000/weeks/"+ this.$route.params.id)
             .then(response => {
+              console.log('recarga semanas');
+              console.log(this.weeks);
               this.weeks = response.data; 
             })
             .catch(error => {

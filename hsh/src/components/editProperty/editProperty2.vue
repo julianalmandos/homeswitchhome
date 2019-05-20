@@ -6,20 +6,20 @@
             <b-form-input id="input-1" v-model="property.description" required></b-form-input>
         </b-form-group>
         
-        <b-form-group id="descripcion" :label="'Imagen N°1'" label-for="input-1">
-          <b-form-input id="input-1" v-model="img[0]" required></b-form-input>
+        <b-form-group id="imagen1" :label="'Imagen N°1'" label-for="input-2">
+          <b-form-input id="input-2" v-model="img[0]" required></b-form-input>
         </b-form-group>
-        <b-form-group id="descripcion" :label="'Imagen N°2'" label-for="input-1">
-          <b-form-input id="input-1" v-model="img[1]"></b-form-input>
+        <b-form-group id="imagen2" :label="'Imagen N°2'" label-for="input-3">
+          <b-form-input id="input-3" v-model="img[1]"></b-form-input>
         </b-form-group>
-        <b-form-group id="descripcion" :label="'Imagen N°3'" label-for="input-1">
-          <b-form-input id="input-1" v-model="img[2]"></b-form-input>
+        <b-form-group id="imagen3" :label="'Imagen N°3'" label-for="input-4">
+          <b-form-input id="input-4" v-model="img[2]"></b-form-input>
         </b-form-group>
-        <b-form-group id="descripcion" :label="'Imagen N°4'" label-for="input-1">
-          <b-form-input id="input-1" v-model="img[3]"></b-form-input>
+        <b-form-group id="imagen4" :label="'Imagen N°4'" label-for="input-5">
+          <b-form-input id="input-5" v-model="img[3]"></b-form-input>
         </b-form-group>
-        <b-form-group id="descripcion" :label="'Imagen N°5'" label-for="input-1">
-          <b-form-input id="input-1" v-model="img[4]"></b-form-input>
+        <b-form-group id="imagen5" :label="'Imagen N°5'" label-for="input-6">
+          <b-form-input id="input-6" v-model="img[4]"></b-form-input>
         </b-form-group>
         <b-row align-h="between">
             <b-button :to="{ name: 'details', params: { id: this.$route.params.id }}" class="blueButton" style="float:left;"><font-awesome-icon icon="list-alt"></font-awesome-icon> Volver a la Propiedad</b-button>
