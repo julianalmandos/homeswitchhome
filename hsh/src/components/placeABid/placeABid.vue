@@ -69,7 +69,7 @@ export default {
       this.resetAlerts(); 
       if(this.email != '' && this.price != ''){
         axios
-          .post("http://localhost:3000/week/" + this.week.id + "/bid", {
+          .post("http://localhost:3000/weeks/" + this.week.id + "/bid", {
             data: {
               id: this.week.id,
               price: this.price,

@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     registerProperty() {
-      axios.post("http://localhost:3000/properties/publish", {
+      axios.post("http://localhost:3000/properties", {
         data: this.dataRegisterProperty
       })
       .then(response => {

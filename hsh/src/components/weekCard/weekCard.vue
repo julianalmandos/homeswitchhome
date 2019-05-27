@@ -44,7 +44,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             },
         },
         created(){
-            axios.get("http://localhost:3000/week/"+ this.week.id+'/maxbid')
+            axios.get("http://localhost:3000/weeks/"+ this.week.id+'/maxbid')
                 .then(response => {
                     this.maxBid=response.data.data;
                 })
@@ -73,7 +73,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             },
             reloadMaxBid(){
                 console.log('reload');
-                axios.get("http://localhost:3000/week/"+ this.week.id+'/maxbid')
+                axios.get("http://localhost:3000/weeks/"+ this.week.id+'/maxbid')
                 .then(response => {
                     this.maxBid=response.data.data;
                     console.log(response.data.data);
@@ -85,7 +85,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             },
             reloadMaxBid2(){
                 console.log('reload');
-                axios.get("http://localhost:3000/week/"+ this.week.id+'/maxbid')
+                axios.get("http://localhost:3000/weeks/"+ this.week.id+'/maxbid')
                 .then(response => {
                     this.maxBid=response.data.data;
                     console.log(response.data.data);
@@ -102,7 +102,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     this.idle= 1;
                     this.closeAu();
                 } else {
-                    axios.get("http://localhost:3000/week/"+this.week.id+"/winner")
+                    axios.get("http://localhost:3000/weeks/"+this.week.id+"/winner")
                         .then(response => {
                             this.winner=response.data[0];
                             console.log("consulte el winner y es: ", this.winner.email)
