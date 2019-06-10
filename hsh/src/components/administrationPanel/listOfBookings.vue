@@ -2,6 +2,7 @@
     <b-container>
         <h1 class="titulo">Lista de Reservas</h1><br>
         <b-table 
+            show-empty
             striped 
             hover 
             small
@@ -9,6 +10,9 @@
             :fields="fields"
             stacked="md"
         >
+            <template slot="empty">
+                <h5>No hay reservas disponibles</h5>
+            </template>
             <template slot="date" slot-scope="data">
                 {{ data.value.substring(0,10) }}
             </template>

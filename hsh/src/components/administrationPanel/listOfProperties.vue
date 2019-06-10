@@ -1,7 +1,8 @@
 <template>
     <b-container>
         <h1 class="titulo">Lista de Propiedades</h1><br>
-        <propertyCard v-for="property in properties" :key="property.id" :property="property" @deleted="reloadProperties"/>
+        <h5 v-if="!properties.length">No hay propiedades disponibles.</h5>
+        <propertyCard v-else v-for="property in properties" :key="property.id" :property="property" @deleted="reloadProperties"/>
     </b-container>
 </template>
 

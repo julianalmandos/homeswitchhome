@@ -3,14 +3,12 @@
     <div class="container">
       <h1 class="titulo">Propiedades</h1><br>
       <h3>Selecciona una propiedad, elegí una semana y pujá. <br> ¡Nunca había sido tan sencillo!</h3><br>
-      <b-card-group deck>
-        <div v-if="!properties">No hay propiedades disponibles.</div>
-        <div v-else>
+      <h5 v-if="!properties.length">No hay propiedades disponibles.</h5>
+      <b-card-group v-else deck>
           <div v-for="property of properties" :key="property.id">
             <div class="">
               <propertyCard :property="property"></propertyCard>
             </div>
-          </div>
         </div>
       </b-card-group>
     </div>
@@ -30,7 +28,7 @@ export default {
   },
   data() {
     return {
-      properties: {},
+      properties: [],
     }
   },
   beforeCreate(){
