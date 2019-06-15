@@ -9,6 +9,14 @@ app.get('/', (req, res) => {
   })
 })
 
+app.get('/random', (req, res) => {
+  const quantity = req.query.quantity || 5;
+  var sql = `SELECT * FROM properties ORDER BY RAND() LIMIT ${quantity}`;
+  conn.query(sql, function (err, result) {
+    res.send(result);
+  })
+})
+
 app.get('/:id', (req, res) => {
   var sql = "SELECT * FROM properties prop WHERE prop.id=" + req.params.id;
   conn.query(sql, function (err, result) {
