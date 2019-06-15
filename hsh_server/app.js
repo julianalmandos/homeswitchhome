@@ -117,7 +117,8 @@ app.post('/closeAuction/:id', (req, res) => {
     //console.log(req.body.data);
     var contraseña = bcrypt.hashSync(req.body.data.password, 8);
     //falta chequear si el email ya existe
-    var sql = "INSERT INTO users (email,password,name,surname) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "')";
+    console.log(req.body.data);
+    var sql = "INSERT INTO users (email,password,name,surname,birthday,card_number,card_expiration_month,card_expiration_year,card_security_number) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toLocaleDateString() + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "')";
     console.log(sql);
     conn.query(sql, function (err, result) {
       if (err) throw err;

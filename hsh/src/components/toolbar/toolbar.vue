@@ -28,16 +28,16 @@
           <!--<b-nav-item to="/acerca-de">Acerca De</b-nav-item>
           <b-nav-item to="/contacto">Contacto</b-nav-item>-->
           
-          <b-nav-item-dropdown v-if="user==null" right>
+          <b-nav-item-dropdown ref="dropdown" v-if="user==null" right>
             <template slot="button-content">Acceder</template>
-            <access/>
+            <access @closeDropdown="closeDropdown"/>
           </b-nav-item-dropdown>
-          <b-nav-item-dropdown v-else right>
+          <b-nav-item-dropdown ref="dropdown" v-else right>
             <!-- Using 'button-content' slot -->
             <template slot="button-content">{{user.surname}}, {{user.name}}</template>
             <!--<b-dropdown-item href="#">Perfil</b-dropdown-item>
             <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
-            <b-dropdown-item @click="viewAdministrationPanel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
+            <b-dropdown-item v-if="isAdmin()" @click="viewAdministrationPanel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
             <b-dropdown-item @click="logoutUser"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Cerrar Sesión</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -72,6 +72,13 @@
       },
       viewAdministrationPanel() {
         this.$router.push('/panel');
+      },
+      isAdmin() {
+        return this.user.role==2;
+      },
+      closeDropdown() {
+        console.log('recibi evento');
+        this.$refs.dropdown.hide();
       }
     }
   }
