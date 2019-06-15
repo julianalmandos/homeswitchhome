@@ -21,9 +21,6 @@
         <b-form-group id="bid" label="Ingrese una puja" label-for="input-1">
           <b-form-input id="input-1" v-model="price" required/>
         </b-form-group>
-        <b-form-group id="email" label="Ingrese su email" label-for="input-2">
-          <b-form-input type="email" id="input-2" v-model="email" required/>
-        </b-form-group>
         
         <template slot="modal-footer" slot-scope="{  hide }">
           <b-button class="blueButton" @click="hide()">Cancelar</b-button>
@@ -47,7 +44,6 @@ export default {
     return {
       property: {},
       price: '',
-      email: '', 
       showPlacedBid: false,
       showErrorPlacingBid: false,
       showErrorEmptyFields: false,
@@ -67,13 +63,13 @@ export default {
   methods: {
     placeABidForAWeek() { 
       this.resetAlerts(); 
-      if(this.email != '' && this.price != ''){
+      if(this.$store.state.user !== null && this.price != ''){
         axios
           .post("http://localhost:3000/weeks/" + this.week.id + "/bid", {
             data: {
               id: this.week.id,
               price: this.price,
-              email: this.email,
+              email: this.$store.state.user.email,
               base_price: this.property.base_price,
               idProperty: this.week.idProperty,
               max: this.max
