@@ -74,7 +74,7 @@
                     ></b-form-input>
                     <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
                         id="birthday"
-                        type="text"
+                        type="date"
                         v-model="dataRegister.birthday"
                         required
                         placeholder="Ingrese una fecha de nacimiento"
@@ -115,6 +115,12 @@
                     <b-alert class="mt-sm-3" v-model="showInvalidRegisterCard" variant="danger" dismissible>
                         <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Los datos de la tarjeta son inválidos
                     </b-alert>
+                    <b-alert class="mt-sm-3" v-model="showInvalidBirthday" variant="danger" dismissible>
+                        <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Debes ser mayor de edad para crear una cuenta
+                    </b-alert>
+                    <b-alert class="mt-sm-3" v-model="showInvalidEmail" variant="danger" dismissible>
+                        <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Ese e-mail ya se encuentra registrado
+                    </b-alert>
                     <b-button size="sm" class="my-2 my-sm-3 btn-block" type="submit" variant="dark">Registrarse</b-button>
                 </b-col>
             </b-nav-form>
@@ -150,6 +156,8 @@
             showInvalidLoginData: false,
             showInvalidRegisterPassword: false,
             showInvalidRegisterCard: false,
+            showInvalidBirthday: false,
+            showInvalidEmail: false,
         }
     }
     export default {
@@ -208,6 +216,7 @@
                 if(validation.result){
                     console.log(this.dataRegister.cardExpirationDate.year);
                     console.log(this.dataRegister.cardExpirationDate.month);
+                    console.log('se manda');
                     axios.post('http://localhost:3000/register', {
                         data: this.dataRegister,
                     })
@@ -222,21 +231,53 @@
                         });
                         this.$emit('closeDropdown');
                     })
+                    .catch(err => {
+                        if(err.response.status==409){
+                            this.showInvalidEmailMethod()
+                        }
+                    })
                 }else{
                     validation.error();
                 }
             },
             validateData() {
+                var currentYear=new Date().getFullYear();
+                var currentMonth=new Date().getMonth()+1;
+                var currentDay=new Date().getDate();
+
                 //Valido los datos de registro
                 //Retorna result - true/false y error - password/card
                 if(this.dataRegister.password!=this.dataRegister.confirmPassword) {return {result: false,error: this.showInvalidRegisterPasswordMethod}};
                 if(this.dataRegister.cardNumber.length!=18) {return {result: false,error: this.showInvalidRegisterCardMethod}};
                 if(this.dataRegister.cardSecurityNumber.length!=3) {return {result: false,error: this.showInvalidRegisterCardMethod}};
-                //CHEQUEAR SI ES MAYOR DE EDAD!
+
+                //Chequeo fecha de nacimiento (mayor de edad)
+                var birthYear=this.dataRegister.birthday.split('-')[0];
+                var birthMonth=this.dataRegister.birthday.split('-')[1];
+                var day=this.dataRegister.birthday.split('-')[2];
+                if((parseInt(birthYear)+18)>currentYear){return {result: false, error: this.showInvalidBirthdayMethod}}
+                else if((parseInt(birthYear)+18)==currentYear){
+                    if(parseInt(birthMonth)>currentMonth){return {result: false, error: this.showInvalidBirthdayMethod}}
+                    else if(parseInt(birthMonth)==currentMonth){
+                        if(parseInt(day)>currentDay){return {result: false, error: this.showInvalidBirthdayMethod}}
+                    }
+                };
                 //CHEQUEAR QUE LA TARJETA SEA SOLO DIGITOS AL IGUAL QUE EL CODIGO DE SEGURIDAD!
-                if(this.dataRegister.cardExpirationDate.year<new Date().getFullYear()) {return {result: false,error: this.showInvalidRegisterCardMethod}}
-                else if(this.dataRegister.cardExpirationDate.year==new Date().getFullYear()){
-                    if(this.dataRegister.cardExpirationDate.Month<new Date().getMonth()) {return {result: false,error: this.showInvalidRegisterCardMethod}};
+                for(var i=0;i<this.dataRegister.cardNumber.length;i++){
+                    if(isNaN(parseInt(this.dataRegister.cardNumber[i]))){
+                        return {result: false, error: this.showInvalidRegisterCardMethod}
+                    }
+                }
+                for(var i=0;i<this.dataRegister.cardSecurityNumber.length;i++){
+                    if(isNaN(parseInt(this.dataRegister.cardSecurityNumber[i]))){
+                        return {result: false, error: this.showInvalidRegisterCardMethod}
+                    }
+                }
+
+                //Chequeo fecha de expiración de la tarjeta
+                if(this.dataRegister.cardExpirationDate.year<currentYear) {return {result: false,error: this.showInvalidRegisterCardMethod}}
+                else if(this.dataRegister.cardExpirationDate.year==currentYear){
+                    if(this.dataRegister.cardExpirationDate.Month<currentMonth) {return {result: false,error: this.showInvalidRegisterCardMethod}};
                 }
                 return {result: true};
             },
@@ -248,6 +289,12 @@
             },
             showInvalidRegisterCardMethod() {
                 this.showInvalidRegisterCard=true;
+            },
+            showInvalidBirthdayMethod() {
+                this.showInvalidBirthday=true;
+            },
+            showInvalidEmailMethod() {
+                this.showInvalidEmail=true;
             }
         }
     }
