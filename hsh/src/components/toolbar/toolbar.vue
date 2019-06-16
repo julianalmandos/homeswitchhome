@@ -39,6 +39,7 @@
             <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
             <b-dropdown-item @click="viewAdministrationPanel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
             <b-dropdown-item @click="logoutUser"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Cerrar Sesión</b-dropdown-item>
+            <b-dropdown-item @click="viewBookingsRecord"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Ver historial de reservas</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -72,6 +73,9 @@
       },
       viewAdministrationPanel() {
         this.$router.push('/panel');
+      },
+      viewBookingsRecord(){
+        this.$router.push('/bookings')
       }
     }
   }
