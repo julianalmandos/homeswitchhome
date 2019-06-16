@@ -15,12 +15,22 @@
               <font-awesome-icon class="fa-5x" icon="home"></font-awesome-icon>
               <b-card-text style="font-size:25px">Publicar propiedad</b-card-text>
           </b-card>
+          <b-card class="tarjeta text-center" @click="generateWeeks" bg-variant="light">
+              <font-awesome-icon class="fa-5x" icon="home"></font-awesome-icon>
+              <b-card-text style="font-size:25px">Generar semanas</b-card-text>
+          </b-card>
+          <b-card class="tarjeta text-center" @click="openAuctions" bg-variant="light">
+              <font-awesome-icon class="fa-5x" icon="home"></font-awesome-icon>
+              <b-card-text style="font-size:25px">Abrir subastas</b-card-text>
+          </b-card>
       </b-card-group>
     </b-container>
   </div>
 </template>
 
 <script>
+
+import axios from 'axios'
 
 export default {
   name: 'administrationPanel',
@@ -33,6 +43,26 @@ export default {
     },
     openPublishProperty() {
       this.$router.push('/properties/publish');
+    },
+    generateWeeks(){
+      axios
+      .get("http://localhost:3000/properties/generateWeeks")
+      .then(response => { 
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    },
+    openAuctions(){
+      axios
+      .get("http://localhost:3000/properties/openAuctions")
+      .then(response => { 
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
     }
   }
 }
