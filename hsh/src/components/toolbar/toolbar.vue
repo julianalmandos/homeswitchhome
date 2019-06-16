@@ -34,10 +34,17 @@
           </b-nav-item-dropdown>
           <b-nav-item-dropdown ref="dropdown" v-else right>
             <!-- Using 'button-content' slot -->
-            <template slot="button-content">{{user.surname}}, {{user.name}}</template>
+            <template slot="button-content">{{user.surname}}, {{user.name}}
+              <b-badge v-if="isNormal()" class="blueBadge"> Común</b-badge>
+              <b-badge v-if="isPremium()" class="blueBadge"><font-awesome-icon icon="star"></font-awesome-icon> Premium</b-badge>
+              <b-badge v-if="isAdmin()" class="blueBadge"><font-awesome-icon icon="medal"></font-awesome-icon> Administrador</b-badge>
+            </template>
+
             <!--<b-dropdown-item href="#">Perfil</b-dropdown-item>
             <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
-            <b-dropdown-item v-if="isAdmin()" @click="viewAdministrationPanel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
+            <b-dropdown-item v-if="isAdmin()" to="/become_normal"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
+            <b-dropdown-item v-if="isNormal()" to="/become_premium"><font-awesome-icon icon="star"></font-awesome-icon> Convertirse en Premium</b-dropdown-item>
+            <b-dropdown-item v-if="isPremium()" to="/panel"><font-awesome-icon icon="book"></font-awesome-icon> Convertirse en Normal</b-dropdown-item>
             <b-dropdown-item @click="logoutUser"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Cerrar Sesión</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -70,11 +77,14 @@
       logoutUser(){
         this.logoutUserAction();
       },
-      viewAdministrationPanel() {
-        this.$router.push('/panel');
-      },
       isAdmin() {
         return this.user.role==2;
+      },
+      isPremium() {
+        return this.user.role==1;
+      },
+      isNormal() {
+        return this.user.role==0;
       },
       closeDropdown() {
         console.log('recibi evento');
@@ -156,6 +166,10 @@
   }
 
   .navLink:hover {
+    background-color: rgba(0,161,225,0.5)!important;
+  }
+
+  .blueBadge, .blueBadge:hover {
     background-color: rgba(0,161,225,0.5)!important;
   }
 

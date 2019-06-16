@@ -142,6 +142,59 @@ app.post('/closeAuction/:id', (req, res) => {
     });
   })
 
+  app.post('/convertToPremium', (req, res) => {
+    var sql="SELECT * FROM premium_requests WHERE user_id="+req.body.data.userId;
+    conn.query(sql, function (err, result) {
+      if(result[0]==null){
+        var sql="INSERT INTO premium_requests (user_id,comment) VALUES ("+req.body.data.userId+",'"+req.body.data.comment+"')";
+        conn.query(sql, function (err, result) {
+          if (err) throw err;
+          res.status(200).send(result);
+        });
+      }else{
+        res.sendStatus(409)
+      }
+    });
+    
+  })
+
+  app.post('/convertToNormal', (req, res) => {
+    var sql="SELECT * FROM normal_requests WHERE user_id="+req.body.data.userId;
+    conn.query(sql, function (err, result) {
+      if(result[0]==null){
+        var sql="INSERT INTO normal_requests (user_id,comment) VALUES ("+req.body.data.userId+",'"+req.body.data.comment+"')";
+        conn.query(sql, function (err, result) {
+          if (err) throw err;
+          res.status(200).send(result);
+        });
+      }else{
+        res.sendStatus(409)
+      }
+    });
+  })
+
+  app.get('/hasPremiumRequest/:id', function (req,res) {
+    var sql="SELECT * FROM premium_requests WHERE user_id="+req.params.id;
+    conn.query(sql, function (err, result) {
+      if(result[0]==null){
+        res.send(false);
+      }else{
+        res.send(true);
+      }
+    });
+  })
+
+  app.get('/hasNormalRequest/:id', function (req,res) {
+    var sql="SELECT * FROM normal_requests WHERE user_id="+req.params.id;
+    conn.query(sql, function (err, result) {
+      if(result[0]==null){
+        res.send(false);
+      }else{
+        res.send(true);
+      }
+    });
+  })
+
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
   });

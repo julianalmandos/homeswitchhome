@@ -69,6 +69,22 @@ export default router = new Router({
       meta: {
         requiresAdmin:true,
       }
+    },
+    {
+      path: '/become_normal',
+      name: 'becomeNormal',
+      component: () => import('./components/convertAccount/convertAccountToNormal.vue'),
+      meta: {
+        requiresAuth:true,
+      }
+    },
+    {
+      path: '/become_premium',
+      name: 'becomePremium',
+      component: () => import('./components/convertAccount/convertAccountToPremium.vue'),
+      meta: {
+        requiresAuth:true,
+      }
     }
   ]
 })
@@ -99,6 +115,29 @@ router.beforeEach((to, from, next) => {
         console.log(error);
       });
       //chequeo si no esta vencido y dependiendo la ruta hago lo que sea
+    }else if(to.matched.some(record => record.meta.requiresAdmin)){
+      console.log('entra');
+      var tokenValido=false;
+      axios.post('//localhost:3000/validatetoken', {
+        token: localStorage.getItem('jwt')
+      })
+      .then(response => {
+        console.log('response: '+response.data);
+        if(response.data){
+          if(store.state.user.role==1 || store.state.user.role==0){
+            console.log('sigueentra');
+            next();
+          }
+        }else{
+          console.log('sigueelse')
+          //desloguear usuario y redirigir a login
+          store.dispatch('logoutUserAction');
+          next('/');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
     }else{
       next();
     }
