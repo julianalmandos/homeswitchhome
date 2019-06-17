@@ -34,7 +34,6 @@ export default new Vuex.Store({
       commit('logoutUserMutation');
       //Lo llevo a la pantalla principal y despues recargo así se actualiza el listado.
       router.push('/');
-      window.location.reload();
     },
     listProperties({ commit }, data) {
       commit('listPropertiesMutation', data);

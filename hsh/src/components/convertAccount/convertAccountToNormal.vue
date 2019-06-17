@@ -19,7 +19,7 @@
                 >
 
                 </b-form-textarea>
-            </b-row>
+            </b-row><br>
             <b-button class="blueButton" type="submit">Convertirme en Normal!</b-button>
         </b-form>
         <div v-else>
@@ -37,6 +37,7 @@
         data() {
             return {
                 comment: '',
+                hasRequest: false,
             }
         },
         computed: {
@@ -44,10 +45,10 @@
                 'user',
             ])
         },
-        beforeCreate() {
+        created() {
             axios.get('//localhost:3000/hasNormalRequest/'+this.user.id)
             .then(response => {
-                hasRequest=response.data;
+                this.hasRequest=response.data;
             })
         },
         methods: {
@@ -65,6 +66,7 @@
                         autoHideDelay: 5000,
                         toaster: 'b-toaster-bottom-right',
                     });
+                    this.hasRequest=true;
                 })
                 .catch(err => {
                     this.$bvToast.toast('Usted ya posee una solicitud para darse de baja como Premium.', {

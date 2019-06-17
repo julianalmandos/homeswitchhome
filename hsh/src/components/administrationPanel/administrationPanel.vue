@@ -16,6 +16,17 @@
               <b-card-text style="font-size:25px">Publicar propiedad</b-card-text>
           </b-card>
       </b-card-group>
+      <br>
+      <b-card-group deck>
+        <b-card class="tarjeta text-center" @click="openNormalRequests" bg-variant="light">
+            <font-awesome-icon class="fa-5x" icon="star"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Solicitudes Normales</b-card-text>
+        </b-card>
+        <b-card class="tarjeta text-center" @click="openPremiumRequests" bg-variant="light">
+            <font-awesome-icon class="fa-5x" icon="star" style="color:#e6e600;"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Solicitudes Premium</b-card-text>
+        </b-card>
+      </b-card-group>
     </b-container>
   </div>
 </template>
@@ -33,6 +44,12 @@ export default {
     },
     openPublishProperty() {
       this.$router.push('/properties/publish');
+    },
+    openNormalRequests() {
+      this.$router.push('/panel/normal_requests');
+    },
+    openPremiumRequests() {
+      this.$router.push('/panel/premium_requests');
     }
   }
 }

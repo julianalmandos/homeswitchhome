@@ -195,7 +195,7 @@
                     this.loginUserAction(response.data.user);
 
                     //Recargo la página para que se actualice el listado
-                    window.location.reload();
+                    this.$router.push('/');
 
                     /*if (localStorage.getItem('jwt') != null){
                         if(this.$route.params.nextUrl != null){

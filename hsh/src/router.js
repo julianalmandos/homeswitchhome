@@ -85,7 +85,23 @@ export default router = new Router({
       meta: {
         requiresAuth:true,
       }
-    }
+    },
+    {
+      path: '/panel/normal_requests',
+      name: 'normalRequests',
+      component: () => import('./components/administrationPanel/normalRequests.vue'),
+      meta: {
+        requiresAdmin:true,
+      }
+    },
+    {
+      path: '/panel/premium_requests',
+      name: 'premiumRequests',
+      component: () => import('./components/administrationPanel/premiumRequests.vue'),
+      meta: {
+        requiresAdmin:true,
+      }
+    },
   ]
 })
 
@@ -115,7 +131,7 @@ router.beforeEach((to, from, next) => {
         console.log(error);
       });
       //chequeo si no esta vencido y dependiendo la ruta hago lo que sea
-    }else if(to.matched.some(record => record.meta.requiresAdmin)){
+    }else if(to.matched.some(record => record.meta.requiresAuth)){
       console.log('entra');
       var tokenValido=false;
       axios.post('//localhost:3000/validatetoken', {
