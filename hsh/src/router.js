@@ -102,6 +102,16 @@ export default router = new Router({
         requiresAdmin:true,
       }
     },
+    {
+      path: '/recover_password',
+      name: 'recoverPassword',
+      component: () => import('./components/recoverPassword/recoverPassword.vue')
+    },
+    {
+      path: '/recover_password/:token',
+      name: 'changePassword',
+      component: () => import('./components/changePassword/changePassword.vue')
+    },
   ]
 })
 
