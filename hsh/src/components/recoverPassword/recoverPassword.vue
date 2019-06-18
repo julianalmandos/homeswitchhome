@@ -46,6 +46,7 @@
                         autoHideDelay: 5000,
                         toaster: 'b-toaster-bottom-right',
                     });
+                    this.email=""; //Vacio el e-mail
                 })
                 .catch(err => {
                     this.$bvToast.toast('Esa dirección de e-mail no corresponde a una cuenta registrada en este sistema.', {
@@ -54,6 +55,7 @@
                         autoHideDelay: 5000,
                         toaster: 'b-toaster-bottom-right',
                     });
+                    this.email=""; //Vacio el e-mail
                 })
             }
         }

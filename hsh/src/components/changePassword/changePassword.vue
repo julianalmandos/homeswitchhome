@@ -54,7 +54,7 @@
                 }
             })
             .then(response => {
-                console.log('todo OK');
+                //console.log('todo OK');
             })
             .catch(err => {
                 this.$router.push('/');
@@ -77,6 +77,9 @@
                             autoHideDelay: 5000,
                             toaster: 'b-toaster-bottom-right',
                         });
+                        //Reseteo los campos
+                        this.password="";
+                        this.confirmPassword="";
                     })
                     .catch(err => {
                         console.log(err);

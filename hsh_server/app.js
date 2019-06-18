@@ -153,7 +153,7 @@ app.post('/closeAuction/:id', (req, res) => {
       } else {
         //CREAR TOKEN, POR AHORA SERA EL EMAIL (BUSCAR ALGORITMO)
         var token=req.body.data.email;
-        sendEmail(req.body.data.email,'Recuperación de Contraseña','Por favor, haga click en el siguiente enlace para cambiar su contraseña: http://localhost:8080/recover_password/'+token);
+        mailer.sendEmail(req.body.data.email,'Recuperación de Contraseña','Por favor, haga click en el siguiente enlace para cambiar su contraseña: http://localhost:8080/recover_password/'+token);
         var sql="UPDATE users SET recover_password_token='"+token+"' WHERE email='"+req.body.data.email+"'";
         conn.query(sql, function (err, result) {
           if(err) throw err;
@@ -186,7 +186,6 @@ app.post('/closeAuction/:id', (req, res) => {
     conn.query(sql, function (err, result) {
       if(err) throw err;
       if(result[0]==null){
-        console.log('entra');
         res.sendStatus(409);
       }else{
         res.sendStatus(200);
