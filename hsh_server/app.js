@@ -152,7 +152,7 @@ app.post('/closeAuction/:id', (req, res) => {
         res.sendStatus(409);
       } else {
         //CREAR TOKEN, POR AHORA SERA EL EMAIL (BUSCAR ALGORITMO)
-        var token=req.body.data.email;
+        var token=createToken(10);
         mailer.sendEmail(req.body.data.email,'Recuperación de Contraseña','Por favor, haga click en el siguiente enlace para cambiar su contraseña: http://localhost:8080/recover_password/'+token);
         var sql="UPDATE users SET recover_password_token='"+token+"' WHERE email='"+req.body.data.email+"'";
         conn.query(sql, function (err, result) {
@@ -192,6 +192,18 @@ app.post('/closeAuction/:id', (req, res) => {
       }
     })
   })
+
+  function createToken(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+ }
+
+
 
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
