@@ -73,4 +73,12 @@ app.get('/:id', (req, res) => {
   });
 })
 
+app.get('/auctions', (req, res) => {
+  var sql = "SELECT * FROM weeks WHERE weeks.auction = 1";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
+
 module.exports = app;

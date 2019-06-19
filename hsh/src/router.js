@@ -47,6 +47,11 @@ export default router = new Router({
       }
     },
     {
+      path: '/auctions',
+      name: 'activeAuctions',
+      component: () => import('./components/listOfAuctions/listOfAuctions.vue'),
+    },
+    {
       path: '/panel',
       name: 'panel',
       component: () => import('./components/administrationPanel/administrationPanel.vue'),

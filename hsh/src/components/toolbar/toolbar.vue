@@ -42,6 +42,7 @@
 
             <!--<b-dropdown-item href="#">Perfil</b-dropdown-item>
             <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
+            <b-dropdown-item to="/auctions"><font-awesome-icon icon="gavel"></font-awesome-icon> Subastas </b-dropdown-item>
             <b-dropdown-item v-if="isPremium()" to="/become_normal"><font-awesome-icon icon="book"></font-awesome-icon> Convertirse en Normal</b-dropdown-item>
             <b-dropdown-item v-if="isNormal()" to="/become_premium"><font-awesome-icon icon="star"></font-awesome-icon> Convertirse en Premium</b-dropdown-item>
             <b-dropdown-item v-if="isAdmin()" to="/panel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
