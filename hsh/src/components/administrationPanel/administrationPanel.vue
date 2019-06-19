@@ -33,7 +33,7 @@
             <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
             <b-card-text style="font-size:25px">Abrir subastas</b-card-text>
         </b-card>
-        <b-card class="tarjeta text-center" bg-variant="light" >
+        <b-card class="tarjeta text-center" @click="closeAuction" bg-variant="light" >
             <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
             <b-card-text style="font-size:25px">Cerrar subastas</b-card-text>
         </b-card>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-
+import axios from "axios";
 export default {
   name: 'administrationPanel',
   methods: {
@@ -65,8 +65,27 @@ export default {
     },
     openPremiumRequests() {
       this.$router.push('/panel/premium_requests');
+    },
+    closeAuction(){
+      axios
+          .get("http://localhost:3000/weeks/closeAuctions")
+          .then(response => {
+            console.log(response.data);
+            this.$bvToast.toast(
+              `Se cerraron ${response.data.length} subastas`,
+              {
+                title: "Operación Exitosa",
+                variant: "success",
+                autoHideDelay: 5000,
+                toaster: "b-toaster-bottom-right"
+              }
+            );
+          })
+          .catch(error => {
+            console.error(error);
+          });
     }
-  }
+  }, 
 }
 
 </script>
