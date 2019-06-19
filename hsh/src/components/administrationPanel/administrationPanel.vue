@@ -27,6 +27,21 @@
             <b-card-text style="font-size:25px">Solicitudes Premium</b-card-text>
         </b-card>
       </b-card-group>
+      <br>
+      <b-card-group deck>
+        <b-card class="tarjeta text-center" bg-variant="light" >
+            <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Abrir subastas</b-card-text>
+        </b-card>
+        <b-card class="tarjeta text-center" bg-variant="light" >
+            <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Cerrar subastas</b-card-text>
+        </b-card>
+        <b-card class="tarjeta text-center" bg-variant="light">
+            <font-awesome-icon class="fa-5x" icon="calendar-plus"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Generar semanas</b-card-text>
+        </b-card>
+      </b-card-group>
     </b-container>
   </div>
 </template>
