@@ -5,7 +5,7 @@
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
                 <b-button class="transparentButton btn-block" v-if="week.auction && isAdmin" v-on:click="closeAuction">Cerrar subasta</b-button>
-                <b-button class="transparentButton btn-block" v-else-if="isAdmin" v-on:click="openAuction">Abrir subasta</b-button>
+                <!-- <b-button class="transparentButton btn-block" v-else-if="isAdmin" v-on:click="openAuction">Abrir subasta</b-button> -->
                 <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
             </b-card-text>
         </b-card>
@@ -184,7 +184,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 })        
             },
 
-            openAuction: function (){
+            /*openAuction: function (){
                 axios.get("http://localhost:3000/openAuction/"+ this.week.id)
                 .then(response => {
                     console.log(response.data);
@@ -194,7 +194,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 }); 
 
-            },
+            },*/
         }
     }
    
