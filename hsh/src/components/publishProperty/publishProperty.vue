@@ -101,7 +101,15 @@ export default {
           autoHideDelay: 5000,
           toaster: 'b-toaster-bottom-right',
         });
-      });
+      })
+      .catch(response => {
+        this.$bvToast.toast('Ya existe una propiedad con ese nombre en esa localidad y provincia.', {
+          title: 'Operación fallida',
+          variant: 'danger',
+          autoHideDelay: 5000,
+          toaster: 'b-toaster-bottom-right',
+        });
+      })
     },
     emptyForm() {
       this.dataRegisterProperty.name='';
