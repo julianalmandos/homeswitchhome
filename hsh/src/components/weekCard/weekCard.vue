@@ -66,10 +66,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             compare(aDate){
                 return aDate > (new Date).toISOString()
             },
-            openPlaceABidModal() {
-                console.log('esta emitiendose');
+            openPlaceABidModal() { 
                 this.$emit('placingBid',this.week);
-                console.log('se emitio');
             },
             reloadMaxBid(){
                 console.log('reload');
