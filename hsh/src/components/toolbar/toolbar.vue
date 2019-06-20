@@ -38,8 +38,8 @@
             <!--<b-dropdown-item href="#">Perfil</b-dropdown-item>
             <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
             <b-dropdown-item v-if="isAdmin()" @click="viewAdministrationPanel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
+            <b-dropdown-item @click="viewBookingsRecord"><font-awesome-icon icon="calendar-alt"></font-awesome-icon> Ver historial de reservas </b-dropdown-item>
             <b-dropdown-item @click="logoutUser"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Cerrar Sesión</b-dropdown-item>
-            <b-dropdown-item @click="viewBookingsRecord"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Ver historial de reservas </b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>

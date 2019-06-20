@@ -7,11 +7,11 @@
             hover 
             small
             :items="bookings" 
-            :fields="fields"
+            :fields="fieldsForBookings"
             stacked="md"
         >
             <template slot="empty">
-                <h5>No hay reservas disponibles</h5>
+                <h5>No haz realizado reservas aún.</h5>
             </template>
             <template slot="date" slot-scope="data">
                 {{ data.value.substring(0,10) }}
@@ -20,15 +20,19 @@
                 ${{ data.value }}
             </template>
         </b-table>
+        <h1 class="titulo">Mis pujas</h1><br>
         <b-table 
             show-empty
             striped 
             hover 
             small
             :items="bids" 
-            :fields="fields"
+            :fields="fieldsForBids"
             stacked="md"
         >
+            <template slot="empty">
+                <h5>No haz realizado pujas aún.</h5>
+            </template>
             <template slot="date" slot-scope="data">
                 {{ data.value.substring(0,10) }}
             </template>
@@ -49,7 +53,7 @@
         },
         data() {
             return {
-                fields: [
+                fieldsForBookings: [
                     {
                         key: 'date',
                         label: 'Fecha Reservada',
@@ -62,7 +66,24 @@
                     }, 
                     {
                         key: 'price',
-                        label: 'Precio de Reserva/Puja',
+                        label: 'Precio de Reserva',
+                        sortable: true,
+                    }                    
+                ],
+                fieldsForBids: [
+                    {
+                        key: 'date',
+                        label: 'Fecha Reservada',
+                        sortable: true,
+                    },
+                    {
+                        key: 'name',
+                        label: 'Propiedad',
+                        sortable: true,
+                    }, 
+                    {
+                        key: 'price',
+                        label: 'Precio de Puja',
                         sortable: true,
                     }                    
                 ],
