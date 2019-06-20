@@ -35,6 +35,10 @@
             <font-awesome-icon class="fa-5x" icon="star" style="color:#e6e600;"></font-awesome-icon>
             <b-card-text style="font-size:25px">Solicitudes Premium</b-card-text>
         </b-card>
+        <b-card class="tarjeta text-center" @click="chargeSubscription" bg-variant="light">
+            <font-awesome-icon class="fa-5x" icon="star" style="color:#e6e600;"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Cobrar suscripción</b-card-text>
+        </b-card>
       </b-card-group>
     </b-container>
   </div>
@@ -92,6 +96,36 @@ export default {
               toaster: "b-toaster-bottom-right"
             }
           );
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    chargeSubscription(){
+      axios
+        .get("http://localhost:3000/chargeSubscription")
+        .then(response => {
+          if (response.data.data>0){
+          this.$bvToast.toast(
+            `Se cobró la suscripción: $`+ response.data.data,
+            {
+              title: "Operación Exitosa",
+              variant: "success",
+              autoHideDelay: 5000,
+              toaster: "b-toaster-bottom-right"
+            }
+          );
+          }else {
+            this.$bvToast.toast(
+            `Ya se cobró la suscripción este mes`,
+            {
+              title: "Operación Fallida",
+              variant: "danger",
+              autoHideDelay: 5000,
+              toaster: "b-toaster-bottom-right"
+            }
+          );
+          }
         })
         .catch(error => {
           console.error(error);
