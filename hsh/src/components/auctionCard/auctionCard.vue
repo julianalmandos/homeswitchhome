@@ -1,6 +1,6 @@
 <template>
     <div class=auctionCard>
-    <b-card no-body class="overflow-hidden" style="max-width: 540px;">
+    <b-card no-body class="overflow-hidden" style="max-width: 540px;margin-left:1.25rem">
         <b-row no-gutters>
             <b-col md="6">
             <b-card-img :src="image.image" class="rounded-0"></b-card-img>
