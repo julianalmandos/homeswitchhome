@@ -205,6 +205,22 @@ app.post('/closeAuction/:id', (req, res) => {
 
 
 
+  app.post('/bookingsOfUser', function (req, res) {
+    var sql = `SELECT w.date, p.name, b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      res.send(result);
+    });
+  })
+
+  app.post('/bidsOfUser', function (req, res) { 
+    var sql = `SELECT w.date, p.name, b.price FROM bids b INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
+    conn.query(sql, function (err, result) {
+      if (err) throw err; 
+      res.send(result);
+    });
+  })
+
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
   });
