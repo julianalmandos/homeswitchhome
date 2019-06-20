@@ -208,18 +208,19 @@ app.post('/closeAuction/:id', (req, res) => {
     var total = 0;
     var actual = new Date().toISOString();
     var previous = new Date()
-    previous.setMonth(previous.getMonth()+1);
+    previous.setMonth(previous.getMonth()-1);
     result.forEach(element => {
-      if (previous<=actual){
+      if (element.last_charge.toISOString()<=previous.toISOString()){
         if (element.role == 1){
           total = total + 5000 
         } else {
           total = total + 3000
         }
+        mailer.sendEmail(element.email,'Cobro de suscripción','Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
         var sql2 = "UPDATE users SET last_charge='"+ actual +"'WHERE id ='"+ element.id+"'";
         conn.query(sql2,function(err, result){
         })
-        // mailer.sendEmail(element.email,'Cobro de suscripción','Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
+        
       }
     });
     
