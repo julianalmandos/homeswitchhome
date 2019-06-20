@@ -17,6 +17,7 @@
             <b-button block v-if="isNormal()" class="blueButton">Convertirse en Premium</b-button>
             <b-button block v-if="isPremium()" class="blueButton">Convertirse en Común</b-button>
             <b-button block to="/edit/profile" class="blueButton">Editar perfil</b-button>
+            <b-button block class="blueButton">Ver historiar de reservas</b-button>
             </b-col>
         </b-col>
     </b-row>

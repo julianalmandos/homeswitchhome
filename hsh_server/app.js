@@ -105,6 +105,13 @@ app.post('/closeAuction/:id', (req, res) => {
   })
 })
 
+app.post('/profile/edit', (req, res) => {
+  var sql="UPDATE users SET name ='"+ req.body.data.user.name +"', surname ='"+ req.body.data.user.surname +"'WHERE id="+req.body.data.user.id;
+  conn.query(sql, function(err, result){
+    res.send(result);
+  })
+})
+
 
   app.post('/validatetoken', (req, res) => {
     try {
