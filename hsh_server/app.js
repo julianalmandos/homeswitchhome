@@ -206,11 +206,11 @@ app.post('/closeAuction/:id', (req, res) => {
   var sql= "SELECT * FROM users WHERE role<2";
   conn.query(sql,function(err, result){
     var total = 0;
-    var actual = new Date().toISOString();
-    var previous = new Date()
+    var actual = new Date().toISOString().substring(0,10);
+    var previous = new Date();
     previous.setMonth(previous.getMonth()-1);
     result.forEach(element => {
-      if (element.last_charge.toISOString()<=previous.toISOString()){
+      if (element.last_charge==null || element.last_charge.toISOString()<=previous.toISOString()){
         if (element.role == 1){
           total = total + 5000 
         } else {
@@ -219,6 +219,7 @@ app.post('/closeAuction/:id', (req, res) => {
         mailer.sendEmail(element.email,'Cobro de suscripción','Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
         var sql2 = "UPDATE users SET last_charge='"+ actual +"'WHERE id ='"+ element.id+"'";
         conn.query(sql2,function(err, result){
+          if(err) throw err;
         })
         
       }
