@@ -74,9 +74,6 @@ export default router = new Router({
       path: '/bookings',
       name: 'bookings',
       component: () => import('./components/bookingsRecord/bookingsRecord.vue'),
-      meta: {
-        requiresAdmin: true,
-      }
     },
     {
       path: '/become_normal',
