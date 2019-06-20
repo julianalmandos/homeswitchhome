@@ -193,6 +193,8 @@ app.post('/closeAuction/:id', (req, res) => {
     })
   })
 
+
+
   function createToken(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -203,7 +205,13 @@ app.post('/closeAuction/:id', (req, res) => {
     return result;
  }
 
-
+ app.get('/auctions', (req, res) => {
+  var sql = "SELECT * FROM weeks WHERE weeks.auction = 1";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
 
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');

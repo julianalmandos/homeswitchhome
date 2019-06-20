@@ -1,6 +1,6 @@
 <template>
     <div class="weekCard">
-        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem">
+        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem" >
             <h6>Puja Más Alta: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
