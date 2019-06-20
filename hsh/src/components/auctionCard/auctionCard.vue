@@ -12,7 +12,7 @@
                     <br>
                     <h4>Semana: {{(auction.date).substring(0,10)}}</h4>
                     <br>
-                    <b-button class="transparentButton btn-block" @click="openPlaceABidModal">Pujar</b-button>
+                    <b-button class="transparentButton btn-block" :to="'/details/'+auction.idProperty">Ver Propiedad</b-button>
                 </b-card-text>
             </b-card-body>
             </b-col>
@@ -49,7 +49,6 @@ export default {
       .get("http://localhost:3000/images/" + this.auction.idProperty)
       .then(response => {
         this.image = response.data[0];
-        console.log(response.data);
       })
       .catch(error => {
         console.log(error);
@@ -58,7 +57,6 @@ export default {
       .get("http://localhost:3000/properties/" + this.auction.idProperty)
       .then(response => {
         this.property = response.data[0];
-        console.log(response.data);
       })
       .catch(error => {
         console.log(error);
