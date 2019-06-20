@@ -4,7 +4,7 @@
             <h6>Puja Más Alta: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
-                <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
+                <b-button class="transparentButton btn-block" v-if="week.auction==1" @click="openPlaceABidModal">Pujar</b-button>
             </b-card-text>
         </b-card>
         <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle))   class="card1">

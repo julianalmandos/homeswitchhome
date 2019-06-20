@@ -68,9 +68,8 @@ export default {
     },
     closeAuction(){
       axios
-          .get("http://localhost:3000/weeks/closeAuctions")
+          .get("http://localhost:3000/closeAuctions")
           .then(response => {
-            console.log(response.data);
             this.$bvToast.toast(
               `Se cerraron ${response.data.length} subastas`,
               {
@@ -80,10 +79,27 @@ export default {
                 toaster: "b-toaster-bottom-right"
               }
             );
+            this.selectWinner(response.data)
           })
           .catch(error => {
             console.error(error);
           });
+    },
+    selectWinner(closed){
+      console.log(closed);
+      closed.forEach(element => {
+        axios.post("http://localhost:3000/selectWinner",{
+          data: {
+              week: element
+          }
+        })
+        .then(response => {
+           console.log(response.data);   
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      });
     }
   }, 
 }

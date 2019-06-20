@@ -203,6 +203,38 @@ app.post('/closeAuction/:id', (req, res) => {
     return result;
  }
 
+ app.get('/closeAuctions', (req, res) => {
+  var actualDate = new Date();
+  actualDate.setDate(actualDate.getDate()-3);
+  var sql = `SELECT * FROM weeks WHERE auction=1 AND auctionDate<"${actualDate.toISOString().substring(0,10)}"`;
+  conn.query(sql, function (err, result) {
+    result.forEach(function (week) {
+      const sql2 = `UPDATE weeks w SET w.auction = 2 WHERE id=${week.id}`
+      conn.query(sql2, function (err, result) {
+        if (err) throw err;
+      })
+    })
+    res.send(result);
+  })
+})
+
+app.post('/selectWinner', function(req,res){
+  var sql= "SELECT * FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek='"+ req.body.data.week.id +"' AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='"+req.body.data.week.date +"') ORDER BY b.price DESC";
+  conn.query(sql,function (err,result){
+    if (result.length==0){
+      var sql2 = "UPDATE weeks SET auction = 2, idle = 1 WHERE id='"+req.body.data.week.id+"'";
+      conn.query(sql2, function (err, result) {
+        if (err) throw err;
+      })
+    }else{
+      var sql3="UPDATE weeks SET weeks.auction = 2, weeks.reserved = 1, WHERE weeks.id="+req.body.data.week.id;
+      conn.query(sql3, function(err, result){
+        if (err) throw err;
+      })
+    }
+  })
+})
+
 
 
   app.listen(3000, function () {

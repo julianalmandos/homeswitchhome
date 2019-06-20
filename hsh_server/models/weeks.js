@@ -73,23 +73,6 @@ app.get('/:id', (req, res) => {
   });
 })
 
-app.get('/closeAuctions', (req, res) => {
-  var actualDate = new Date();
-  console.log(actualDate);
-  actualDate.setMonth(actualDate.getMonth()-6);
-  actualDate.setDate(actualDate.getDate()+3);
-  var sql = "SELECT * FROM weeks"; //WHERE auction=1 AND auctionDate<${actualDate.toISOString().substring(0,10)}
-  conn.query(sql, function (err, result) {
-    /*console.log('muestro las subastas');
-    console.log(result);
-    result.forEach(function (week) {
-      const sql2 = `UPDATE weeks w SET w.auction = 2 WHERE id=${week.id}`
-      conn.query(sql2, function (err, result) {
-        if (err) throw err;
-      })
-    })*/
-    res.send(result);
-  })
-})
+
 
 module.exports = app;
