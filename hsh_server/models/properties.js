@@ -22,7 +22,7 @@ app.get('/generateWeeks', (req, res) => {
   conn.query(sql, function (err, result) {
     var totalWeeks = 0;
     result.forEach(prop => {
-      var fechaInicial = new Date()
+      var fechaInicial = new Date();
       const sqlWeeks = `SELECT * FROM weeks WHERE idProperty=${prop.id} AND date >= "${fechaInicial.toISOString().substring(0, 10)}"`;
       conn.query(sqlWeeks, function (err, result) { 
         if (result.length == 0) { 
@@ -31,7 +31,7 @@ app.get('/generateWeeks', (req, res) => {
             fechaInicial.setDate(fechaInicial.getDate() + 1);
           }
           for (var i = 0; i < 53; i++) {
-            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES ('" + prop.id + "','" + fechaInicial.toISOString().substring(0, 10) + "',0,0,0,0000-00-00)";
+            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + prop.id + ",'" + fechaInicial.toISOString().substring(0, 10) + "',0,0,0,'"+new Date(0000,00,00).toISOString().substring(0,10)+"')";
             conn.query(sql2, function (err, result) {
               if (err) throw err;
             });
@@ -50,7 +50,7 @@ app.get('/generateWeeks', (req, res) => {
           console.log("El maximo es ", max);
           for (var i = 0; i < quantityWeeks; i++) {
             max.setDate(max.getDate()+7)
-            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES ('" + prop.id + "','" + max.toISOString().substring(0, 10) + "',0,0,0,0000-00-00)";
+            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + prop.id + ",'" + max.toISOString().substring(0, 10) + "',0,0,0,'"+new Date(0000,00,00).toISOString().substring(0,10)+"')";
             conn.query(sql2, function (err, result) {
               if (err) throw err;
             });
