@@ -55,6 +55,16 @@ export default router = new Router({
       }
     },
     {
+      path: '/edit/profile',
+      name: 'editProfile',
+      component: () => import('./components/profile/editProfile.vue'),
+    },
+    {
+      path: '/profile',
+      name: 'showProfile',
+      component: () => import('./components/profile/profile.vue'),
+    },
+    {
       path: '/panel/properties',
       name: 'panelProperties',
       component: () => import('./components/administrationPanel/listOfProperties.vue'),
