@@ -27,7 +27,7 @@
             <font-awesome-icon class="fa-5x" icon="star" style="color:#e6e600;"></font-awesome-icon>
             <b-card-text style="font-size:25px">Solicitudes Premium</b-card-text>
         </b-card>
-        <b-card class="tarjeta text-center" bg-variant="light">
+        <b-card class="tarjeta text-center" @click="chargeSubscription" bg-variant="light">
             <font-awesome-icon class="fa-5x" icon="money-check"></font-awesome-icon>
             <b-card-text style="font-size:25px">Cobrar suscripcion</b-card-text>
         </b-card>
