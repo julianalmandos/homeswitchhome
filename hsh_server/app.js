@@ -202,8 +202,32 @@ app.post('/closeAuction/:id', (req, res) => {
     }
     return result;
  }
-
-
+ app.get('/chargeSubscription',function(req,res){
+  var sql= "SELECT * FROM users WHERE role<2";
+  conn.query(sql,function(err, result){
+    var total = 0;
+    var actual = new Date().toISOString();
+    var previous = new Date()
+    previous.setMonth(previous.getMonth()+1);
+    result.forEach(element => {
+      if (previous<=actual){
+        if (element.role == 1){
+          total = total + 5000 
+        } else {
+          total = total + 3000
+        }
+        var sql2 = "UPDATE users SET last_charge='"+ actual +"'WHERE id ='"+ element.id+"'";
+        conn.query(sql2,function(err, result){
+        })
+        // mailer.sendEmail(element.email,'Cobro de suscripción','Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
+      }
+    });
+    
+    res.status(200).send({data:total});
+    
+  })
+})
+  
 
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
