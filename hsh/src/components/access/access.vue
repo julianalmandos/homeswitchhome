@@ -81,6 +81,18 @@
                         placeholder="Ingrese una fecha de nacimiento"
                         style="width:100%"
                     ></b-form-input>
+                    <b-form-select size="sm" class="mr-sm-2 mb-sm-3"
+                        id="cardType"
+                        type="text"
+                        v-model="dataRegister.cardType"
+                        required
+                        style="width:100%"
+                        :options="types()"
+                    >
+                        <template slot="first">
+                            <option :value="null" disabled>Tipo de Tarjeta</option>
+                        </template>
+                    </b-form-select>
                     <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
                         id="cardNumber"
                         type="text"
@@ -149,6 +161,7 @@
                     year: null,
                     month: null,
                 },
+                cardType: null,
             },
             dataLogin: {
                 email: '',
@@ -185,6 +198,10 @@
             months(){
                 //Devuelvo los meses para el select box
                 return [1,2,3,4,5,6,7,8,9,10,11,12];
+            },
+            types(){
+                //Devuelvo los meses para el select box
+                return ['VISA','MasterCard','American Express'];
             },
             loginUser(){
                 axios.post('http://localhost:3000/login', {

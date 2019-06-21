@@ -144,7 +144,7 @@ app.post('/profile/edit', (req, res) => {
       console.log(result);
       if(result[0]==null){
         console.log(req.body.data);
-        sql = "INSERT INTO users (email,password,name,surname,birthday,card_number,card_expiration_month,card_expiration_year,card_security_number) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toLocaleDateString() + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "')";
+        sql = "INSERT INTO users (email,password,name,surname,birthday,card_type,card_number,card_expiration_month,card_expiration_year,card_security_number) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toLocaleDateString() + "','" + req.body.data.cardType + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "')";
         console.log(sql);
         conn.query(sql, function (err, result) {
           if (err) throw err;
@@ -213,6 +213,8 @@ app.post('/profile/edit', (req, res) => {
     })
   })
 
+
+
   function createToken(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -222,8 +224,56 @@ app.post('/profile/edit', (req, res) => {
     }
     return result;
  }
+ app.get('/chargeSubscription',function(req,res){
+  var sql= "SELECT * FROM users WHERE role<2";
+  conn.query(sql,function(err, result){
+    var total = 0;
+    var actual = new Date().toISOString().substring(0,10);
+    var previous = new Date();
+    previous.setMonth(previous.getMonth()-1);
+    result.forEach(element => {
+      if (element.last_charge==null || element.last_charge.toISOString()<=previous.toISOString()){
+        if (element.role == 1){
+          total = total + 5000 
+        } else {
+          total = total + 3000
+        }
+        mailer.sendEmail(element.email,'Cobro de suscripción','Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
+        var sql2 = "UPDATE users SET last_charge='"+ actual +"'WHERE id ='"+ element.id+"'";
+        conn.query(sql2,function(err, result){
+          if(err) throw err;
+        })
+        
+      }
+    });
+    
+    res.status(200).send({data:total});
+    
+  })
+})
 
+  app.post('/bookingsOfUser', function (req, res) {
+    var sql = `SELECT w.date, p.name, b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      res.send(result);
+    });
+  })
 
+  app.post('/bidsOfUser', function (req, res) { 
+    var sql = `SELECT w.date, p.name, b.price FROM bids b INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
+    conn.query(sql, function (err, result) {
+      if (err) throw err; 
+      res.send(result);
+    });
+  })
+ app.get('/auctions', (req, res) => {
+  var sql = "SELECT * FROM weeks WHERE weeks.auction = 1";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
 
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
