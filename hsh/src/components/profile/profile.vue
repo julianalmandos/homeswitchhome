@@ -14,10 +14,10 @@
         </b-col>
         <b-col>
             <b-col>
-            <b-button block v-if="isNormal()" class="blueButton">Convertirse en Premium</b-button>
-            <b-button block v-if="isPremium()" class="blueButton">Convertirse en Común</b-button>
+            <b-button block v-if="isNormal()" to="/become_normal" class="blueButton">Convertirse en Premium</b-button>
+            <b-button block v-if="isPremium()" to="/become_premium" class="blueButton">Convertirse en Común</b-button>
             <b-button block to="/edit/profile" class="blueButton">Editar perfil</b-button>
-            <b-button block class="blueButton">Ver historiar de reservas</b-button>
+            <b-button block @click="viewBookingsRecord" class="blueButton">Ver mi historial</b-button>
             </b-col>
         </b-col>
     </b-row>
@@ -45,6 +45,9 @@
       isNormal() {
         return this.user.role==0;
       },
+      viewBookingsRecord(){
+        this.$router.push('/bookings');
+      }
     }
   }
 </script>

@@ -106,8 +106,6 @@ app.post('/closeAuction/:id', (req, res) => {
 })
 
 app.post('/profile/edit', (req, res) => {
-  console.log(req.body.data.card_expiration_month);
-  console.log(req.body.data.card_number);
   if (req.body.data.newPassword==''){
     var sql="UPDATE users SET card_number="+ req.body.data.card_number+", card_security_number="+req.body.data.card_security_number+", card_expiration_month="+ req.body.data.card_expiration_month+", card_expiration_year="+req.body.data.card_expiration_year+" WHERE id="+req.body.data.userid;
     conn.query(sql, function(err, result){
