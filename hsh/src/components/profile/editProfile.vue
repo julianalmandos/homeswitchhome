@@ -92,12 +92,12 @@
       toString(){
         return this.user.birthday.toISOString();
       },
-      checkDate(){
+      validateData(){
         var date = new Date();
         var actual = new Date();
         date.setDate(1);
-        date.setMonth(this.user.card_expiration_month);
-        date.setFullYear(this.user.card_expiration_year);
+        date.setMonth(this.card_expiration_month);
+        date.setFullYear(this.card_expiration_year);
         return date>actual
   
       },
@@ -115,7 +115,7 @@
         return ['VISA','MasterCard','American Express'];
       },
       profileEdition(){
-          if(this.checkDate()){
+          if(this.validateData()){
             if(this.checkPassword()){
             if(confirm('¿Está seguro que desea editar su perfil?')){
             axios
