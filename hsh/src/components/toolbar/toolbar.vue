@@ -36,7 +36,13 @@
           <!--<b-nav-item to="/acerca-de">Acerca De</b-nav-item>
           <b-nav-item to="/contacto">Contacto</b-nav-item>-->
           <b-nav-item-dropdown ref="dropdown" v-if="user!==null" right>
-            <template slot="button-content">Buscar</template>
+            <template slot="button-content" >Buscar</template>
+            <b-alert class="mt-sm-3" v-model="showErrorEmptyFields" variant="danger" dismissible>
+          <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Por favor, complete todos los campos antes de buscar.
+        </b-alert> 
+        <b-alert class="mt-sm-3" v-model="showErrorWrongDates" variant="danger" dismissible>
+          <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> La fecha ingresada es inválida.
+        </b-alert>
             <b-col>
             <h4>Localidad:</h4>
             <b-form-input size="sm" style="width:300px;" v-model="locality" required></b-form-input>
@@ -58,7 +64,9 @@
                         style="width:300px"
                     ></b-form-input>
               <b-input-group-append>
-                  <b-button size="sm" class="my-2 my-sm-0 blueButton" :to="{ name: 'searchProperties', params: { locality: this.locality, startDate:this.startDate, finishDate:this.finishDate }}" type="submit">Buscar</b-button>
+                 <!-- <b-button size="sm" class="my-2 my-sm-0 blueButton" :to="{ name: 'searchProperties', params: { locality: this.locality, startDate:this.startDate, finishDate:this.finishDate }}" type="submit">Buscar</b-button>-->
+                  <b-button size="sm" class="my-2 my-sm-0 blueButton" :to="{ name: 'searchProperties', params: { locality: this.locality, startDate:this.startDate, finishDate:this.finishDate }}" type="submit" @click="check">Buscar</b-button>
+                  <b-button size="sm" class="my-2 my-sm-0 blueButton" type="submit" @click="resetModal">Cancelar</b-button>
               </b-input-group-append>  
               </b-col>
           </b-nav-item-dropdown>
@@ -104,7 +112,9 @@
       return {
         locality: '',
         startDate: '',
-        finishDate: ''
+        finishDate: '',
+        showErrorEmptyFields: false,
+        showErrorWrongDates: false,
       }
     },
     computed: {
@@ -132,6 +142,37 @@
         console.log('recibi evento');
         this.$refs.dropdown.hide();
       },
+      check(){
+
+        var controlDate= new Date(this.startDate.substring(0,4),this.startDate.substring(5,7),this.startDate.substring(8,10));
+        controlDate.setDate(controlDate.getDate()+60);
+        controlDate = controlDate.toISOString().substring(0,10);
+        console.log(this.startDate);
+        console.log(this.finishDate);
+        if(this.locality !== '' && this.startDate !== '' && this.finishDate !== ''){
+          if ((this.startDate>this.finishDate)||(controlDate<=this.finishDate)){
+            this.showErrorWrongDates = true
+          }
+        }else{
+          console.log("Entro al else")
+          this.showErrorEmptyFields = true
+        }
+      },
+      resetModal() {
+      this.showErrorEmptyFields=false;
+      this.showErrorWrongDates=false;
+      this.locality='';
+      this.startDate='';
+      this.finishDate='';
+    },
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefaul();
+      this.Subimit();
+    },
+    resetAlerts() { 
+      this.showErrorEmptyFields=false;
+      this.showErrorWrongDates = false;
+    }
     }
   }
 </script>

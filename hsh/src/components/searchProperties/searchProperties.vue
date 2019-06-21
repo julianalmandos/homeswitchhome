@@ -29,16 +29,14 @@ export default {
     };
   },
   beforeCreate() {
-    const isUser = this.$store.state.user != null;
-    let response;
-    if (isUser) {
-      response = axios.get("http://localhost:3000/properties");
-    } else {
-      response = axios.get(
-        "http://localhost:3000/properties/random?quantity=5"
-      );
-    }
-    response
+    axios
+          .post("http://localhost:3000/properties/range", {
+            data: {
+              locality: this.$route.params.locality,
+              startDate: this.$route.params.startDate,
+              finishDate: this.$route.params.finishDate
+            }
+          })
       .then(response => {
         this.properties = response.data;
         console.log(response.data);
