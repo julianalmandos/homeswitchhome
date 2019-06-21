@@ -15,8 +15,8 @@
             </b-col>
             <b-col>
                 <b-col>
-                <b-button block v-if="isNormal()" to="/become_normal" class="blueButton">Convertirse en Premium</b-button>
-                <b-button block v-if="isPremium()" to="/become_premium" class="blueButton">Convertirse en Común</b-button>
+                <b-button block v-if="isNormal()" to="/become_premium" class="blueButton">Convertirse en Premium</b-button>
+                <b-button block v-if="isPremium()" to="/become_normal" class="blueButton">Convertirse en Común</b-button>
                 <b-button block to="/edit/profile" class="blueButton">Editar perfil</b-button>
                 <b-button block @click="viewBookingsRecord" class="blueButton">Ver mi historial</b-button>
                 </b-col>

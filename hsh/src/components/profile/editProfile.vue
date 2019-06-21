@@ -7,6 +7,18 @@
         <h4 style="float:left">Datos de la tarjeta: </h4>
         <br>
         <br>
+        <b-form-select size="sm" class="mr-sm-2 mb-sm-3"
+            id="cardType"
+            type="text"
+            v-model="card_type"
+            required
+            style="width:100%"
+            :options="types()"
+        >
+            <template slot="first">
+                <option :value="null" disabled>Tipo de Tarjeta</option>
+            </template>
+        </b-form-select>
         <b-row>
         <b-col>
           <b-form-group id="nombre" label="Número de la tarjeta: " label-for="date">
@@ -58,7 +70,8 @@
       card_number: this.$store.state.user.card_number,
       card_expiration_month: this.$store.state.user.card_expiration_month,
       card_expiration_year: this.$store.state.user.card_expiration_year,
-      card_security_number: this.$store.state.user.card_security_number      
+      card_security_number: this.$store.state.user.card_security_number,
+      card_type: this.$store.state.user.card_type,     
       }
     },
     computed: {
@@ -96,8 +109,11 @@
         this.$store.state.user.card_security_number=this.card_security_number
         this.$store.state.user.card_expiration_month=this.card_expiration_month
         this.$store.state.user.card_expiration_year=this.card_expiration_year
+        this.$store.state.user.card_type=this.card_type
       },
-
+      types() {
+        return ['VISA','MasterCard','American Express'];
+      },
       profileEdition(){
           if(this.checkDate()){
             if(this.checkPassword()){
@@ -110,7 +126,8 @@
                   card_number: this.card_number,
                   card_expiration_month: this.card_expiration_month,
                   card_expiration_year: this.card_expiration_year,
-                  card_security_number: this.card_security_number 
+                  card_security_number: this.card_security_number,
+                  card_type: this.card_type,
                 } 
                 })
                 .then(response => {

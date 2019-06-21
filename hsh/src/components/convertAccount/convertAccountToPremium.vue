@@ -2,6 +2,12 @@
     <b-container>
         <h1 class="titulo">Convertirse en Premium</h1>
         <br>
+        <h3>Un usuario Premium posee las siguientes características: </h3>
+        <h6>
+            <li>Posibilidad de reservar una propiedad de forma directa, mucho antes que los usuarios comúnes. </li>
+            <li>Monto de suscripción: $5000 </li>
+        </h6>
+        <hr>
         <h3>Para solicitar su pase a usuario Premium debe seguir los siguientes pasos: </h3>
         <h6>
             <li> (Opcional) Rellenar el campo con un breve comentario sobre por qué desea convertirse en Premium. </li>
