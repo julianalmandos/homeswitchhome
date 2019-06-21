@@ -30,10 +30,10 @@
         <br>
         <br>
         <b-form-group id="nombre" label="Contraseña: " label-for="date">
-            <b-form-input id="date" v-model="newPassword"></b-form-input>
+            <b-form-input id="date" type="password" v-model="newPassword"></b-form-input>
         </b-form-group>
         <b-form-group id="nombre" label="Confirmación: " label-for="date">
-            <b-form-input id="date" v-model="conPassword"></b-form-input>
+            <b-form-input id="date" type="password" v-model="conPassword"></b-form-input>
         </b-form-group>
         
         <b-row align-h="between">

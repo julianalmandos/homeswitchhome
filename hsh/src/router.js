@@ -50,6 +50,9 @@ export default router = new Router({
       path: '/auctions',
       name: 'activeAuctions',
       component: () => import('./components/listOfAuctions/listOfAuctions.vue'),
+      meta: {
+        requiresAuth:true,
+      }
     },
     {
       path: '/panel',

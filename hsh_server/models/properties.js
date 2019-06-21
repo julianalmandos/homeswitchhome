@@ -19,8 +19,9 @@ app.get('/random', (req, res) => {
 
 app.get('/generateWeeks', (req, res) => {
   const sql = `SELECT id FROM properties`;
-  conn.query(sql, function (err, result) {
-    var totalWeeks = 0;
+  var totalWeeks = 0;
+  var quantityWeeks;
+  conn.query(sql, function (err, result) {    
     result.forEach(prop => {
       var fechaInicial = new Date();
       const sqlWeeks = `SELECT * FROM weeks WHERE idProperty=${prop.id} AND date >= "${fechaInicial.toISOString().substring(0, 10)}"`;
@@ -39,7 +40,7 @@ app.get('/generateWeeks', (req, res) => {
           }
         } else if (result.length < 53) { 
           max = new Date();
-          const quantityWeeks = 53 - result.length;
+          quantityWeeks = 53 - parseInt(result.length);
           totalWeeks += quantityWeeks;
           for (var i = 0; i < result.length; i++) {
             console.log(result[i].date)
@@ -56,9 +57,11 @@ app.get('/generateWeeks', (req, res) => {
             });
           } 
         };
+        console.log('asd: '+totalWeeks);
        });
       })
-res.send(`${totalWeeks}`)
+      console.log('asd2: '+totalWeeks);
+      res.send(`${totalWeeks}`);
   });
 });
 
