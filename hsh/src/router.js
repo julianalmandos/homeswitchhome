@@ -26,7 +26,7 @@ export default router = new Router({
       component: () => import('./components/contact/contact.vue')
     },
     {
-      path: '/details/:id',
+      path: '/details/:id/:startDate/:finishDate',
       name: 'details',
       component: () => import('./components/propertyDetails/propertyDetails.vue'),
     },

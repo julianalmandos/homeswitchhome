@@ -44,7 +44,11 @@ export default {
     },
     viewPropertyDetails() {
       if (this.isLoggedUser()) {
-        this.$router.push("/details/" + this.property.id);
+        if(this.$route.params !== undefined){
+          this.$router.push("/details/" + this.property.id+"/"+this.$route.params.startDate+"/"+this.$route.params.finishDate);
+        }else{
+          this.$router.push("/details/" + this.property.id+"/?/?");
+        }
       }
     },
     getClass() {

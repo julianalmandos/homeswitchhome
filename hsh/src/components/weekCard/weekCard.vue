@@ -74,8 +74,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 axios.get("http://localhost:3000/weeks/"+ this.week.id+'/maxbid')
                 .then(response => {
                     this.maxBid=response.data.data;
-                    console.log(response.data.data);
-                    console.log("relodee")
+                    console.log(response.data.data)
                 })
                 .catch(error => {
                     console.log(error);
@@ -87,7 +86,6 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 .then(response => {
                     this.maxBid=response.data.data;
                     console.log(response.data.data);
-                    console.log("relodee")
                     this.closeAuction()
                 })
                 .catch(error => {

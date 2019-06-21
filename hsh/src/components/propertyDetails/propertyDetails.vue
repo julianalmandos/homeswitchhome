@@ -91,13 +91,19 @@ import placeABid from '@/components/placeABid/placeABid.vue';
           .catch(error => {
             console.log(error);
           });
-        axios.get("http://localhost:3000/weeks/"+ this.$route.params.id)
+        axios
+          .post("http://localhost:3000/weeks/" + this.$route.params.id , {
+              data: {
+                  startDate: this.$route.params.startDate,
+                  finishDate: this.$route.params.finishDate
+              }
+          })
           .then(response => {
-            this.weeks = response.data;
+              this.weeks = response.data
           })
           .catch(error => {
-            console.log(error);
-          }); 
+              console.log(error);
+          });
         axios.get("http://localhost:3000/images/"+ this.$route.params.id)
           .then(response => {
             this.images = response.data; 
@@ -132,15 +138,19 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             });
         },
         reloadWeeks() {
-          axios.get("http://localhost:3000/weeks/"+ this.$route.params.id)
-            .then(response => {
-              console.log('recarga semanas');
-              console.log(this.weeks);
-              this.weeks = response.data; 
-            })
-            .catch(error => {
+          axios
+          .post("http://localhost:3000/weeks/" + this.$route.params.id , {
+              data: {
+                  startDate: this.$route.params.startDate,
+                  finishDate: this.$route.params.finishDate
+              }
+          })
+          .then(response => {
+              this.weeks = response.data
+          })
+          .catch(error => {
               console.log(error);
-            });
+          });
         },
       },
     }    
