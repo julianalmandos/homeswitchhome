@@ -77,9 +77,9 @@ export default {
         .get("http://localhost:3000/properties/generateWeeks")
         .then(response => {
           this.$bvToast.toast(
-            `Se generaron ${response.data} semanas`,
+            `Las semanas fueron generadas exitosamente.`,
             {
-              title: "Operación Exitosa",
+              title: "Operación exitosa!",
               variant: "success",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"
@@ -95,9 +95,9 @@ export default {
         .get("http://localhost:3000/properties/openAuctions")
         .then(response => {
           this.$bvToast.toast(
-            `Se abrieron ${response.data} subastas`,
+            `Las subastas fueron abiertas exitosamente.`,
             {
-              title: "Operación Exitosa",
+              title: "Operación exitosa!",
               variant: "success",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"

@@ -107,14 +107,14 @@ app.post('/closeAuction/:id', (req, res) => {
 
 app.post('/profile/edit', (req, res) => {
   if (req.body.data.newPassword==''){
-    var sql="UPDATE users SET card_number="+ req.body.data.card_number+", card_security_number="+req.body.data.card_security_number+", card_expiration_month="+ req.body.data.card_expiration_month+", card_expiration_year="+req.body.data.card_expiration_year+" WHERE id="+req.body.data.userid;
+    var sql="UPDATE users SET card_number="+ req.body.data.card_number+", card_security_number="+req.body.data.card_security_number+", card_expiration_month="+ req.body.data.card_expiration_month+", card_expiration_year="+req.body.data.card_expiration_year+", card_type='"+req.body.data.card_type+"' WHERE id="+req.body.data.userid;
     conn.query(sql, function(err, result){
       res.send(result);
     })
   }else{
     var contraseña = bcrypt.hashSync(req.body.data.newPassword, 8);
     console.log(contraseña)
-    var sql1="UPDATE users SET password='"+contraseña+"', card_number='"+ req.body.data.card_number+"', card_security_number='"+req.body.data.card_security_number+"', card_expiration_month='"+ req.body.data.card_expiration_month+"', card_expiration_year='"+req.body.data.card_expiration_year+"'WHERE id="+req.body.data.userid;
+    var sql1="UPDATE users SET password='"+contraseña+"', card_number='"+ req.body.data.card_number+"', card_security_number='"+req.body.data.card_security_number+"', card_expiration_month='"+ req.body.data.card_expiration_month+"', card_expiration_year='"+req.body.data.card_expiration_year+"', card_type='"+req.body.data.card_type+"' WHERE id="+req.body.data.userid;
     conn.query(sql1, function(err, result){
       res.send(contraseña);
       
@@ -142,7 +142,7 @@ app.post('/profile/edit', (req, res) => {
       console.log(result);
       if(result[0]==null){
         console.log(req.body.data);
-        sql = "INSERT INTO users (email,password,name,surname,birthday,card_type,card_number,card_expiration_month,card_expiration_year,card_security_number) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toLocaleDateString() + "','" + req.body.data.cardType + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "')";
+        sql = "INSERT INTO users (email,password,name,surname,birthday,card_type,card_number,card_expiration_month,card_expiration_year,card_security_number) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toISOString().substring(0,10) + "','" + req.body.data.cardType + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "')";
         console.log(sql);
         conn.query(sql, function (err, result) {
           if (err) throw err;

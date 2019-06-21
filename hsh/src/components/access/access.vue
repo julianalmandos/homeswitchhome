@@ -235,6 +235,7 @@
                     console.log(this.dataRegister.cardExpirationDate.year);
                     console.log(this.dataRegister.cardExpirationDate.month);
                     console.log('se manda');
+                    console.log(this.dataRegister.birthday);
                     axios.post('http://localhost:3000/register', {
                         data: this.dataRegister,
                     })

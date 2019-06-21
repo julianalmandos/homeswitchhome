@@ -50,6 +50,9 @@ export default router = new Router({
       path: '/auctions',
       name: 'activeAuctions',
       component: () => import('./components/listOfAuctions/listOfAuctions.vue'),
+      meta: {
+        requiresAuth:true,
+      }
     },
     {
       path: '/panel',
@@ -176,7 +179,7 @@ router.beforeEach((to, from, next) => {
       .then(response => {
         console.log('response: '+response.data);
         if(response.data){
-          if(store.state.user.role==1 || store.state.user.role==0){
+          if(store.state.user.role==1 || store.state.user.role==0 || store.state.user.role==2){
             console.log('sigueentra');
             next();
           }
