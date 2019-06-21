@@ -253,6 +253,8 @@ app.post('/profile/edit', (req, res) => {
  app.get('/closeAuctions', (req, res) => {
   var actualDate = new Date();
   actualDate.setDate(actualDate.getDate()-3);
+
+  actualDate.setMonth(actualDate.getMonth()+6);
   var sql = `SELECT * FROM weeks WHERE auction=1 AND auctionDate<"${actualDate.toISOString().substring(0,10)}"`;
   conn.query(sql, function (err, result) {
     result.forEach(function (week) {
@@ -266,9 +268,11 @@ app.post('/profile/edit', (req, res) => {
 })
 
 app.post('/selectWinner', function(req,res){
-  var sql= "SELECT * FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek='"+ req.body.data.week.id +"' AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='"+req.body.data.week.date +"') ORDER BY b.price DESC";
+  console.log("hola")
+  var sql= "SELECT * FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek="+ req.body.data.week.id +" AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='"+req.body.data.week.date +"') ORDER BY b.price DESC";
   conn.query(sql,function (err,result){
     if (result.length==0){
+      console.log(result)
       var sql2 = "UPDATE weeks SET auction = 2, idle = 1 WHERE id='"+req.body.data.week.id+"'";
       conn.query(sql2, function (err, result) {
         if (err) throw err;
