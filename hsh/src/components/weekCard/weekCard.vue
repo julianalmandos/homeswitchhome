@@ -1,6 +1,6 @@
 <template>
     <div class="weekCard">
-        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem">
+        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem" >
             <h6>Puja Más Alta: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
@@ -64,10 +64,8 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             compare(aDate){
                 return aDate > (new Date).toISOString()
             },
-            openPlaceABidModal() {
-                console.log('esta emitiendose');
+            openPlaceABidModal() { 
                 this.$emit('placingBid',this.week);
-                console.log('se emitio');
             },
             reloadMaxBid(){
                 console.log('reload');
@@ -182,7 +180,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                 })        
             },
 
-            openAuction: function (){
+            /*openAuction: function (){
                 axios.get("http://localhost:3000/openAuction/"+ this.week.id)
                 .then(response => {
                     console.log(response.data);
@@ -192,7 +190,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 }); 
 
-            },
+            },*/
         }
     }
    

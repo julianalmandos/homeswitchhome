@@ -42,7 +42,7 @@ export default {
       response = axios.get("http://localhost:3000/properties");
     } else {
       response = axios.get(
-        "http://localhost:3000/properties/random?quantity=1"
+        "http://localhost:3000/properties/random?quantity=5"
       );
     }
     response

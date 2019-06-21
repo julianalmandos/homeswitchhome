@@ -93,17 +93,22 @@ export default {
             } 
             })
             .then(response => {
-                        
-            })
-            .catch(error => {
-            console.log(error);
-            }); 
-            this.$bvToast.toast('La propiedad se editó correctamente',{
+              this.$bvToast.toast('La propiedad se editó correctamente',{
                 title: 'Operación exitosa',
                 variant: 'success',
                 autoHideDelay: 5000,
                 toaster: 'b-toaster-bottom-right',
+              })
             })
+            .catch(error => {
+              this.$bvToast.toast('Ya existe una propiedad con ese nombre en esa localidad y provincia.',{
+                title: 'Operación fallida',
+                variant: 'danger',
+                autoHideDelay: 5000,
+                toaster: 'b-toaster-bottom-right',
+              })
+            }); 
+            
       }
     }
   }  

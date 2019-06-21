@@ -10,7 +10,8 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item class="navLink" to="/"><strong>Inicio</strong></b-nav-item>
+          <b-nav-item class="navLink" to="/"><strong><font-awesome-icon icon="home"></font-awesome-icon> Inicio</strong></b-nav-item>
+          <b-nav-item class="navLink" to="/auctions"><strong><font-awesome-icon icon="gavel"></font-awesome-icon> Subastas</strong></b-nav-item>
         </b-navbar-nav>
         <!--<b-navbar-nav>
           <b-nav-form>
@@ -40,11 +41,11 @@
               <b-badge v-if="isAdmin()" class="blueBadge"><font-awesome-icon icon="medal"></font-awesome-icon> Administrador</b-badge>
             </template>
 
-            <!--<b-dropdown-item href="#">Perfil</b-dropdown-item>
-            <b-dropdown-item href="#">Configuración</b-dropdown-item>-->
-            <b-dropdown-item v-if="isPremium()" to="/become_normal"><font-awesome-icon icon="book"></font-awesome-icon> Convertirse en Normal</b-dropdown-item>
-            <b-dropdown-item v-if="isNormal()" to="/become_premium"><font-awesome-icon icon="star"></font-awesome-icon> Convertirse en Premium</b-dropdown-item>
-            <b-dropdown-item v-if="isAdmin()" to="/panel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item>
+            <b-dropdown-item to="/profile"><font-awesome-icon icon="user-alt"></font-awesome-icon> Perfil</b-dropdown-item>
+            <!--<b-dropdown-item href="#">Configuración</b-dropdown-item>-->
+            <!--<b-dropdown-item v-if="isPremium()" to="/become_normal"><font-awesome-icon icon="book"></font-awesome-icon> Convertirse en Normal</b-dropdown-item>
+            <b-dropdown-item v-if="isNormal()" to="/become_premium"><font-awesome-icon icon="star"></font-awesome-icon> Convertirse en Premium</b-dropdown-item> -->
+            <b-dropdown-item v-if="isAdmin()" to="/panel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item> 
             <b-dropdown-item @click="logoutUser"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Cerrar Sesión</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -89,7 +90,7 @@
       closeDropdown() {
         console.log('recibi evento');
         this.$refs.dropdown.hide();
-      }
+      },
     }
   }
 </script>
