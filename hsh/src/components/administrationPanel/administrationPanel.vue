@@ -42,10 +42,10 @@
           <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
           <b-card-text style="font-size:25px">Abrir subastas</b-card-text>
         </b-card>
-        <b-card class="tarjeta text-center" bg-variant="light" >
+        <!--<b-card class="tarjeta text-center" bg-variant="light" >
             <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
             <b-card-text style="font-size:25px">Cerrar subastas</b-card-text>
-        </b-card>
+        </b-card>-->
       </b-card-group>
     </b-container>
   </div>

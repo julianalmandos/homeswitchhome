@@ -31,6 +31,7 @@
             <b-form-input size="sm" style="width:300px;" v-model="locality" required></b-form-input>
             <br>
             <h4>Fecha inicial:</h4>
+            <b-form @submit.stop.prevent="check()">
               <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
                         id="range"
                         type="date"
@@ -48,9 +49,10 @@
                     ></b-form-input>
               <b-input-group-append>
                  <!-- <b-button size="sm" class="my-2 my-sm-0 blueButton" :to="{ name: 'searchProperties', params: { locality: this.locality, startDate:this.startDate, finishDate:this.finishDate }}" type="submit">Buscar</b-button>-->
-                  <b-button size="sm" class="my-2 my-sm-0 blueButton" :to="{ name: 'searchProperties', params: { locality: this.locality, startDate:this.startDate, finishDate:this.finishDate }}" type="submit" @click="check">Buscar</b-button>
-                  <b-button size="sm" class="my-2 my-sm-0 blueButton" type="submit" @click="resetModal">Cancelar</b-button>
+                  <b-button size="sm" class="my-2 my-sm-0 blueButton" type="submit">Buscar</b-button>
+                  <b-button size="sm" class="my-2 my-sm-0 blueButton" type="button" @click="resetModal">Cancelar</b-button>
               </b-input-group-append>  
+            </b-form>
               </b-col>
           </b-nav-item-dropdown>
           <b-nav-item-dropdown ref="dropdown" v-if="user==null" right>
@@ -136,6 +138,8 @@
         if(this.locality !== '' && this.startDate !== '' && this.finishDate !== ''){
           if ((this.startDate>this.finishDate)||(controlDate<=this.finishDate)||(this.startDate<actualDate)){
             this.showErrorWrongDates = true
+          }else{
+            this.$router.push('/search_properties/'+this.locality+'/'+this.startDate+'/'+this.finishDate);
           }
         }else{
           console.log("Entro al else")
