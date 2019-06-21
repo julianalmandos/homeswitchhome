@@ -132,6 +132,12 @@ export default router = new Router({
       name: 'changePassword',
       component: () => import('./components/changePassword/changePassword.vue')
     },
+    {
+      path: '/search_properties/:locality/:startDate/:finishDate',
+      name: 'searchProperties',
+      component: () => import('./components/searchProperties/searchProperties.vue')
+    },
+
   ]
 })
 

@@ -13,22 +13,55 @@
           <b-nav-item class="navLink" to="/"><strong><font-awesome-icon icon="home"></font-awesome-icon> Inicio</strong></b-nav-item>
           <b-nav-item class="navLink" to="/auctions"><strong><font-awesome-icon icon="gavel"></font-awesome-icon> Subastas</strong></b-nav-item>
         </b-navbar-nav>
-        <!--<b-navbar-nav>
+       <!-- <b-navbar-nav>
           <b-nav-form>
             <b-input-group>
-              <b-form-input size="sm" style="width:400px;" placeholder="Buscar propiedad..."></b-form-input>
+              <b-form-input size="sm" style="width:300px;" placeholder="Escriba una localidad" required></b-form-input>
+              <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
+                        id="range"
+                        type="date"
+                        required
+                        placeholder="Ingrese un rango"
+                        style="width:200px"
+                    ></b-form-input>
               <b-input-group-append>
-                <b-button size="sm" class="my-2 my-sm-0 blueButton" type="submit">Buscar</b-button>
+                <b-button size="sm" class="my-2 my-sm-0 blueButton" :to="{ name: 'searchProperties', params: { locality: this, range:this }}" type="submit">Buscar</b-button>
               </b-input-group-append>              
             </b-input-group>
           </b-nav-form>
-        </b-navbar-nav>-->
+        </b-navbar-nav> -->
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <!--<b-nav-item to="/acerca-de">Acerca De</b-nav-item>
           <b-nav-item to="/contacto">Contacto</b-nav-item>-->
-          
+          <b-nav-item-dropdown ref="dropdown" v-if="user!==null" right>
+            <template slot="button-content">Buscar</template>
+            <b-col>
+            <h4>Localidad:</h4>
+            <b-form-input size="sm" style="width:300px;" v-model="locality" required></b-form-input>
+            <br>
+            <h4>Fecha inicial:</h4>
+              <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
+                        id="range"
+                        type="date"
+                        v-model="startDate"
+                        required
+                        style="width:300px"
+                    ></b-form-input>
+                    <h4>Fecha final:</h4>
+              <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
+                        id="range"
+                        type="date"
+                        v-model="finishDate"
+                        required
+                        style="width:300px"
+                    ></b-form-input>
+              <b-input-group-append>
+                  <b-button size="sm" class="my-2 my-sm-0 blueButton" :to="{ name: 'searchProperties', params: { locality: this.locality, startDate:this.startDate, finishDate:this.finishDate }}" type="submit">Buscar</b-button>
+              </b-input-group-append>  
+              </b-col>
+          </b-nav-item-dropdown>
           <b-nav-item-dropdown ref="dropdown" v-if="user==null" right>
             <template slot="button-content">Acceder</template>
             <access @closeDropdown="closeDropdown"/>
@@ -48,6 +81,7 @@
             <b-dropdown-item v-if="isAdmin()" to="/panel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item> 
             <b-dropdown-item @click="logoutUser"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Cerrar Sesión</b-dropdown-item>
           </b-nav-item-dropdown>
+
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -65,6 +99,13 @@
     name: "toolbar",
     components: {
       access
+    },
+    data(){
+      return {
+        locality: '',
+        startDate: '',
+        finishDate: ''
+      }
     },
     computed: {
       ...Vuex.mapState([
