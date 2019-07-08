@@ -84,7 +84,7 @@ export default {
                 toaster: "b-toaster-bottom-right"
               }
             );
-            this.selectWinner(response.data)
+            //this.selectWinner(response.data)
           })
           .catch(error => {
             console.error(error);

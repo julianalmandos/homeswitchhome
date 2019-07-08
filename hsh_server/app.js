@@ -64,33 +64,6 @@ app.get('/images/:id', (req, res) => {
   });
 })
 
-app.post('/checkWinner', function(req,res){
-  var sql= "SELECT * FROM bookings b INNER JOIN bids bi ON (bi.id = b.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE w.date='"+ req.body.data.date +"' AND bi.email='"+req.body.data.winner+"'";
-  conn.query(sql,function (err,result){
-    if (result.length==0){
-      res.status(200).send({data:false});
-    }else{
-      res.status(200).send({data:true});
-    }
-  })
-})
-
-app.post('/makeReservation',function(req,res){
-  var sql= "INSERT INTO bookings (idMaxBid) VALUES ('"+req.body.data.id+"')";
-  conn.query(sql,function(err, result){
-    mailer.sendEmail(req.body.data.email,'Reserva confirmada para la propiedad '+req.body.data.propertyName,'Usted esta recibiendo este e-mail porque su reserva para la propiedad '
-      	  +req.body.data.propertyName+' de la semana del '+req.body.data.date.substring(0,10)+' fue confirmada. Gracias por confiar en nosotros. Disfrute su estadía.');
-    res.send(result);
-  })
-})
-
-app.get('/deleteBid/:winner',function(req,res){
-  var sql= "DELETE FROM bids WHERE id="+req.params.winner;
-  conn.query(sql,function(err, result){
-    res.send(result);
-  })
-})
-
 app.get('/openAuction/:id', (req, res) => {
   var sql = "UPDATE weeks SET weeks.auction = 1 WHERE weeks.id=" + req.params.id;
   conn.query(sql, function (err, result) {
@@ -98,12 +71,6 @@ app.get('/openAuction/:id', (req, res) => {
   })
 })
 
-app.post('/closeAuction/:id', (req, res) => {
-  var sql="UPDATE weeks SET weeks.auction = 0, weeks.reserved ='"+ req.body.data.reserved +"', weeks.idle='"+req.body.data.idle +"'WHERE weeks.id="+req.params.id;
-  conn.query(sql, function(err, result){
-    res.send(result);
-  })
-})
 
 app.post('/profile/edit', (req, res) => {
   if (req.body.data.newPassword==''){
@@ -212,7 +179,6 @@ app.post('/profile/edit', (req, res) => {
   })
 
 
-
   function createToken(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -253,12 +219,10 @@ app.post('/profile/edit', (req, res) => {
  app.get('/closeAuctions', (req, res) => {
   var actualDate = new Date();
   actualDate.setDate(actualDate.getDate()-3);
-
-  actualDate.setMonth(actualDate.getMonth()+6);
   var sql = `SELECT * FROM weeks WHERE auction=1 AND auctionDate<"${actualDate.toISOString().substring(0,10)}"`;
   conn.query(sql, function (err, result) {
     result.forEach(function (week) {
-      const sql2 = `UPDATE weeks w SET w.auction = 2 WHERE id=${week.id}`
+      const sql2 = `UPDATE weeks w SET w.auction = 2 WHERE w.id=${week.id}`
       conn.query(sql2, function (err, result) {
         if (err) throw err;
       })
