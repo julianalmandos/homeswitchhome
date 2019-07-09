@@ -1,13 +1,13 @@
 <template>
     <div class="weekCard">
-        <b-card v-if= ((!week.reserved)&compare(week.date)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem" >
+        <b-card v-if= ((!week.reserved)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem" >
             <h6>Puja Más Alta: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
                 <b-button class="transparentButton btn-block" v-if="week.auction==1" @click="openPlaceABidModal">Pujar</b-button>
             </b-card-text>
         </b-card>
-        <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle))   class="card1">
+        <b-card v-if= ((week.reserved)||(week.idle)) class="card1">
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
             </b-card-text>
@@ -61,9 +61,6 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             this.reloadMaxBid();
         },
         methods:{
-            compare(aDate){
-                return aDate > (new Date).toISOString()
-            },
             openPlaceABidModal() { 
                 this.$emit('placingBid',this.week);
             },

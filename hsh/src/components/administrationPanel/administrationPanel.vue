@@ -84,14 +84,13 @@ export default {
                 toaster: "b-toaster-bottom-right"
               }
             );
-            //this.selectWinner(response.data)
+            this.selectWinner(response.data)
           })
           .catch(error => {
             console.error(error);
           });
     },
     selectWinner(closed){
-      console.log("entre")
       closed.forEach(element => {
         axios.post("http://localhost:3000/selectWinner",{
           data: {
@@ -99,7 +98,6 @@ export default {
           }
         })
         .then(response => {
-           console.log(response.data); 
         })  
       })
     },

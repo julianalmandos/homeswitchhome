@@ -232,19 +232,27 @@ app.post('/profile/edit', (req, res) => {
 })
 
 app.post('/selectWinner', function(req,res){
-  console.log("hola")
-  var sql= "SELECT * FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek="+ req.body.data.week.id +" AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='"+req.body.data.week.date +"') ORDER BY b.price DESC";
+  var sql= "SELECT b.id, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek="+ req.body.data.week.id +" AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='"+req.body.data.week.date +"') ORDER BY b.price DESC";
   conn.query(sql,function (err,result){
     if (result.length==0){
-      console.log(result)
-      var sql2 = "UPDATE weeks SET auction = 2, idle = 1 WHERE id='"+req.body.data.week.id+"'";
+      var sql2 = "UPDATE weeks SET auction = 2, idle = 1 WHERE id="+req.body.data.week.id;
       conn.query(sql2, function (err, result) {
         if (err) throw err;
       })
     }else{
-      var sql3="UPDATE weeks SET weeks.auction = 2, weeks.reserved = 1, WHERE weeks.id="+req.body.data.week.id;
+      var email = result[0].email;
+      var sql3="UPDATE weeks SET auction = 2, reserved = 1 WHERE id="+req.body.data.week.id;
       conn.query(sql3, function(err, result){
         if (err) throw err;
+      })
+      var sql4= "SELECT name FROM properties WHERE id="+req.body.data.week.idProperty;
+      var name = '';
+      conn.query(sql4,function(err,result){
+        name = result[0].name
+      })
+      var sql5= "INSERT INTO bookings (idMaxBid) VALUES ('"+result[0].id+"')";
+      conn.query(sql5,function(err, result){
+        mailer.sendEmail(email,'Reserva confirmada para la propiedad '+name,'Usted esta recibiendo este e-mail porque su reserva para la propiedad '+name+' de la semana del '+req.body.data.week.date.substring(0,10)+' fue confirmada. Gracias por confiar en nosotros. Disfrute su estadía.');
       })
     }
   })

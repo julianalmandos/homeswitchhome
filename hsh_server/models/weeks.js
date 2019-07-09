@@ -67,7 +67,8 @@ app.get('/:id/maxbid', function (req, res) {
 })
 
 app.get('/:id', (req, res) => {
-  var sql = "SELECT * FROM weeks WHERE weeks.idproperty='" + req.params.id+ "' ORDER BY weeks.date";
+  var actualDate= new Date();
+  var sql = "SELECT * FROM weeks WHERE weeks.idproperty='" + req.params.id+ "' AND weeks.date>'"+ actualDate.toISOString().substring(0,10) +"' ORDER BY weeks.date";
   conn.query(sql, function (err, result) {
     res.send(result);
   });
