@@ -27,9 +27,13 @@
             <font-awesome-icon class="fa-5x" icon="star" style="color:#e6e600;"></font-awesome-icon>
             <b-card-text style="font-size:25px">Solicitudes Premium</b-card-text>
         </b-card>
-        <b-card class="tarjeta text-center" @click="chargeSubscription" bg-variant="light">
+       <!-- <b-card class="tarjeta text-center" @click="chargeSubscription" bg-variant="light">
             <font-awesome-icon class="fa-5x" icon="money-check"></font-awesome-icon>
             <b-card-text style="font-size:25px">Cobrar suscripcion</b-card-text>
+        </b-card> --> 
+        <b-card class="tarjeta text-center" @click="openLocationOptions" bg-variant="light">
+            <font-awesome-icon class="fa-5x" icon="map-marked"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Agregar ubicación</b-card-text>
         </b-card>
       </b-card-group>
       <br>
@@ -42,10 +46,10 @@
           <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
           <b-card-text style="font-size:25px">Abrir subastas</b-card-text>
         </b-card>
-        <!--<b-card class="tarjeta text-center" bg-variant="light" >
+        <b-card class="tarjeta text-center" bg-variant="light" >
             <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
             <b-card-text style="font-size:25px">Cerrar subastas</b-card-text>
-        </b-card>-->
+        </b-card>
       </b-card-group>
     </b-container>
   </div>
@@ -71,6 +75,9 @@ export default {
     },
     openPremiumRequests() {
       this.$router.push('/panel/premium_requests');
+    },
+    openLocationOptions() {
+      this.$router.push('/panel/location_options');
     },
     generateWeeks() {
       axios

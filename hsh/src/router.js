@@ -126,6 +126,14 @@ export default router = new Router({
       }
     },
     {
+      path: '/panel/location_options',
+      name: 'premiumRequests',
+      component: () => import('./components/administrationPanel/locationOptions.vue'),
+      meta: {
+        requiresAdmin:true,
+      }
+    },
+    {
       path: '/recover_password',
       name: 'recoverPassword',
       component: () => import('./components/recoverPassword/recoverPassword.vue')
