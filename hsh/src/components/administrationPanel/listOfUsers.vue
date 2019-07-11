@@ -12,14 +12,12 @@
             striped 
             hover 
             small
+            empty-filtered-text="No hay usuarios que correspondan con su búsqueda."
             :items="users" 
             :fields="fields"
             :filter="filter"
             stacked="md"
         >
-            <template slot="empty">
-                <h5>No hay usuarios registrados aún</h5>
-            </template>
             <template slot="empty">
                 <h5>No hay usuarios registrados aún</h5>
             </template>
