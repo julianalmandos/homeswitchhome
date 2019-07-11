@@ -136,6 +136,14 @@ export default router = new Router({
       }
     },
     {
+      path: '/panel/suscription_prices',
+      name: 'suscriptionPrices',
+      component: () => import('./components/administrationPanel/suscriptionPrices.vue'),
+      meta: {
+        requiresAdmin:true,
+      }
+    },
+    {
       path: '/recover_password',
       name: 'recoverPassword',
       component: () => import('./components/recoverPassword/recoverPassword.vue')

@@ -150,7 +150,8 @@ app.post('/profile/edit', (req, res) => {
       console.log(result);
       if(result[0]==null){
         console.log(req.body.data);
-        sql = "INSERT INTO users (email,password,name,surname,birthday,card_type,card_number,card_expiration_month,card_expiration_year,card_security_number) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toISOString().substring(0,10) + "','" + req.body.data.cardType + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "')";
+        console.log(new Date().toISOString());
+        sql = "INSERT INTO users (email,password,name,surname,birthday,card_type,card_number,card_expiration_month,card_expiration_year,card_security_number,role,credits,last_charge,register_date) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toISOString().substring(0,10) + "','" + req.body.data.cardType + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "',0,2,null,'"+new Date().toISOString().substring(0,10)+"')";
         console.log(sql);
         conn.query(sql, function (err, result) {
           if (err) throw err;
@@ -236,31 +237,43 @@ app.post('/profile/edit', (req, res) => {
     return result;
  }
  app.get('/chargeSubscription',function(req,res){
-  var sql= "SELECT * FROM users WHERE role<2";
-  conn.query(sql,function(err, result){
-    var total = 0;
-    var actual = new Date().toISOString().substring(0,10);
-    var previous = new Date();
-    previous.setMonth(previous.getMonth()-1);
-    result.forEach(element => {
-      if (element.last_charge==null || element.last_charge.toISOString()<=previous.toISOString()){
-        if (element.role == 1){
-          total = total + 5000 
-        } else {
-          total = total + 3000
-        }
-        mailer.sendEmail(element.email,'Cobro de suscripción','Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
-        var sql2 = "UPDATE users SET last_charge='"+ actual +"'WHERE id ='"+ element.id+"'";
-        conn.query(sql2,function(err, result){
-          if(err) throw err;
-        })
-        
-      }
+   var normalPrice;
+   var premiumPrice;
+  var sql = "SELECT price FROM suscription_prices WHERE role=0";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    normalPrice=result[0].price;
+    console.log(normalPrice);
+    sql = "SELECT price FROM suscription_prices WHERE role=1";
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      premiumPrice=result[0].price;
+      console.log(premiumPrice);
+      sql= "SELECT * FROM users WHERE role<2";
+      conn.query(sql,function(err, result){
+        var total = 0;
+        var actual = new Date().toISOString().substring(0,10);
+        var previous = new Date();
+        previous.setMonth(previous.getMonth()-1);
+        result.forEach(element => {
+          if (element.last_charge==null || element.last_charge.toISOString()<=previous.toISOString()){
+            if (element.role == 1){
+              total = total + premiumPrice 
+            } else {
+              total = total + normalPrice 
+            }
+            mailer.sendEmail(element.email,'Cobro de suscripción','Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
+            var sql2 = "UPDATE users SET last_charge='"+ actual +"'WHERE id ='"+ element.id+"'";
+            conn.query(sql2,function(err, result){
+              if(err) throw err;
+            })
+            
+          }
+        });
+        res.status(200).send({data:total});        
+      })
     });
-    
-    res.status(200).send({data:total});
-    
-  })
+  });
 })
 
   app.post('/bookingsOfUser', function (req, res) {
@@ -285,6 +298,29 @@ app.post('/profile/edit', (req, res) => {
     res.send(result);
   });
 })
+
+  app.get('/suscriptionPrices', (req, res) => {
+    var sql = "SELECT * FROM suscription_prices ORDER BY role ASC";
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log(result);
+      res.send(result);
+    });
+  })
+
+  app.post('/suscriptionPrices', (req, res) => {
+    var sql = "UPDATE suscription_prices SET price="+req.body.data.normalPrice+" WHERE role=0";
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      var sql = "UPDATE suscription_prices SET price="+req.body.data.premiumPrice+" WHERE role=1";
+      conn.query(sql, function (err, result) {
+        if (err) throw err;
+        res.sendStatus(200);
+      });
+    });
+  })
+
+
 
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');

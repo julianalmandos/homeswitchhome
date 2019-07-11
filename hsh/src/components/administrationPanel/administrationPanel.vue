@@ -47,6 +47,13 @@
             <b-card-text style="font-size:25px">Ver listado de usuarios</b-card-text>
         </b-card>
       </b-card-group>
+      <br>
+      <b-card-group deck>
+        <b-card class="tarjeta text-center" @click="openSuscriptionPrices" bg-variant="light">
+            <font-awesome-icon class="fa-5x" icon="dollar-sign"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Precios de Suscripción</b-card-text>
+        </b-card>
+      </b-card-group>
     </b-container>
   </div>
 </template>
@@ -74,6 +81,9 @@ export default {
     },
     openPremiumRequests() {
       this.$router.push('/panel/premium_requests');
+    },
+    openSuscriptionPrices() {
+      this.$router.push('/panel/suscription_prices');
     },
     generateWeeks() {
       axios
