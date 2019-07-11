@@ -26,6 +26,11 @@ export default router = new Router({
       component: () => import('./components/contact/contact.vue')
     },
     {
+      path: '/faq',
+      name: 'faq',
+      component: () => import('./components/faq/faq.vue')
+    },
+    {
       path: '/details/:id/:startDate/:finishDate',
       name: 'details',
       component: () => import('./components/propertyDetails/propertyDetails.vue'),

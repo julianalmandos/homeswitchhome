@@ -219,6 +219,11 @@ app.post('/profile/edit', (req, res) => {
     })
   })
 
+  app.post('/contact', function(req, res){
+    mailer.sendEmail('homeswitchhome23@gmail.com','Mensaje de '+req.body.data.surname+', '+req.body.data.name,'E-Mail: '+req.body.data.email+' Mensaje: '+req.body.data.message);
+    res.sendStatus(200);
+  })
+
 
 
   function createToken(length) {
