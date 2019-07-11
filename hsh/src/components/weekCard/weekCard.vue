@@ -6,7 +6,9 @@
             <b-card-text>
                 <!--<b-button class="transparentButton btn-block" v-if="week.auction && isAdmin" v-on:click="closeAuction">Cerrar subasta</b-button>-->
                 <!-- <b-button class="transparentButton btn-block" v-else-if="isAdmin" v-on:click="openAuction">Abrir subasta</b-button> -->
-                <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
+                <b-button class="transparentButton btn-block" v-if= ((week.auction)&&(isBid)) @click="openPlaceABidModal">Pujar</b-button>
+                <b-button class="transparentButton btn-block" v-if= (isHotSale) @click="openPlaceABidModal">Hot Sale</b-button>
+                <b-button class="transparentButton btn-block" v-if= (isDirectBooking) @click="openPlaceABidModal">Reserva directa</b-button>
             </b-card-text>
         </b-card>
         <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle))   class="card1">
@@ -42,6 +44,27 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             isAdmin() {
                 return (this.$store.state.user!=null && this.$store.state.user.role==2);
             },
+            isBid(){
+                return (stateWeek == 2)
+            },
+            isHotSale(){
+                return (stateWeek == 3)
+            },
+            isDirectBooking() {
+                return (stateWeek == 1)
+            },
+            stateWeek(aDate){
+                weekDate = new Date(aDate.substring(0,10));
+                today = new Date;
+                dif = Math.round((weekDate - today)/1000*60*60*24); //diferencia de fechas en dias.
+                if (dif < 180){
+                    return 1  //reserva directa
+                }else if(dif < 183){
+                    return 2 //subasta
+                }else{
+                    return 3
+                }
+            },
         },
         created(){
             axios.get("http://localhost:3000/weeks/"+ this.week.id+'/maxbid')
@@ -63,6 +86,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             this.reloadMaxBid();
         },
         methods:{
+            
             compare(aDate){
                 return aDate > (new Date).toISOString()
             },
