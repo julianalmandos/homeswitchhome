@@ -1,16 +1,26 @@
 <template>
     <div class="weekCard">
-        <b-card v-if= ((!week.reserved)&(!week.idle)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem" >
+        <b-card v-if= ((isInAuction())&(!week.reserved)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem" >
             <h6>Puja Más Alta: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
                 <b-button class="transparentButton btn-block" v-if="week.auction==1" @click="openPlaceABidModal">Pujar</b-button>
             </b-card-text>
         </b-card>
-        <b-card v-if= ((week.reserved)||(week.idle)) class="card1">
+        <b-card v-if= ((isInDirectReservation())&(!week.reserved)) class="card1">
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
+                <b-button v-if= (!isNormal()) class="transparentButton btn-block">Reservar</b-button>
             </b-card-text>
+        </b-card>
+        <b-card v-if= ((isInHotSale())&(!week.reserved)) class="card3">
+            <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
+            <b-card-text>
+                <b-button v-if= (!week.idle) class="transparentButton btn-block">Reservar</b-button>
+            </b-card-text>
+        </b-card> 
+        <b-card v-if= (week.reserved) class="card1">
+            <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
         </b-card>
     </div>
 </template>
@@ -40,6 +50,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             isAdmin() {
                 return (this.$store.state.user!=null && this.$store.state.user.role==2);
             },
+            
         },
         created(){
             axios.get("http://localhost:3000/weeks/"+ this.week.id+'/maxbid')
@@ -61,6 +72,34 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             this.reloadMaxBid();
         },
         methods:{
+            isNormal() {
+                return (this.$store.state.user!=null && this.$store.state.user.role==0);
+            },
+            isInAuction(){
+                var actualDate = new Date()
+                var actualDate2 = new Date()
+                actualDate.setMonth(actualDate.getMonth() + 6)
+                actualDate2.setMonth(actualDate2.getMonth() + 6)
+                actualDate2.setDate(actualDate2.getDate() - 3)
+                console.log(actualDate)
+                console.log(actualDate2)
+                console.log((this.week.date<=actualDate.toISOString().substring(0,10)&(this.week.date>=actualDate2.toISOString().substring(0,10))))
+                return ((this.week.date<=actualDate.toISOString().substring(0,10)&(this.week.date>=actualDate2.toISOString().substring(0,10))))
+            },
+            isInHotSale(){
+                var actualDate = new Date()
+                var actualDate2 = new Date()
+                actualDate.setMonth(actualDate.getMonth() + 6)
+                actualDate.setDate(actualDate.getDate() -3)
+                return ((this.week.date<actualDate.toISOString().substring(0,10))&(this.week.date>(actualDate2.toISOString().substring(0,10))))
+            },
+            isInDirectReservation(){
+                var actualDate = new Date()
+                var actualDate2 = new Date()
+                actualDate.setMonth(actualDate.getMonth() + 12)
+                actualDate2.setMonth(actualDate2.getMonth() + 6)
+                return ((this.week.date<=actualDate.toISOString().substring(0,10))&(this.week.date>actualDate2.toISOString().substring(0,10)))
+            },
             openPlaceABidModal() { 
                 this.$emit('placingBid',this.week);
             },
@@ -196,6 +235,12 @@ import placeABid from '@/components/placeABid/placeABid.vue';
 <style>
   .card1 {
     background-color:#bfbfbf;
+    color:#f2f2f2;
+    box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+    
+  }
+  .card3 {
+    background-color:#aaffff;
     color:#f2f2f2;
     box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
     

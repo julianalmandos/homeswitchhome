@@ -232,8 +232,9 @@ app.post('/profile/edit', (req, res) => {
 })
 
 app.post('/selectWinner', function(req,res){
-  var sql= "SELECT b.id, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek="+ req.body.data.week.id +" AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='"+req.body.data.week.date +"') ORDER BY b.price DESC";
+  var sql= "SELECT b.id, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek="+ req.body.data.week.id +" AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='"+req.body.data.week.date.substring(0,10) +"') ORDER BY b.price DESC";
   conn.query(sql,function (err,result){
+    console.log(result)
     if (result.length==0){ //no hay ganador, pasa a ociosa
       var sql2 = "UPDATE weeks SET auction = 2, idle = 1 WHERE id="+req.body.data.week.id;
       conn.query(sql2, function (err, result) {
