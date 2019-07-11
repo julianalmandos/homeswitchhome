@@ -33,6 +33,14 @@ app.get('/', function (req, res) {
   });
 });
 
+app.get('/users', function (req, res) {
+  var sql = "SELECT * FROM users";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
 app.post('/login', (req, res) => {
   console.log(req.body.data);
   var sql = "SELECT * FROM users us WHERE us.email='" + req.body.data.email + "'";

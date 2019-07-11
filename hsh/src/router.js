@@ -94,6 +94,11 @@ export default router = new Router({
       component: () => import('./components/bookingsRecord/bookingsRecord.vue'),
     },
     {
+      path: '/panel/users',
+      name: 'panelUsers',
+      component: () => import('./components/administrationPanel/listOfUsers.vue'),
+    },
+    {
       path: '/become_normal',
       name: 'becomeNormal',
       component: () => import('./components/convertAccount/convertAccountToNormal.vue'),
