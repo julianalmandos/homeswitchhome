@@ -47,11 +47,12 @@
     <b-card-group deck>
       <div v-for="(week, index) of this.weeks" :key="index" >
         <div class="mb-3">
-          <weekCard :week="week" @edited="reloadWeeks" @placingBid="openPlaceABidModal"></weekCard>
+          <weekCard :week="week" @edited="reloadWeeks" @placingBid="openPlaceABidModal" @openingHotSale="openHotSaleModal"></weekCard>
         </div>
       </div>
     </b-card-group>
     <placeABid v-if="showPlaceABidModal" :week="actualWeek" @placed="reloadWeeks"/>
+    <openHotSale v-if="showOpenHotSaleModal" :week="actualWeek" @placed="reloadWeeks"/>
   </div>
 </template>
 
@@ -60,12 +61,14 @@ import Vuex from 'vuex';
 import axios from 'axios';
 import weekCard from "@/components/weekCard/weekCard.vue";
 import placeABid from '@/components/placeABid/placeABid.vue';
+import openHotSale from '@/components/openHotSale/openHotSale.vue';
 
     export default {
       name: 'propertyDetails',
       components: {
         weekCard,
-        placeABid
+        placeABid,
+        openHotSale,
       },
       data() {
         return{
@@ -74,6 +77,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
           images: {},
           actualWeek: {},
           showPlaceABidModal: false,
+          showOpenHotSaleModal:false,
           description: '',
           img: new Array(5),
         }
@@ -121,6 +125,14 @@ import placeABid from '@/components/placeABid/placeABid.vue';
           this.actualWeek=week;
           await this.togglePlaceABidModal();
           this.$bvModal.show('placeABidModal');
+        },
+        toggleOpenHotSaleModal() {
+          this.showOpenHotSaleModal=true;
+        },
+        async openHotSaleModal(week) {
+          this.actualWeek=week;
+          await this.toggleOpenHotSaleModal();
+          this.$bvModal.show('openHotSaleModal');
         },
         reloadProperty() {
           axios.get("http://localhost:3000/properties/"+ this.$route.params.id)

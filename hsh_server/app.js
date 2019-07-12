@@ -283,6 +283,15 @@ app.post('/selectWinner', function(req,res){
   });
 })
 
+app.post('/weeks/:id/hotSale', function (req, res) {
+  console.log("el parametro es ",req.params.id)
+  var sql = `UPDATE weeks SET idle = ${0}, price = ${req.body.data.price} WHERE weeks.id=${req.params.id}`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  })
+})
+
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
   });

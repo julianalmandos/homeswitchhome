@@ -1,24 +1,35 @@
 <template>
     <div class="weekCard">
+
         <b-card v-if= ((isInAuction())&(!week.reserved)) border-variant="dark" class="card2" style="max-width: 15rem;margin-bottom:1.25rem" >
             <h6>Puja Más Alta: ${{maxBid}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
-                <b-button class="transparentButton btn-block" v-if="week.auction==1" @click="openPlaceABidModal">Pujar</b-button>
+                <b-button class="transparentButton btn-block" v-if="(week.auction==1)&(credits())" @click="openPlaceABidModal">Pujar</b-button> 
+                <h6 v-if="week.auction==1 && (!credits())">Usted no posee creditos para pujar</h6>
             </b-card-text>
         </b-card>
+
         <b-card v-if= ((isInDirectReservation())&(!week.reserved)) class="card1">
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
-                <b-button v-if= (!isNormal()) class="transparentButton btn-block">Reservar</b-button>
+                <b-button v-if= ((!isNormal())&(credits())) class="transparentButton btn-block">Reservar</b-button>
+                <h6 v-if= ((!isNormal())&(!credits())) h6>Usted no posee creditos para reservar</h6>
+                <h6 v-if= (isNormal()) h6>No puede reservar esta semana (comun)</h6>
             </b-card-text>
         </b-card>
+
         <b-card v-if= ((isInHotSale())&(!week.reserved)) class="card3">
+            <h6 v-if= (!week.idle)>Precio: ${{week.price}}</h6>
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
             <b-card-text>
-                <b-button v-if= (!week.idle) class="transparentButton btn-block">Reservar</b-button>
+                <b-button v-if= (!week.idle) class="transparentButton btn-block">Reservar HotSale</b-button>
+                <h6 v-if= (week.idle)>No puede ser reservada (ociosa)</h6>
+                <b-button v-if= ((!week.idle)&(isAdmin)) class="transparentButton btn-block">Poner en ociosa</b-button>
+                <b-button v-if= ((week.idle)&(isAdmin)) class="transparentButton btn-block" @click="openHotSaleModal">Poner en HotSale</b-button>
             </b-card-text>
         </b-card> 
+
         <b-card v-if= (week.reserved) class="card1">
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
         </b-card>
@@ -28,12 +39,14 @@
 import Vuex from 'vuex';
 import axios from 'axios';
 import placeABid from '@/components/placeABid/placeABid.vue';
+import openHotSale from '@/components/openHotSale/openHotSale.vue'
 
     export default {
         name: "weekCard",
         props: ["week"],
         components: {
             placeABid,
+            openHotSale,
         },
         data() {
             return {
@@ -75,15 +88,15 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             isNormal() {
                 return (this.$store.state.user!=null && this.$store.state.user.role==0);
             },
+            credits(){
+                return (this.$store.state.user.credits > 0)
+            },
             isInAuction(){
                 var actualDate = new Date()
                 var actualDate2 = new Date()
                 actualDate.setMonth(actualDate.getMonth() + 6)
                 actualDate2.setMonth(actualDate2.getMonth() + 6)
                 actualDate2.setDate(actualDate2.getDate() - 3)
-                console.log(actualDate)
-                console.log(actualDate2)
-                console.log((this.week.date<=actualDate.toISOString().substring(0,10)&(this.week.date>=actualDate2.toISOString().substring(0,10))))
                 return ((this.week.date<=actualDate.toISOString().substring(0,10)&(this.week.date>=actualDate2.toISOString().substring(0,10))))
             },
             isInHotSale(){
@@ -102,6 +115,9 @@ import placeABid from '@/components/placeABid/placeABid.vue';
             },
             openPlaceABidModal() { 
                 this.$emit('placingBid',this.week);
+            },
+            openHotSaleModal() {
+                this.$emit('openingHotSale',this.week);
             },
             reloadMaxBid(){
                 console.log('reload');
@@ -240,7 +256,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
     
   }
   .card3 {
-    background-color:#aaffff;
+    background-color:#ffaaff;
     color:#f2f2f2;
     box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
     
