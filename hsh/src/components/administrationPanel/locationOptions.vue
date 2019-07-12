@@ -5,15 +5,15 @@
       <br>
       <b-card-group deck>
         <b-card class="tarjeta text-center" v-b-modal.country bg-variant="light">
-          <font-awesome-icon class="fa-5x" icon="list-alt"></font-awesome-icon>
+          <font-awesome-icon class="fa-5x" icon="map"></font-awesome-icon>
           <b-card-text style="font-size:25px">Agregar país</b-card-text>
         </b-card>
         <b-card class="tarjeta text-center" v-b-modal.province bg-variant="light">
-          <font-awesome-icon class="fa-5x" icon="calendar-alt"></font-awesome-icon>
+          <font-awesome-icon class="fa-5x" icon="map-marker-alt"></font-awesome-icon>
           <b-card-text style="font-size:25px">Agregar provincia</b-card-text>
         </b-card>
         <b-card class="tarjeta text-center" v-b-modal.locality bg-variant="light">
-          <font-awesome-icon class="fa-5x" icon="home"></font-awesome-icon>
+          <font-awesome-icon class="fa-5x" icon="map-signs"></font-awesome-icon>
           <b-card-text style="font-size:25px">Agregar localidad</b-card-text>
         </b-card>
       </b-card-group> 
@@ -42,6 +42,15 @@
         <b-alert class="mt-sm-3" v-model="showErrorAdding" variant="danger" dismissible><font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> La localidad ya existe.</b-alert>
         <b-alert class="mt-sm-3" v-model="showCorrectAdding" variant="success" dismissible><font-awesome-icon icon="check"></font-awesome-icon> La localidad fue agregada correctamente.</b-alert>
         <b-alert class="mt-sm-3" v-model="showErrorEmptyFields" variant="danger" dismissible><font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Por favor, complete todos los campos.</b-alert>
+        <b-form-group id="country" label="Ingrese un país:" label-for="input-1">
+          <b-form-select id="input-1" v-model="country" @change="getProvinces(country)" :options="countries" required/>
+        </b-form-group>
+        <b-form-group id="country" label="Ingrese una provincia:" label-for="input-1">
+          <b-form-select id="input-1" v-model="province" :options="provinces" required/>
+        </b-form-group>
+        <b-form-group id="province" label="Ingrese una localidad:" label-for="input-1">
+          <b-form-input id="input-1" v-model="locality" required/>
+        </b-form-group>
         <b-button class="blueButton" type="submit" @click= addLocality>Agregar</b-button>
       </b-modal>
     </b-container>
@@ -61,8 +70,8 @@ export default {
       showCorrectAdding: false,
       showErrorAdding: false,
       showErrorEmptyFields: false,
-      countries: {},
-      provinces: {}
+      countries: [],
+      provinces: []
     }
   },
   created(){
@@ -72,16 +81,28 @@ export default {
     getCountries(){
       axios.get("http://localhost:3000/countries/")
           .then(response => {
-            this.countries = response.data
-            console.log (response.data)
+            this.countries= [];
+            response.data.forEach(country => {
+              this.countries.push(country.name);
+            })
           })
           .catch(error => {
             console.log(error);
           });
     
     },
-    getProvinces(){
-
+    getProvinces(country){
+      axios.get("http://localhost:3000/provinces/"+country)
+          .then(response => {
+            console.log(response.data)
+            this.provinces=[];
+            response.data.forEach(province => {
+              this.provinces.push(province.name);
+            })
+          })
+          .catch(error => {
+            console.log(error);
+          });
     },
     resetModal() {
       this.showCorrectAdding= false;
@@ -90,6 +111,7 @@ export default {
       this.country='';
       this.province='';
       this.locality='';
+      this.provinces= []
     },
     resetAlerts(){
       this.showCorrectAdding= false;
@@ -104,6 +126,7 @@ export default {
           })
           .then(response => {
             this.showCorrectAdding=true;
+            this.getCountries();
           })
           .catch(error => {
             this.showErrorAdding=true;
@@ -134,7 +157,7 @@ export default {
       this.resetAlerts(); 
       if ((this.country!=='')&(this.province!=='')&(this.locality!=='')){
         axios.post("http://localhost:3000/locality/", {
-            data: { locality: this.locality }
+            data: { country:this.country, province: this.province, locality: this.locality }
           })
           .then(response => {
             this.showCorrectAdding=true;

@@ -32,7 +32,7 @@
             <b-card-text style="font-size:25px">Cobrar suscripcion</b-card-text>
         </b-card> --> 
         <b-card class="tarjeta text-center" @click="openLocationOptions" bg-variant="light">
-            <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
+            <font-awesome-icon class="fa-5x" icon="globe-americas"></font-awesome-icon>
             <b-card-text style="font-size:25px">Agregar ubicación</b-card-text>
         </b-card>
       </b-card-group>

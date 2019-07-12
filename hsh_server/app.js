@@ -280,6 +280,16 @@ app.get('/countries', function (req,res){
   })
 })
 
+app.get('/provinces/:country', function (req,res){
+  var sql2 = "SELECT id FROM countries WHERE name='"+req.params.country+"'"
+  conn.query(sql2, function(err,result){
+    var sql = "SELECT name FROM provinces WHERE idCountry='"+result[0].id+"'";
+    conn.query (sql, function (err,result){
+      res.send(result)
+    })
+  })
+})
+
 app.post('/country', function (req,res){
   var sql = "SELECT * FROM countries WHERE name='"+req.body.data.country+"'"
   conn.query (sql, function (err,result){
@@ -301,8 +311,25 @@ app.post('/province', function (req,res){
     if (result.length==0){
       var sql2 = "SELECT id FROM countries WHERE name='"+req.body.data.country+"'"
       conn.query(sql2, function(err,result){
+        var sql3 = "INSERT INTO provinces (name, idCountry) VALUES ('"+req.body.data.province+"',"+ result[0].id+")"
+        conn.query(sql3, function(err,result){
+         if (err) throw err;
+         res.send(result);
+        }) 
+      })
+    }else{
+      res.status(401).send();
+    }
+  })
+})
 
-        var sql3 = "INSERT INTO provinces (name, idCountry) VALUES ('"+req.body.data.country+"',"+ result.id+")"
+app.post('/locality', function (req,res){
+  var sql = "SELECT * FROM localities l INNER JOIN provinces p ON (p.id=l.idProvince)  WHERE p.name='"+req.body.data.province+"' AND l.name='"+req.body.data.locality+"'";
+  conn.query (sql, function (err,result){
+    if (result.length==0){
+      var sql2 = "SELECT p.id FROM provinces p INNER JOIN countries c ON (c.id=p.idCountry) WHERE p.name='"+req.body.data.province+"' AND c.name='"+ req.body.data.country+"'";
+      conn.query(sql2, function(err,result){
+        var sql3 = "INSERT INTO localities (name, idProvince) VALUES ('"+req.body.data.province+"',"+ result[0].id+")"
         conn.query(sql3, function(err,result){
          if (err) throw err;
          res.send(result);
