@@ -55,10 +55,9 @@ export default {
   methods: {
     openHotSaleForAWeek() { 
       this.resetAlerts(); 
-      if(this.$store.state.user !== null && this.price != '' && this.price > 0){
-          console.log("entreeeeeeeeeee")
+      if(this.$store.state.user !== null && this.price != '' && this.price > 0){ 
         axios
-          .post("http://localhost:3000/weeks/" + this.week.id + "/hotSale", {
+          .post("http://localhost:3000/weeks/" + this.week.id + "/hotSale/price", {
             data: {
               id: this.week.id,
               price: this.price,  

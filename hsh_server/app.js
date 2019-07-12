@@ -20,9 +20,9 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use('/properties',propertiesRouter);
-app.use('/weeks',weeksRouter);
-app.use('/',convertAccountsRouter);
+app.use('/properties', propertiesRouter);
+app.use('/weeks', weeksRouter);
+app.use('/', convertAccountsRouter);
 
 //Ruta de prueba
 app.get('/', function (req, res) {
@@ -58,8 +58,8 @@ app.post('/login', (req, res) => {
 })
 
 app.get('/images/:id', (req, res) => {
-  var sql="SELECT images.image FROM images WHERE images.idproperty="+req.params.id;
-  conn.query(sql, function(err, result){
+  var sql = "SELECT images.image FROM images WHERE images.idproperty=" + req.params.id;
+  conn.query(sql, function (err, result) {
     res.send(result);
   });
 })
@@ -73,153 +73,153 @@ app.get('/openAuction/:id', (req, res) => {
 
 
 app.post('/profile/edit', (req, res) => {
-  if (req.body.data.newPassword==''){
-    var sql="UPDATE users SET card_number="+ req.body.data.card_number+", card_security_number="+req.body.data.card_security_number+", card_expiration_month="+ req.body.data.card_expiration_month+", card_expiration_year="+req.body.data.card_expiration_year+" WHERE id="+req.body.data.userid;
-    conn.query(sql, function(err, result){
+  if (req.body.data.newPassword == '') {
+    var sql = "UPDATE users SET card_number=" + req.body.data.card_number + ", card_security_number=" + req.body.data.card_security_number + ", card_expiration_month=" + req.body.data.card_expiration_month + ", card_expiration_year=" + req.body.data.card_expiration_year + " WHERE id=" + req.body.data.userid;
+    conn.query(sql, function (err, result) {
       res.send(result);
     })
-  }else{
+  } else {
     var contraseña = bcrypt.hashSync(req.body.data.newPassword, 8);
     console.log(contraseña)
-    var sql1="UPDATE users SET password='"+contraseña+"', card_number='"+ req.body.data.card_number+"', card_security_number='"+req.body.data.card_security_number+"', card_expiration_month='"+ req.body.data.card_expiration_month+"', card_expiration_year='"+req.body.data.card_expiration_year+"'WHERE id="+req.body.data.userid;
-    conn.query(sql1, function(err, result){
+    var sql1 = "UPDATE users SET password='" + contraseña + "', card_number='" + req.body.data.card_number + "', card_security_number='" + req.body.data.card_security_number + "', card_expiration_month='" + req.body.data.card_expiration_month + "', card_expiration_year='" + req.body.data.card_expiration_year + "'WHERE id=" + req.body.data.userid;
+    conn.query(sql1, function (err, result) {
       res.send(contraseña);
-      
+
     })
   };
-  
+
 })
 
 
-  app.post('/validatetoken', (req, res) => {
-    try {
-      var decoded = jwt.verify(req.body.token, 'shhhhh');
-      res.send(true);
-    } catch (err) {
-      res.send(false);
-    }
-  })
+app.post('/validatetoken', (req, res) => {
+  try {
+    var decoded = jwt.verify(req.body.token, 'shhhhh');
+    res.send(true);
+  } catch (err) {
+    res.send(false);
+  }
+})
 
-  app.post('/register', function (req, res) {
-    //console.log(req.body.data);
-    var contraseña = bcrypt.hashSync(req.body.data.password, 8);
-    //falta chequear si el email ya existe
-    var sql = "SELECT * FROM users us WHERE us.email='"+req.body.data.email+"'";
-    conn.query(sql, function (err, result) {
-      console.log(result);
-      if(result[0]==null){
-        console.log(req.body.data);
-        sql = "INSERT INTO users (email,password,name,surname,birthday,card_type,card_number,card_expiration_month,card_expiration_year,card_security_number) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toLocaleDateString() + "','" + req.body.data.cardType + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "')";
-        console.log(sql);
-        conn.query(sql, function (err, result) {
-          if (err) throw err;
-          res.status(200).send(result);
-        });
-      }else{
-        res.sendStatus(409);
-      }      
-    });
+app.post('/register', function (req, res) {
+  //console.log(req.body.data);
+  var contraseña = bcrypt.hashSync(req.body.data.password, 8);
+  //falta chequear si el email ya existe
+  var sql = "SELECT * FROM users us WHERE us.email='" + req.body.data.email + "'";
+  conn.query(sql, function (err, result) {
+    console.log(result);
+    if (result[0] == null) {
+      console.log(req.body.data);
+      sql = "INSERT INTO users (email,password,name,surname,birthday,card_type,card_number,card_expiration_month,card_expiration_year,card_security_number) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toLocaleDateString() + "','" + req.body.data.cardType + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "')";
+      console.log(sql);
+      conn.query(sql, function (err, result) {
+        if (err) throw err;
+        res.status(200).send(result);
+      });
+    } else {
+      res.sendStatus(409);
+    }
   });
+});
 
-  app.get('/bookings', function (req, res) {
-    var sql="SELECT w.date,p.name,b.email,b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty)"
-    conn.query(sql, function (err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
-  })
+app.get('/bookings', function (req, res) {
+  var sql = "SELECT w.date,p.name,b.email,b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty)"
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
 
-  app.post('/recoverPassword', function (req, res) {
-    var sql="SELECT * FROM users u WHERE u.email='"+req.body.data.email+"'";
-    conn.query(sql, function (err, result) {
-      if(err) throw err;
-      if(result[0]==null){
-        res.sendStatus(409);
-      } else {
-        //CREAR TOKEN, POR AHORA SERA EL EMAIL (BUSCAR ALGORITMO)
-        var token=createToken(10);
-        mailer.sendEmail(req.body.data.email,'Recuperación de Contraseña','Por favor, haga click en el siguiente enlace para cambiar su contraseña: http://localhost:8080/recover_password/'+token);
-        var sql="UPDATE users SET recover_password_token='"+token+"' WHERE email='"+req.body.data.email+"'";
-        conn.query(sql, function (err, result) {
-          if(err) throw err;
-          res.status(200).send(result);
-        })
-      }
-    })
-  })
-
-  app.post('/changePassword', function (req, res) {
-    var sql="SELECT * FROM users u WHERE u.recover_password_token='"+req.body.data.token+"'";
-    conn.query(sql, function (err, result) {
-      if(err) throw err;
-      if(result[0]==null){
-        res.sendStatus(409);
-      } else {
-        //CAMBIO CONTRASEÑA
-        var contraseña = bcrypt.hashSync(req.body.data.password, 8);
-        var sql="UPDATE users SET password='"+contraseña+"',recover_password_token='' WHERE recover_password_token='"+req.body.data.token+"'";
-        conn.query(sql, function (err, result) {
-          if(err) throw err;
-          res.status(200).send(result);
-        })
-      }
-    })
-  })
-
-  app.post('/tokenExists', function (req, res) {
-    var sql="SELECT * FROM users u WHERE u.recover_password_token='"+req.body.data.token+"'";
-    conn.query(sql, function (err, result) {
-      if(err) throw err;
-      if(result[0]==null){
-        res.sendStatus(409);
-      }else{
-        res.sendStatus(200);
-      }
-    })
-  })
-
-
-  function createToken(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+app.post('/recoverPassword', function (req, res) {
+  var sql = "SELECT * FROM users u WHERE u.email='" + req.body.data.email + "'";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result[0] == null) {
+      res.sendStatus(409);
+    } else {
+      //CREAR TOKEN, POR AHORA SERA EL EMAIL (BUSCAR ALGORITMO)
+      var token = createToken(10);
+      mailer.sendEmail(req.body.data.email, 'Recuperación de Contraseña', 'Por favor, haga click en el siguiente enlace para cambiar su contraseña: http://localhost:8080/recover_password/' + token);
+      var sql = "UPDATE users SET recover_password_token='" + token + "' WHERE email='" + req.body.data.email + "'";
+      conn.query(sql, function (err, result) {
+        if (err) throw err;
+        res.status(200).send(result);
+      })
     }
-    return result;
- }
- app.get('/chargeSubscription',function(req,res){
-  var sql= "SELECT * FROM users WHERE role<2";
-  conn.query(sql,function(err, result){
+  })
+})
+
+app.post('/changePassword', function (req, res) {
+  var sql = "SELECT * FROM users u WHERE u.recover_password_token='" + req.body.data.token + "'";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result[0] == null) {
+      res.sendStatus(409);
+    } else {
+      //CAMBIO CONTRASEÑA
+      var contraseña = bcrypt.hashSync(req.body.data.password, 8);
+      var sql = "UPDATE users SET password='" + contraseña + "',recover_password_token='' WHERE recover_password_token='" + req.body.data.token + "'";
+      conn.query(sql, function (err, result) {
+        if (err) throw err;
+        res.status(200).send(result);
+      })
+    }
+  })
+})
+
+app.post('/tokenExists', function (req, res) {
+  var sql = "SELECT * FROM users u WHERE u.recover_password_token='" + req.body.data.token + "'";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    if (result[0] == null) {
+      res.sendStatus(409);
+    } else {
+      res.sendStatus(200);
+    }
+  })
+})
+
+
+function createToken(length) {
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+app.get('/chargeSubscription', function (req, res) {
+  var sql = "SELECT * FROM users WHERE role<2";
+  conn.query(sql, function (err, result) {
     var total = 0;
-    var actual = new Date().toISOString().substring(0,10);
+    var actual = new Date().toISOString().substring(0, 10);
     var previous = new Date();
-    previous.setMonth(previous.getMonth()-1);
+    previous.setMonth(previous.getMonth() - 1);
     result.forEach(element => {
-      if (element.last_charge==null || element.last_charge.toISOString()<=previous.toISOString()){
-        if (element.role == 1){
-          total = total + 5000 
+      if (element.last_charge == null || element.last_charge.toISOString() <= previous.toISOString()) {
+        if (element.role == 1) {
+          total = total + 5000
         } else {
           total = total + 3000
         }
-        mailer.sendEmail(element.email,'Cobro de suscripción','Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
-        var sql2 = "UPDATE users SET last_charge='"+ actual +"'WHERE id ='"+ element.id+"'";
-        conn.query(sql2,function(err, result){
-          if(err) throw err;
+        mailer.sendEmail(element.email, 'Cobro de suscripción', 'Se le ha cobrado la suscripción este mes. Gracias por confiar en nosotros.');
+        var sql2 = "UPDATE users SET last_charge='" + actual + "'WHERE id ='" + element.id + "'";
+        conn.query(sql2, function (err, result) {
+          if (err) throw err;
         })
-        
+
       }
     });
-    
-    res.status(200).send({data:total});
-    
+
+    res.status(200).send({ data: total });
+
   })
 })
 
- app.get('/closeAuctions', (req, res) => {
+app.get('/closeAuctions', (req, res) => {
   var actualDate = new Date();
-  actualDate.setDate(actualDate.getDate()-3);
-  var sql = `SELECT * FROM weeks WHERE auction=1 AND auctionDate<"${actualDate.toISOString().substring(0,10)}"`;
+  actualDate.setDate(actualDate.getDate() - 3);
+  var sql = `SELECT * FROM weeks WHERE auction=1 AND auctionDate<"${actualDate.toISOString().substring(0, 10)}"`;
   conn.query(sql, function (err, result) {
     result.forEach(function (week) {
       const sql2 = `UPDATE weeks w SET w.auction = 2 WHERE w.id=${week.id}`
@@ -231,51 +231,51 @@ app.post('/profile/edit', (req, res) => {
   })
 })
 
-app.post('/selectWinner', function(req,res){
-  var sql= "SELECT b.id, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek="+ req.body.data.week.id +" AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='"+req.body.data.week.date.substring(0,10) +"') ORDER BY b.price DESC";
-  conn.query(sql,function (err,result){
+app.post('/selectWinner', function (req, res) {
+  var sql = "SELECT b.id, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek=" + req.body.data.week.id + " AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='" + req.body.data.week.date.substring(0, 10) + "') ORDER BY b.price DESC";
+  conn.query(sql, function (err, result) {
     console.log(result)
-    if (result.length==0){ //no hay ganador, pasa a ociosa
-      var sql2 = "UPDATE weeks SET auction = 2, idle = 1 WHERE id="+req.body.data.week.id;
+    if (result.length == 0) { //no hay ganador, pasa a ociosa
+      var sql2 = "UPDATE weeks SET auction = 2, idle = 1 WHERE id=" + req.body.data.week.id;
       conn.query(sql2, function (err, result) {
         if (err) throw err;
       })
-    }else{
+    } else {
       var email = result[0].email;
-      var sql3="UPDATE weeks SET auction = 2, reserved = 1 WHERE id="+req.body.data.week.id; //marcar como reservada
-      conn.query(sql3, function(err, result){
+      var sql3 = "UPDATE weeks SET auction = 2, reserved = 1 WHERE id=" + req.body.data.week.id; //marcar como reservada
+      conn.query(sql3, function (err, result) {
         if (err) throw err;
       })
-      var sql4= "SELECT name FROM properties WHERE id="+req.body.data.week.idProperty; //obtener nombre de la propiedad para el mail
+      var sql4 = "SELECT name FROM properties WHERE id=" + req.body.data.week.idProperty; //obtener nombre de la propiedad para el mail
       var name = '';
-      conn.query(sql4,function(err,result){
+      conn.query(sql4, function (err, result) {
         name = result[0].name
       })
-      var sql5= "INSERT INTO bookings (idMaxBid) VALUES ('"+result[0].id+"')"; //insertar reserva en la tabla de reservas
-      conn.query(sql5,function(err, result){
-        mailer.sendEmail(email,'Reserva confirmada para la propiedad '+name,'Usted esta recibiendo este e-mail porque su reserva para la propiedad '+name+' de la semana del '+req.body.data.week.date.substring(0,10)+' fue confirmada. Gracias por confiar en nosotros. Disfrute su estadía.');
+      var sql5 = "INSERT INTO bookings (idMaxBid) VALUES ('" + result[0].id + "')"; //insertar reserva en la tabla de reservas
+      conn.query(sql5, function (err, result) {
+        mailer.sendEmail(email, 'Reserva confirmada para la propiedad ' + name, 'Usted esta recibiendo este e-mail porque su reserva para la propiedad ' + name + ' de la semana del ' + req.body.data.week.date.substring(0, 10) + ' fue confirmada. Gracias por confiar en nosotros. Disfrute su estadía.');
       })
       //falta consumir credito
     }
   })
 })
 
-  app.post('/bookingsOfUser', function (req, res) {
-    var sql = `SELECT w.date, p.name, b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
-    conn.query(sql, function (err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
-  })
+app.post('/bookingsOfUser', function (req, res) {
+  var sql = `SELECT w.date, p.name, b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
 
-  app.post('/bidsOfUser', function (req, res) { 
-    var sql = `SELECT w.date, p.name, b.price FROM bids b INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
-    conn.query(sql, function (err, result) {
-      if (err) throw err; 
-      res.send(result);
-    });
-  })
- app.get('/auctions', (req, res) => {
+app.post('/bidsOfUser', function (req, res) {
+  var sql = `SELECT w.date, p.name, b.price FROM bids b INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
+app.get('/auctions', (req, res) => {
   var sql = "SELECT * FROM weeks WHERE weeks.auction = 1";
   conn.query(sql, function (err, result) {
     if (err) throw err;
@@ -283,8 +283,7 @@ app.post('/selectWinner', function(req,res){
   });
 })
 
-app.post('/weeks/:id/hotSale', function (req, res) {
-  console.log("el parametro es ",req.params.id)
+app.post('/weeks/:id/hotSale/price', function (req, res) {
   var sql = `UPDATE weeks SET idle = ${0}, price = ${req.body.data.price} WHERE weeks.id=${req.params.id}`;
   conn.query(sql, function (err, result) {
     if (err) throw err;
@@ -292,7 +291,38 @@ app.post('/weeks/:id/hotSale', function (req, res) {
   })
 })
 
-  app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-  });
+app.post('/weeks/:id/hotSale/booking', function (req, res) { 
+  var sql1 = `SELECT * FROM bookings b INNER JOIN weeks w ON (b.idWeek=w.id) WHERE (w.date = "${req.body.data.date.substring(0,10)}")`
+  conn.query(sql1, function (err, result) { 
+    if (result.length == 0) {
+      var sql = `INSERT INTO bookings (type,idWeek,email,price) VALUES (${req.body.data.type},${req.body.data.id},"${req.body.data.email}",${req.body.data.price})`;
+      conn.query(sql, function (err, result) {
+        var sql2 = `UPDATE weeks SET reserved = 1 WHERE weeks.id=${req.params.id}`;
+        conn.query(sql2, function (err, result) {
+          if (err) throw err;
+        })
+        if (err) throw err;
+        res.sendStatus(200)
+      })
+    }else{
+      res.sendStatus(409)
+    }
+  })
+})
+
+app.post('/weeks/:id/directBooking/booking', function (req, res) {
+  var sql = `INSERT INTO bookings (type,idWeek,email) VALUES (${req.body.data.type},${req.body.data.id},"${req.body.data.email}")`;
+  conn.query(sql, function (err, result) {
+    var sql2 = `UPDATE weeks SET reserved = 1 WHERE weeks.id=${req.params.id}`;
+    conn.query(sql2, function (err, result) {
+      if (err) throw err;
+    })
+    if (err) throw err;
+    res.send(result);
+  })
+})
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+});
 
