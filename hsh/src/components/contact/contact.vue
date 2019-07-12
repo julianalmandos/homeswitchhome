@@ -1,5 +1,13 @@
 <template>
   <b-container>
+    <h1 class="titulo">¿Quiénes somos?</h1><br>
+    <div class="formulario">
+      <div style="width:60%">
+        <h5>Somos una compañía inmobiliaria con más de <strong>15</strong> años en el rubro. Hemos alquilado más de <strong>200</strong> propiedades y hemos operado con más de <strong>5000</strong> clientes.
+        Este sitio es nuestro gran paso hacia el mercado nacional e internacional.</h5>        
+      </div>
+    </div>
+    <br>
     <h1 class="titulo">Contacto</h1>
     <br>
     <h5>¿Tenés alguna duda?<br> ¿Te gustaría que publiquemos alguna de tus propiedades? <br>¿Tenés alguna sugerencia? <br></h5><h4><strong>Contactacte con nosotros!</strong></h4>
