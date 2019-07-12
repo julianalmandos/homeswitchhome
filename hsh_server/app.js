@@ -273,6 +273,47 @@ app.post('/profile/edit', (req, res) => {
   });
 })
 
+app.get('/countries', function (req,res){
+  var sql = "SELECT name FROM countries"
+  conn.query (sql, function (err,result){
+    res.send(result)
+  })
+})
+
+app.post('/country', function (req,res){
+  var sql = "SELECT * FROM countries WHERE name='"+req.body.data.country+"'"
+  conn.query (sql, function (err,result){
+    if (result.length==0){
+      var sql2 = "INSERT INTO countries (name) VALUES ('"+req.body.data.country+"')"
+      conn.query(sql2, function(err,result){
+        if (err) throw err;
+        res.send(result);
+      }) 
+    }else{
+      res.status(401).send();
+    }
+  })
+})
+
+app.post('/province', function (req,res){
+  var sql = "SELECT * FROM provinces p INNER JOIN countries c ON (c.id=p.idCountry) WHERE c.name='"+req.body.data.country+"' AND p.name='"+req.body.data.province+"'"
+  conn.query (sql, function (err,result){
+    if (result.length==0){
+      var sql2 = "SELECT id FROM countries WHERE name='"+req.body.data.country+"'"
+      conn.query(sql2, function(err,result){
+
+        var sql3 = "INSERT INTO provinces (name, idCountry) VALUES ('"+req.body.data.country+"',"+ result.id+")"
+        conn.query(sql3, function(err,result){
+         if (err) throw err;
+         res.send(result);
+        }) 
+      })
+    }else{
+      res.status(401).send();
+    }
+  })
+})
+
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
   });
