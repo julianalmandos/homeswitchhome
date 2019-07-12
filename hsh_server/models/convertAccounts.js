@@ -96,4 +96,12 @@ app.post('/acceptPremiumRequest', function (req, res) {
   });
 })
 
+app.post('/acceptAdministratorRequest', function (req, res) {
+  var sql = "UPDATE users SET role=2 WHERE id=" + req.body.data.userId;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  });
+})
+
 module.exports = app;

@@ -26,6 +26,11 @@ export default router = new Router({
       component: () => import('./components/contact/contact.vue')
     },
     {
+      path: '/faq',
+      name: 'faq',
+      component: () => import('./components/faq/faq.vue')
+    },
+    {
       path: '/details/:id/:startDate/:finishDate',
       name: 'details',
       component: () => import('./components/propertyDetails/propertyDetails.vue'),
@@ -94,6 +99,11 @@ export default router = new Router({
       component: () => import('./components/bookingsRecord/bookingsRecord.vue'),
     },
     {
+      path: '/panel/users',
+      name: 'panelUsers',
+      component: () => import('./components/administrationPanel/listOfUsers.vue'),
+    },
+    {
       path: '/become_normal',
       name: 'becomeNormal',
       component: () => import('./components/convertAccount/convertAccountToNormal.vue'),
@@ -127,8 +137,13 @@ export default router = new Router({
     },
     {
       path: '/panel/location_options',
-      name: 'premiumRequests',
+      name: 'locationOptions',
       component: () => import('./components/administrationPanel/locationOptions.vue'),
+    },
+    {
+      path: '/panel/suscription_prices',
+      name: 'suscriptionPrices',
+      component: () => import('./components/administrationPanel/suscriptionPrices.vue'),
       meta: {
         requiresAdmin:true,
       }

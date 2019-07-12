@@ -12,6 +12,8 @@
         <b-navbar-nav>
           <b-nav-item class="navLink" to="/"><strong><font-awesome-icon icon="home"></font-awesome-icon> Inicio</strong></b-nav-item>
           <b-nav-item v-if="user!=null" class="navLink" to="/auctions"><strong><font-awesome-icon icon="gavel"></font-awesome-icon> Subastas</strong></b-nav-item>
+          <b-nav-item class="navLink" to="/faq"><strong><font-awesome-icon icon="question-circle"></font-awesome-icon> Preguntas Frecuentes</strong></b-nav-item>
+          <b-nav-item class="navLink" to="/contact"><strong><font-awesome-icon icon="archway"></font-awesome-icon> ¿Quiénes somos?</strong></b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
