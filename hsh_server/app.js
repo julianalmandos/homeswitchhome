@@ -261,7 +261,7 @@ app.post('/selectWinner', function (req, res) {
 })
 
 app.post('/bookingsOfUser', function (req, res) {
-  var sql = `SELECT w.date, p.name, b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
+  var sql = `SELECT w.date, p.name, book.price, book.type FROM bookings book INNER JOIN weeks w ON (w.id=book.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE book.email="${req.body.data.email}" AND book.type=${req.body.data.types} AND book.cancelled=0`
   conn.query(sql, function (err, result) {
     if (err) throw err;
     res.send(result);
@@ -291,9 +291,17 @@ app.post('/weeks/:id/hotSale/price', function (req, res) {
   })
 })
 
-app.post('/weeks/:id/hotSale/booking', function (req, res) { 
-  var sql1 = `SELECT * FROM bookings b INNER JOIN weeks w ON (b.idWeek=w.id) WHERE (w.date = "${req.body.data.date.substring(0,10)}")`
-  conn.query(sql1, function (err, result) { 
+app.post('/weeks/:id/hotSale/close', function (req, res) {
+  var sql = `UPDATE weeks SET idle = ${1} WHERE weeks.id=${req.params.id}`;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send(result);
+  })
+})
+
+app.post('/weeks/:id/hotSale/booking', function (req, res) {
+  var sql1 = `SELECT * FROM bookings b INNER JOIN weeks w ON (b.idWeek=w.id) WHERE (w.date = "${req.body.data.date.substring(0, 10)}")`
+  conn.query(sql1, function (err, result) {
     if (result.length == 0) {
       var sql = `INSERT INTO bookings (type,idWeek,email,price) VALUES (${req.body.data.type},${req.body.data.id},"${req.body.data.email}",${req.body.data.price})`;
       conn.query(sql, function (err, result) {
@@ -302,23 +310,35 @@ app.post('/weeks/:id/hotSale/booking', function (req, res) {
           if (err) throw err;
         })
         if (err) throw err;
+        mailer.sendEmail(req.body.data.email, `Usted reservó una semana para la semana ${req.body.data.date.substring(0,10)} para la propiedad ${req.body.data.nameProperty}. El precio fue: ${req.body.data.price}`);
         res.sendStatus(200)
       })
-    }else{
+    } else {
       res.sendStatus(409)
     }
   })
 })
 
 app.post('/weeks/:id/directBooking/booking', function (req, res) {
-  var sql = `INSERT INTO bookings (type,idWeek,email) VALUES (${req.body.data.type},${req.body.data.id},"${req.body.data.email}")`;
-  conn.query(sql, function (err, result) {
-    var sql2 = `UPDATE weeks SET reserved = 1 WHERE weeks.id=${req.params.id}`;
-    conn.query(sql2, function (err, result) {
-      if (err) throw err;
-    })
-    if (err) throw err;
-    res.send(result);
+  var sql1 = `SELECT * FROM bookings b INNER JOIN weeks w ON (b.idWeek=w.id) WHERE (w.date = "${req.body.data.date.substring(0, 10)}")`
+  conn.query(sql1, function (err, result) {
+    if (result.length == 0) {
+      var sql = `INSERT INTO bookings (type,idWeek,email) VALUES (${req.body.data.type},${req.body.data.id},"${req.body.data.email}")`;
+      conn.query(sql, function (err, result) {
+        var sql2 = `UPDATE weeks SET reserved = 1 WHERE weeks.id=${req.params.id}`;
+        conn.query(sql2, function (err, result) {
+          if (err) throw err;
+        })
+        var sql3 = `UPDATE users SET credits=credits-1 WHERE email="${req.body.data.email}"`
+        conn.query(sql3, function (err, result) {
+          if (err) throw err;
+        })
+        if (err) throw err;
+        mailer.sendEmail(req.body.data.email, `Usted reservó una semana para la semana ${req.body.data.date.substring(0,10)} para la propiedad ${req.body.data.nameProperty}`);
+        res.sendStatus(200)
+      })
+    } else
+      res.sendStatus(409)
   })
 })
 

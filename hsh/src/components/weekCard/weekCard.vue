@@ -47,6 +47,7 @@
         <b-button
           v-if="((!week.idle)&(isAdmin))"
           class="transparentButton btn-block"
+          @click="closeHotSale"
         >Poner en ociosa</b-button>
         <b-button
           v-if="((week.idle)&(isAdmin))"
@@ -166,11 +167,13 @@ export default {
                 price: this.week.price,
                 type: 2,
                 email: this.$store.state.user.email,
-                date: this.week.date
+                date: this.week.date,
+                nameProperty: this.property.name
               }
             }
           )
           .then(response => {
+            this.$emit("edited");
             this.$bvToast.toast("La reserva fue exitosa", {
               title: "Operación exitosa",
               variant: "success",
@@ -192,18 +195,66 @@ export default {
       }
     },
     bookDirectBooking() {
-      axios.post(
-        "http://localhost:3000/weeks/" +
-          this.week.id +
-          "/directBooking/booking",
-        {
-          data: {
-            id: this.week.id,
-            type: 0,
-            email: this.$store.state.user.email
-          }
-        }
-      );
+      if (confirm("¿Esta seguro que desea reservar la propiedad?")) {
+        axios
+          .post(
+            "http://localhost:3000/weeks/" +
+              this.week.id +
+              "/directBooking/booking",
+            {
+              data: {
+                id: this.week.id,
+                date: this.week.date,
+                type: 0,
+                email: this.$store.state.user.email,
+                nameProperty: this.property.name
+              }
+            }
+          )
+          .then(response => {
+            this.$emit("edited");
+            this.$store.state.user.credits = this.$store.state.user.credits - 1;
+            this.$bvToast.toast("La reserva fue exitosa", {
+              title: "Operación exitosa",
+              variant: "success",
+              autoHideDelay: 5000,
+              toaster: "b-toaster-bottom-right"
+            });
+          })
+          .catch(error => {
+            this.$bvToast.toast(
+              "Ya tiene una semana reservada para esa fecha",
+              {
+                title: "Operación fallida",
+                variant: "danger",
+                autoHideDelay: 5000,
+                toaster: "b-toaster-bottom-right"
+              }
+            );
+          });
+      }
+    },
+    closeHotSale() {
+      if (confirm("¿Esta seguro que desea poner la semana en ociosa?")) {
+        axios
+          .post(
+            "http://localhost:3000/weeks/" + this.week.id + "/hotSale/close",
+            {
+              data: {
+                id: this.week.id
+              }
+            }
+          )
+          .then(response => {
+            this.$emit("edited");
+            this.$bvToast.toast("La operación fue realizada con éxito", {
+              title: "Operación exitosa",
+              variant: "success",
+              autoHideDelay: 5000,
+              toaster: "b-toaster-bottom-right"
+            });
+          });
+      }
     },
     reloadMaxBid() {
       console.log("reload");
