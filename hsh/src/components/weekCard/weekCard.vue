@@ -7,6 +7,8 @@
                 <!--<b-button class="transparentButton btn-block" v-if="week.auction && isAdmin" v-on:click="closeAuction">Cerrar subasta</b-button>-->
                 <!-- <b-button class="transparentButton btn-block" v-else-if="isAdmin" v-on:click="openAuction">Abrir subasta</b-button> -->
                 <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
+                <b-button v-if="isFavourite()" class="redButton btn-block"><font-awesome-icon icon="heart" style="color:#ff6e6e;stroke: black;stroke-width: 20;"></font-awesome-icon> Agregar a favoritos</b-button>
+                <b-button v-else class="redButton btn-block"><font-awesome-icon icon="heart-broken" style="color:#ff6e6e;stroke: black;stroke-width: 20;"></font-awesome-icon> Quitar de favoritos</b-button>
             </b-card-text>
         </b-card>
         <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle))   class="card1">
@@ -179,6 +181,9 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 })        
             },
+            isFavourite(){
+                return true;
+            }
 
             /*openAuction: function (){
                 axios.get("http://localhost:3000/openAuction/"+ this.week.id)
@@ -205,5 +210,13 @@ import placeABid from '@/components/placeABid/placeABid.vue';
   }
   .card2 {
     box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+  }
+  .redButton {
+      background-color:white!important;
+      color:black!important;
+  }
+  .redButton:hover {
+      background-color: rgba(255, 135, 135, 0.5)!important;
+      color:black!important;
   }
 </style>
