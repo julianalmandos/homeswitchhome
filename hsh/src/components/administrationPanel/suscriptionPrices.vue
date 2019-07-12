@@ -37,6 +37,24 @@
         },
         methods: {
             changeSuscriptionPrices(){
+                if(this.prices[0].price<=0 || this.prices[1].price<=0){
+                    this.$bvToast.toast('Los precios deben ser mayores a 0.', {
+                        title: 'Modificación fallida!',
+                        variant: 'danger',
+                        autoHideDelay: 5000,
+                        toaster: 'b-toaster-bottom-right',
+                    });
+                    return false;
+                }
+                if(this.prices[0].price>=this.prices[1].price){
+                    this.$bvToast.toast('El precio de la suscripción Premium debe ser mayor al de la suscripción común.', {
+                        title: 'Modificación fallida!',
+                        variant: 'danger',
+                        autoHideDelay: 5000,
+                        toaster: 'b-toaster-bottom-right',
+                    });
+                    return false;
+                }
                 if(confirm('¿Está seguro que desea modificar los precios de suscripción?')){
                     axios.post('//localhost:3000/suscriptionPrices',{
                         data: {
