@@ -29,8 +29,43 @@ export default {
     };
   },
   beforeCreate() {
-    axios
-          .post("http://localhost:3000/properties/range", {
+    console.log(this.$route.params.locality)
+    if(this.$route.params.locality==''){
+      console.log("localidad vacia")
+       axios
+          .post("http://localhost:3000/searchRange", {
+            data: {
+              startDate: this.$route.params.startDate,
+              finishDate: this.$route.params.finishDate
+            }
+          })
+      .then(response => {
+        this.properties = response.data;
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }else{
+    if (this.$route.params.startDate==''){
+      console.log("fechas vacias")
+       axios
+          .post("http://localhost:3000/properties/searchLocality", {
+            data: {
+              locality: this.$route.params.locality,
+            }
+          })
+      .then(response => {
+        this.properties = response.data;
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }else{
+    console.log("todo")
+     axios
+          .post("http://localhost:3000/properties/searchAll", {
             data: {
               locality: this.$route.params.locality,
               startDate: this.$route.params.startDate,
@@ -44,6 +79,8 @@ export default {
       .catch(error => {
         console.log(error);
       });
+  }
+  }
   }
 };
 </script>

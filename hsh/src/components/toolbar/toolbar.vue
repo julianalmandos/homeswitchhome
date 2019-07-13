@@ -23,14 +23,14 @@
           <b-nav-item-dropdown ref="dropdown" v-if="user!==null" right>
             <template slot="button-content" >Buscar</template>
             <b-alert class="mt-sm-3" v-model="showErrorEmptyFields" variant="danger" dismissible>
-          <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Por favor, complete todos los campos antes de buscar.
+          <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Por favor, complete los campos antes de buscar.
         </b-alert> 
         <b-alert class="mt-sm-3" v-model="showErrorWrongDates" variant="danger" dismissible>
           <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> La fecha ingresada es inválida.
         </b-alert>
             <b-col>
             <h4>Localidad:</h4>
-            <b-form-input size="sm" style="width:300px;" v-model="locality" required></b-form-input>
+            <b-form-input size="sm" style="width:300px;" v-model="locality"></b-form-input>
             <br>
             <h4>Fecha inicial:</h4>
             <b-form @submit.stop.prevent="check()">
@@ -38,7 +38,8 @@
                         id="range"
                         type="date"
                         v-model="startDate"
-                        required
+                        :min="minDate()"
+                        :max="maxDate()"
                         style="width:300px"
                     ></b-form-input>
                     <h4>Fecha final:</h4>
@@ -46,7 +47,8 @@
                         id="range"
                         type="date"
                         v-model="finishDate"
-                        required
+                        :min="minDate()"
+                        :max="maxDate()"
                         style="width:300px"
                     ></b-form-input>
               <b-input-group-append>
@@ -129,24 +131,45 @@
         console.log('recibi evento');
         this.$refs.dropdown.hide();
       },
-      check(){
+      searchLocality(){
+        return (this.locality!==''&&this.startDate==''&&this.finishDate=='')
+      },
+      searchRange(){
+         return (this.locality==''&&this.startDate!==''&&this.finishDate!=='')
+      },
+      searchAll(){
+         return (this.locality!==''&&this.startDate!==''&&this.finishDate!=='')
+      },
+      checkDate(){
         var actualDate = new Date()
         actualDate= actualDate.toISOString().substring(0,10);
         var controlDate= new Date(this.startDate.substring(0,4),this.startDate.substring(5,7),this.startDate.substring(8,10));
         controlDate.setDate(controlDate.getDate()+60);
         controlDate = controlDate.toISOString().substring(0,10);
-        console.log(this.startDate);
-        console.log(this.finishDate);
-        if(this.locality !== '' && this.startDate !== '' && this.finishDate !== ''){
-          if ((this.startDate>this.finishDate)||(controlDate<=this.finishDate)||(this.startDate<actualDate)){
+        return (this.startDate>this.finishDate)||(controlDate<=this.finishDate)||(this.startDate<actualDate)
+      },
+      check(){
+       
+        if(this.searchLocality()||this.searchRange()||this.searchAll()){
+          if (!this.searchLocality()&&this.checkDate()){
             this.showErrorWrongDates = true
           }else{
             this.$router.push('/search_properties/'+this.locality+'/'+this.startDate+'/'+this.finishDate);
           }
         }else{
-          console.log("Entro al else")
           this.showErrorEmptyFields = true
         }
+      },
+      minDate(){
+        var date = new Date()
+        date.setDate(date.getDate() -1)
+        return date.toISOString().substring(0,10)
+      },
+      maxDate(){
+        var date = new Date()
+        date.setDate(date.getDate() -1)
+        date.setMonth(date.getMonth() + 12)
+        return date.toISOString().substring(0,10)
       },
       resetModal() {
       this.showErrorEmptyFields=false;
