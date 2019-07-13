@@ -149,12 +149,17 @@
         return (this.startDate>this.finishDate)||(controlDate<=this.finishDate)||(this.startDate<actualDate)
       },
       check(){
-       
         if(this.searchLocality()||this.searchRange()||this.searchAll()){
           if (!this.searchLocality()&&this.checkDate()){
             this.showErrorWrongDates = true
           }else{
+            if(this.searchAll()){
             this.$router.push('/search_properties/'+this.locality+'/'+this.startDate+'/'+this.finishDate);
+            }else if (this.searchRange()){
+              this.$router.push('/search_properties/no/'+this.startDate+'/'+this.finishDate);
+            }else{
+               this.$router.push('/search_properties/'+this.locality+'/no/no');
+            }
           }
         }else{
           this.showErrorEmptyFields = true
@@ -162,12 +167,10 @@
       },
       minDate(){
         var date = new Date()
-        date.setDate(date.getDate() -1)
         return date.toISOString().substring(0,10)
       },
       maxDate(){
         var date = new Date()
-        date.setDate(date.getDate() -1)
         date.setMonth(date.getMonth() + 12)
         return date.toISOString().substring(0,10)
       },

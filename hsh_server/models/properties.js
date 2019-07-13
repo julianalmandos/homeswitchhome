@@ -96,24 +96,6 @@ app.get('/:id', (req, res) => {
   })
 })
 
-app.post('/searchAll', (req, res) => {
-  var sql = "SELECT * FROM properties prop WHERE prop.locality='" + req.body.data.locality+"' AND EXISTS (SELECT * FROM weeks w WHERE w.date>'"+req.body.data.startDate+"' AND w.date<'"+req.body.data.finishDate+"' AND prop.id=w.idProperty)";
-  conn.query(sql, function (err, result) {
-    res.send(result);
-  })
-})
-app.post('/searchLocatity', (req, res) => {
-  var sql = "SELECT * FROM properties prop WHERE prop.locality='" + req.body.data.locality+"'";
-  conn.query(sql, function (err, result) {
-    res.send(result);
-  })
-})
-app.post('/searchRange', (req, res) => {
-  var sql = "SELECT * FROM properties prop WHERE EXISTS (SELECT * FROM weeks w WHERE w.date>'"+req.body.data.startDate+"' AND w.date<'"+req.body.data.finishDate+"' AND prop.id=w.idProperty)";
-  conn.query(sql, function (err, result) {
-    res.send(result);
-  })
-})
 
 app.post('/:id/delete', function (req, res) {
   var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + " AND NOT EXISTS (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"

@@ -2,6 +2,7 @@
   <div class="list-of-properties">
     <div class="container">
       <h1 class="titulo">Propiedades</h1>
+      <br>
       <h5 v-if="!properties.length">No hay propiedades disponibles.</h5>
       <b-card-group v-else deck>
         <div v-for="property of properties" :key="property.id">
@@ -29,8 +30,8 @@ export default {
     };
   },
   beforeCreate() {
-    console.log(this.$route.params.locality)
-    if(this.$route.params.locality==''){
+    console.log("hola")
+    if(this.$route.params.locality=='no'){
       console.log("localidad vacia")
        axios
           .post("http://localhost:3000/searchRange", {
@@ -47,10 +48,10 @@ export default {
         console.log(error);
       });
   }else{
-    if (this.$route.params.startDate==''){
+    if (this.$route.params.startDate=='no'){
       console.log("fechas vacias")
        axios
-          .post("http://localhost:3000/properties/searchLocality", {
+          .post("http://localhost:3000/searchLocality", {
             data: {
               locality: this.$route.params.locality,
             }
@@ -65,7 +66,7 @@ export default {
   }else{
     console.log("todo")
      axios
-          .post("http://localhost:3000/properties/searchAll", {
+          .post("http://localhost:3000/searchAll", {
             data: {
               locality: this.$route.params.locality,
               startDate: this.$route.params.startDate,
