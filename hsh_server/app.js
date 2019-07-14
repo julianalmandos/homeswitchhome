@@ -320,6 +320,40 @@ app.post('/profile/edit', (req, res) => {
     });
   })
 
+  app.post('/addFavorite', (req, res) => {
+    var sql = "SELECT * FROM favorites WHERE user_id="+req.body.data.userId+" AND week_id="+req.body.data.weekId+" AND active=1";
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      if(result.length==0){
+        sql = "INSERT INTO favorites (user_id,week_id,active) VALUES ("+req.body.data.userId+","+req.body.data.weekId+",1)";
+        console.log(sql);
+        conn.query(sql, function (err, result) {
+          if (err) throw err;
+          res.sendStatus(200);
+        })
+      }else{
+        res.sendStatus(401);
+      }      
+    });
+  })
+
+  app.post('/deleteFavorite', (req, res) => {
+    var sql = "UPDATE favorites SET active=0 WHERE user_id="+req.body.data.userId+" AND week_id="+req.body.data.weekId+" AND active=1";
+    console.log(sql);
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      res.sendStatus(200);
+    })
+  })
+
+  app.get('/getFavorites/:userId', (req, res) => {
+    var sql = "SELECT * FROM favorites f INNER JOIN weeks w ON(w.id=f.week_id) INNER JOIN properties p ON (p.id=w.idProperty) WHERE user_id="+req.params.userId+" AND active=1";
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      res.send(result);
+    });
+  })  
+
 
 
   app.listen(3000, function () {

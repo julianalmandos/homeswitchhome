@@ -7,9 +7,7 @@
                 <!--<b-button class="transparentButton btn-block" v-if="week.auction && isAdmin" v-on:click="closeAuction">Cerrar subasta</b-button>-->
                 <!-- <b-button class="transparentButton btn-block" v-else-if="isAdmin" v-on:click="openAuction">Abrir subasta</b-button> -->
                 <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
-                <b-button v-if="isFavourite()" class="redButton btn-block"><font-awesome-icon icon="heart" style="color:#ff6e6e;stroke: black;stroke-width: 20;"></font-awesome-icon> Agregar a favoritos</b-button>
-                <b-button v-else class="redButton btn-block"><font-awesome-icon icon="heart-broken" style="color:#ff6e6e;stroke: black;stroke-width: 20;"></font-awesome-icon> Quitar de favoritos</b-button>
-            </b-card-text>
+                <b-button class="redButton btn-block" @click="addFavorite()"><font-awesome-icon icon="heart" style="color:#ff6e6e;stroke:black;stroke-width:20;"></font-awesome-icon> Agregar a favoritos</b-button>            </b-card-text>
         </b-card>
         <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle))   class="card1">
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
@@ -181,8 +179,29 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 })        
             },
-            isFavourite(){
-                return true;
+            addFavorite(){
+                axios.post('//localhost:3000/addFavorite',{
+                    data: {
+                        userId: this.$store.state.user.id,
+                        weekId: this.week.id
+                    }
+                })
+                .then(response => {
+                    this.$bvToast.toast('La semana fue agregada a favoritos correctamente.', {
+                        title: 'Operacion exitosa!',
+                        variant: 'success',
+                        autoHideDelay: 5000,
+                        toaster: 'b-toaster-bottom-right',
+                    });
+                })
+                .catch(error => {
+                    this.$bvToast.toast('Esa semana ya se encuentra entre tus favoritos.', {
+                        title: 'Operacion fallida!',
+                        variant: 'danger',
+                        autoHideDelay: 5000,
+                        toaster: 'b-toaster-bottom-right',
+                    });
+                })
             }
 
             /*openAuction: function (){
@@ -201,7 +220,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
    
 
 </script>
-<style>
+<style scoped>
   .card1 {
     background-color:#bfbfbf;
     color:#f2f2f2;
