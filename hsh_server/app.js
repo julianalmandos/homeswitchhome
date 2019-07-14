@@ -267,17 +267,11 @@ app.post('/bookingsOfUser', function (req, res) {
 })
 
 app.post('/selectWinner', function (req, res) {
-  var sql = "SELECT b.id, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek=" + req.body.data.week.id + " AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN weeks w ON (w.id=bo.idWeek) WHERE b.email=b.email AND w.date ='" + req.body.data.week.date.substring(0, 10) + "') ORDER BY b.price DESC";
+  var sql = "SELECT b.price, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek=" + req.body.data.week.id + " AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN weeks w ON (w.id=bo.idWeek) WHERE b.email=b.email AND w.date ='" + req.body.data.week.date.substring(0, 10) + "' AND cancelled=0) ORDER BY b.price DESC";
   conn.query(sql, function (err, result) {
-    console.log(result)
-    if (result.length == 0) { //no hay ganador, pasa a ociosa
-      var sql2 = "UPDATE weeks SET auction = 2, idle = 1 WHERE id=" + req.body.data.week.id;
-      conn.query(sql2, function (err, result) {
-        if (err) throw err;
-      })
-    } else {
+    if (result.length !== 0) { //no hay ganador, pasa a ociosa
       var email = result[0].email;
-      var sql3 = "UPDATE weeks SET auction = 2, reserved = 1 WHERE id=" + req.body.data.week.id; //marcar como reservada
+      var sql3 = "UPDATE weeks SET reserved = 1 WHERE id=" + req.body.data.week.id; //marcar como reservada
       conn.query(sql3, function (err, result) {
         if (err) throw err;
       })
@@ -286,11 +280,14 @@ app.post('/selectWinner', function (req, res) {
       conn.query(sql4, function (err, result) {
         name = result[0].name
       })
-      var sql5 = "INSERT INTO bookings (idMaxBid) VALUES ('" + result[0].id + "')"; //insertar reserva en la tabla de reservas
+      var sql5 = "INSERT INTO bookings (type, idWeek, email, price) VALUES (1,"+req.body.data.week.id+",'"+email+"','" + result[0].price + "')"; //insertar reserva en la tabla de reservas
       conn.query(sql5, function (err, result) {
         mailer.sendEmail(email, 'Reserva confirmada para la propiedad ' + name, 'Usted esta recibiendo este e-mail porque su reserva para la propiedad ' + name + ' de la semana del ' + req.body.data.week.date.substring(0, 10) + ' fue confirmada. Gracias por confiar en nosotros. Disfrute su estadía.');
       })
-      //falta consumir credito
+      var sql6 = "UPDATE users SET credits=credits-1 WHERE email='"+email+"'"; //consumir credito
+      conn.query(sql6, function (err, result) {
+        if (err) throw err;
+      })
     }
   })
 })
