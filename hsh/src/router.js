@@ -26,7 +26,12 @@ export default router = new Router({
       component: () => import('./components/contact/contact.vue')
     },
     {
-      path: '/details/:id',
+      path: '/faq',
+      name: 'faq',
+      component: () => import('./components/faq/faq.vue')
+    },
+    {
+      path: '/details/:id/:startDate/:finishDate',
       name: 'details',
       component: () => import('./components/propertyDetails/propertyDetails.vue'),
     },
@@ -50,6 +55,9 @@ export default router = new Router({
       path: '/auctions',
       name: 'activeAuctions',
       component: () => import('./components/listOfAuctions/listOfAuctions.vue'),
+      meta: {
+        requiresAuth:true,
+      }
     },
     {
       path: '/panel',
@@ -68,6 +76,11 @@ export default router = new Router({
       path: '/profile',
       name: 'showProfile',
       component: () => import('./components/profile/profile.vue'),
+    },
+    {
+      path: '/favorites',
+      name: 'listOfFavorites',
+      component: () => import('./components/listOfFavorites/listOfFavorites.vue'),
     },
     {
       path: '/panel/properties',
@@ -89,6 +102,11 @@ export default router = new Router({
       path: '/bookings',
       name: 'bookings',
       component: () => import('./components/bookingsRecord/bookingsRecord.vue'),
+    },
+    {
+      path: '/panel/users',
+      name: 'panelUsers',
+      component: () => import('./components/administrationPanel/listOfUsers.vue'),
     },
     {
       path: '/become_normal',
@@ -123,6 +141,19 @@ export default router = new Router({
       }
     },
     {
+      path: '/panel/location_options',
+      name: 'locationOptions',
+      component: () => import('./components/administrationPanel/locationOptions.vue'),
+    },
+    {
+      path: '/panel/suscription_prices',
+      name: 'suscriptionPrices',
+      component: () => import('./components/administrationPanel/suscriptionPrices.vue'),
+      meta: {
+        requiresAdmin:true,
+      }
+    },
+    {
       path: '/recover_password',
       name: 'recoverPassword',
       component: () => import('./components/recoverPassword/recoverPassword.vue')
@@ -132,6 +163,12 @@ export default router = new Router({
       name: 'changePassword',
       component: () => import('./components/changePassword/changePassword.vue')
     },
+    {
+      path: '/search_properties/:locality/:startDate/:finishDate',
+      name: 'searchProperties',
+      component: () => import('./components/searchProperties/searchProperties.vue')
+    },
+
   ]
 })
 
@@ -170,7 +207,7 @@ router.beforeEach((to, from, next) => {
       .then(response => {
         console.log('response: '+response.data);
         if(response.data){
-          if(store.state.user.role==1 || store.state.user.role==0){
+          if(store.state.user.role==1 || store.state.user.role==0 || store.state.user.role==2){
             console.log('sigueentra');
             next();
           }

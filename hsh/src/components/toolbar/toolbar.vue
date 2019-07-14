@@ -11,24 +11,52 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item class="navLink" to="/"><strong><font-awesome-icon icon="home"></font-awesome-icon> Inicio</strong></b-nav-item>
-          <b-nav-item class="navLink" to="/auctions"><strong><font-awesome-icon icon="gavel"></font-awesome-icon> Subastas</strong></b-nav-item>
+          <b-nav-item v-if="user!=null" class="navLink" to="/auctions"><strong><font-awesome-icon icon="gavel"></font-awesome-icon> Subastas</strong></b-nav-item>
+          <b-nav-item class="navLink" to="/faq"><strong><font-awesome-icon icon="question-circle"></font-awesome-icon> Preguntas Frecuentes</strong></b-nav-item>
+          <b-nav-item class="navLink" to="/contact"><strong><font-awesome-icon icon="archway"></font-awesome-icon> ¿Quiénes somos?</strong></b-nav-item>
         </b-navbar-nav>
-        <!--<b-navbar-nav>
-          <b-nav-form>
-            <b-input-group>
-              <b-form-input size="sm" style="width:400px;" placeholder="Buscar propiedad..."></b-form-input>
-              <b-input-group-append>
-                <b-button size="sm" class="my-2 my-sm-0 blueButton" type="submit">Buscar</b-button>
-              </b-input-group-append>              
-            </b-input-group>
-          </b-nav-form>
-        </b-navbar-nav>-->
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <!--<b-nav-item to="/acerca-de">Acerca De</b-nav-item>
           <b-nav-item to="/contacto">Contacto</b-nav-item>-->
-          
+          <b-nav-item-dropdown ref="dropdown" v-if="user!==null" right>
+            <template slot="button-content" >Buscar</template>
+            <b-alert class="mt-sm-3" v-model="showErrorEmptyFields" variant="danger" dismissible>
+          <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Por favor, complete todos los campos antes de buscar.
+        </b-alert> 
+        <b-alert class="mt-sm-3" v-model="showErrorWrongDates" variant="danger" dismissible>
+          <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> La fecha ingresada es inválida.
+        </b-alert>
+            <b-col>
+            <h4>Localidad:</h4>
+            <b-form-input size="sm" style="width:300px;" v-model="locality" required></b-form-input>
+            <br>
+            <h4>Fecha inicial:</h4>
+            <b-form @submit.stop.prevent="check()">
+              <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
+                        id="range1"
+                        type="date"
+                        v-model="startDate"
+                        required
+                        style="width:300px"
+                    ></b-form-input>
+                    <h4>Fecha final:</h4>
+              <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
+                        id="range2"
+                        type="date"
+                        v-model="finishDate"
+                        required
+                        style="width:300px"
+                    ></b-form-input>
+              <b-input-group-append>
+                 <!-- <b-button size="sm" class="my-2 my-sm-0 blueButton" :to="{ name: 'searchProperties', params: { locality: this.locality, startDate:this.startDate, finishDate:this.finishDate }}" type="submit">Buscar</b-button>-->
+                  <b-button size="sm" class="my-2 my-sm-0 blueButton" type="submit">Buscar</b-button>
+                  <b-button size="sm" class="my-2 my-sm-0 blueButton" type="button" @click="resetModal">Cancelar</b-button>
+              </b-input-group-append>  
+            </b-form>
+              </b-col>
+          </b-nav-item-dropdown>
           <b-nav-item-dropdown ref="dropdown" v-if="user==null" right>
             <template slot="button-content">Acceder</template>
             <access @closeDropdown="closeDropdown"/>
@@ -42,12 +70,14 @@
             </template>
 
             <b-dropdown-item to="/profile"><font-awesome-icon icon="user-alt"></font-awesome-icon> Perfil</b-dropdown-item>
+            <b-dropdown-item to="/favorites"><font-awesome-icon icon="star"></font-awesome-icon> Ver favoritos</b-dropdown-item>
             <!--<b-dropdown-item href="#">Configuración</b-dropdown-item>-->
             <!--<b-dropdown-item v-if="isPremium()" to="/become_normal"><font-awesome-icon icon="book"></font-awesome-icon> Convertirse en Normal</b-dropdown-item>
             <b-dropdown-item v-if="isNormal()" to="/become_premium"><font-awesome-icon icon="star"></font-awesome-icon> Convertirse en Premium</b-dropdown-item> -->
             <b-dropdown-item v-if="isAdmin()" to="/panel"><font-awesome-icon icon="book"></font-awesome-icon> Panel de Administracion</b-dropdown-item> 
             <b-dropdown-item @click="logoutUser"><font-awesome-icon icon="sign-out-alt"></font-awesome-icon> Cerrar Sesión</b-dropdown-item>
           </b-nav-item-dropdown>
+
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -65,6 +95,15 @@
     name: "toolbar",
     components: {
       access
+    },
+    data(){
+      return {
+        locality: '',
+        startDate: '',
+        finishDate: '',
+        showErrorEmptyFields: false,
+        showErrorWrongDates: false,
+      }
     },
     computed: {
       ...Vuex.mapState([
@@ -91,6 +130,40 @@
         console.log('recibi evento');
         this.$refs.dropdown.hide();
       },
+      check(){
+        var actualDate = new Date()
+        actualDate= actualDate.toISOString().substring(0,10);
+        var controlDate= new Date(this.startDate.substring(0,4),this.startDate.substring(5,7),this.startDate.substring(8,10));
+        controlDate.setDate(controlDate.getDate()+60);
+        controlDate = controlDate.toISOString().substring(0,10);
+        console.log(this.startDate);
+        console.log(this.finishDate);
+        if(this.locality !== '' && this.startDate !== '' && this.finishDate !== ''){
+          if ((this.startDate>this.finishDate)||(controlDate<=this.finishDate)||(this.startDate<actualDate)){
+            this.showErrorWrongDates = true
+          }else{
+            this.$router.push('/search_properties/'+this.locality+'/'+this.startDate+'/'+this.finishDate);
+          }
+        }else{
+          console.log("Entro al else")
+          this.showErrorEmptyFields = true
+        }
+      },
+      resetModal() {
+      this.showErrorEmptyFields=false;
+      this.showErrorWrongDates=false;
+      this.locality='';
+      this.startDate='';
+      this.finishDate='';
+    },
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefaul();
+      this.Subimit();
+    },
+    resetAlerts() { 
+      this.showErrorEmptyFields=false;
+      this.showErrorWrongDates = false;
+    }
     }
   }
 </script>

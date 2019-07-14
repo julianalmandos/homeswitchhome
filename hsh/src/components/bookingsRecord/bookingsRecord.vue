@@ -16,8 +16,10 @@
       </template>
       <template slot="date" slot-scope="data">{{ data.value.substring(0,10) }}</template>
       <template slot="price" slot-scope="data">${{ data.value }}</template>
+      <template slot="options" slot-scope="data">
+        <b-button @click="cancelBooking(data.item)" class="blueButton btn-sm">Cancelar Reserva</b-button>
+      </template>
     </b-table>
-
     <h1 class="titulo">Mis pujas</h1>
     <br>
     <b-table show-empty striped hover small :items="bids" :fields="fieldsForBids" stacked="md">
@@ -27,10 +29,17 @@
       <template slot="date" slot-scope="data">{{ data.value.substring(0,10) }}</template>
       <template slot="price" slot-scope="data">${{ data.value }}</template>
     </b-table>
-
     <h1 v-if="!isNormal()" class="titulo">Mis reservas directas</h1>
     <br>
-    <b-table show-empty striped hover small :items="directBooking" :fields="fieldsDirectBooking" stacked="md">
+    <b-table
+      show-empty
+      striped
+      hover
+      small
+      :items="directBooking"
+      :fields="fieldsDirectBooking"
+      stacked="md"
+    >
       <template slot="empty">
         <h5>No haz realizado pujas aún.</h5>
       </template>
@@ -47,7 +56,6 @@
       <template slot="date" slot-scope="data">{{ data.value.substring(0,10) }}</template>
       <template slot="price" slot-scope="data">${{ data.value }}</template>
     </b-table>
-
   </b-container>
 </template>
  
@@ -76,7 +84,11 @@
                         key: 'price',
                         label: 'Precio de Reserva',
                         sortable: true,
-                    }                    
+                    },
+                    {
+                        key: 'options',
+                        label: 'Opciones'
+                    }                      
                 ],
                 fieldsForBids: [
                     {
@@ -187,7 +199,30 @@
         methods: {
             isNormal(){
               return this.$store.state.user != null && this.$store.state.user.role == 0;
-             }
-        },
+             },
+            cancelBooking(element){
+                axios.post('//localhost:3000/cancelBooking',{
+                    data:{booking: element, email: this.$store.state.user.email}
+                }) 
+                .then(response => {
+                    console.log("hola")
+                    this.reloadBookings()
+                })
+                
+            },
+            reloadBookings(){
+                axios.post('//localhost:3000/bookingsOfUser',{
+                data:{
+                      email: this.$store.state.user.email,
+                }
+            })
+                .then(response => {
+                    this.bookings=response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
+        }
     }
 </script>

@@ -15,6 +15,9 @@
           v-if="(week.auction==1)&(credits())"
           @click="openPlaceABidModal"
         >Pujar</b-button>
+        <b-button class="redButton btn-block" @click="addFavorite()">
+          <font-awesome-icon icon="heart" style="color:#ff6e6e;stroke:black;stroke-width:20;"></font-awesome-icon>Agregar a favoritos
+        </b-button>
         <h6 v-if="week.auction==1 && (!credits())">Usted no posee creditos para pujar</h6>
       </b-card-text>
     </b-card>
@@ -28,6 +31,9 @@
           class="transparentButton btn-block"
           @click="bookDirectBooking"
         >Reservar</b-button>
+        <b-button class="redButton btn-block" @click="addFavorite()">
+          <font-awesome-icon icon="heart" style="color:#ff6e6e;stroke:black;stroke-width:20;"></font-awesome-icon>Agregar a favoritos
+        </b-button>
         <h6 v-if="((!isNormal())&(!credits()))" h6>Usted no posee creditos para reservar</h6>
         <h6 v-if="(isNormal())" h6>No puede reservar esta semana (comun)</h6>
       </b-card-text>
@@ -43,7 +49,10 @@
           class="transparentButton btn-block"
           @click="bookHotSale"
         >Reservar HotSale</b-button>
-        <h6 v-if="(week.idle)">No puede ser reservada (ociosa)</h6>
+        <h6 v-if="(week.idle)&(!isAdmin)">OCIOSA</h6>
+        <b-button class="redButton btn-block" @click="addFavorite()">
+          <font-awesome-icon icon="heart" style="color:#ff6e6e;stroke:black;stroke-width:20;"></font-awesome-icon>Agregar a favoritos
+        </b-button>
         <b-button
           v-if="((!week.idle)&(isAdmin))"
           class="transparentButton btn-block"
@@ -283,109 +292,38 @@ export default {
           console.log(error);
         });
     },
-    closeAuction: function() {
-      if (this.maxBid == this.property.base_price) {
-        this.reserved = 0;
-        this.idle = 1;
-        this.closeAu();
-      } else {
-        axios
-          .get("http://localhost:3000/weeks/" + this.week.id + "/winner")
-          .then(response => {
-            this.winner = response.data[0];
-            console.log("consulte el winner y es: ", this.winner.email);
-            this.checkWinner();
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }
-    },
 
-    closeAu() {
+    addFavorite() {
       axios
-        .post("http://localhost:3000/closeAuction/" + this.week.id, {
+        .post("//localhost:3000/addFavorite", {
           data: {
-            reserved: this.reserved,
-            idle: this.idle
+            userId: this.$store.state.user.id,
+            weekId: this.week.id
           }
         })
         .then(response => {
-          this.$emit("edited");
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-
-    checkWinner() {
-      axios
-        .post("http://localhost:3000/checkWinner", {
-          data: {
-            winner: this.winner.email,
-            date: this.week.date.substring(0, 10)
-          }
-        })
-        .then(response => {
-          this.hasBooking = response.data.data;
-          console.log(
-            "Me fije si el ganador tiene otras reservas para la misma semana: ",
-            this.hasBooking
-          );
-          this.makeReservation();
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    makeReservation() {
-      if (!this.hasBooking) {
-        this.idle = 0;
-        this.reserved = 1;
-        console.log(this.winner.id);
-        axios
-          .post("http://localhost:3000/makeReservation/", {
-            data: {
-              id: this.winner.id,
-              email: this.winner.email,
-              propertyName: this.property.name,
-              date: this.week.date
+          this.$bvToast.toast(
+            "La semana fue agregada a favoritos correctamente.",
+            {
+              title: "Operacion exitosa!",
+              variant: "success",
+              autoHideDelay: 5000,
+              toaster: "b-toaster-bottom-right"
             }
-          })
-          .then(response => {
-            console.log("guarde la reserva");
-          })
-          .catch(error => {
-            console.log(error);
-          });
-        this.closeAu();
-      } else {
-        this.deleteBid();
-      }
-    },
-    deleteBid() {
-      axios
-        .get("http://localhost:3000/deleteBid/" + this.winner.id)
-        .then(response => {
-          console.log("elimine maxBid");
-          this.reloadMaxBid2();
+          );
         })
         .catch(error => {
-          console.log(error);
+          this.$bvToast.toast(
+            "Esa semana ya se encuentra entre tus favoritos.",
+            {
+              title: "Operacion fallida!",
+              variant: "danger",
+              autoHideDelay: 5000,
+              toaster: "b-toaster-bottom-right"
+            }
+          );
         });
     }
-
-    /*openAuction: function (){
-                axios.get("http://localhost:3000/openAuction/"+ this.week.id)
-                .then(response => {
-                    console.log(response.data);
-                    this.$emit('edited');
-                })
-                .catch(error => {
-                    console.log(error);
-                }); 
-
-            },*/
   }
 };
 </script>
@@ -408,4 +346,12 @@ export default {
   color: #f2f2f2;
   box-shadow: 0px 6px 3px -4px rgba(0, 0, 0, 0.75);
 }
+ .redButton {
+      background-color:white!important;
+      color:black!important;
+  }
+  .redButton:hover {
+      background-color: rgba(255, 135, 135, 0.5)!important;
+      color:black!important;
+  }
 </style>

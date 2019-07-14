@@ -44,7 +44,11 @@ export default {
     },
     viewPropertyDetails() {
       if (this.isLoggedUser()) {
-        this.$router.push("/details/" + this.property.id);
+        if(this.$route.params !== undefined){
+          this.$router.push("/details/" + this.property.id+"/"+this.$route.params.startDate+"/"+this.$route.params.finishDate);
+        }else{
+          this.$router.push("/details/" + this.property.id+"/?/?");
+        }
       }
     },
     getClass() {
@@ -56,7 +60,6 @@ export default {
       .get("http://localhost:3000/images/" + this.property.id)
       .then(response => {
         this.image = response.data[0];
-        console.log(response.data);
       })
       .catch(error => {
         console.log(error);

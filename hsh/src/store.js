@@ -27,6 +27,8 @@ export default new Vuex.Store({
   actions: {
     loginUserAction({ commit }, data) {
       commit('loginUserMutation', data);
+      router.push('/');
+      window.location.reload();
     },
     logoutUserAction({ commit }) {
       localStorage.removeItem('jwt');
@@ -34,6 +36,7 @@ export default new Vuex.Store({
       commit('logoutUserMutation');
       //Lo llevo a la pantalla principal y despues recargo así se actualiza el listado.
       router.push('/');
+      window.location.reload();
     },
     listProperties({ commit }, data) {
       commit('listPropertiesMutation', data);

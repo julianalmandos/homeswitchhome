@@ -27,9 +27,13 @@
             <font-awesome-icon class="fa-5x" icon="star" style="color:#e6e600;"></font-awesome-icon>
             <b-card-text style="font-size:25px">Solicitudes Premium</b-card-text>
         </b-card>
-        <b-card class="tarjeta text-center" @click="chargeSubscription" bg-variant="light">
+       <!-- <b-card class="tarjeta text-center" @click="chargeSubscription" bg-variant="light">
             <font-awesome-icon class="fa-5x" icon="money-check"></font-awesome-icon>
             <b-card-text style="font-size:25px">Cobrar suscripcion</b-card-text>
+        </b-card> --> 
+        <b-card class="tarjeta text-center" @click="openLocationOptions" bg-variant="light">
+            <font-awesome-icon class="fa-5x" icon="globe-americas"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Agregar ubicación</b-card-text>
         </b-card>
       </b-card-group>
       <br>
@@ -47,6 +51,17 @@
             <b-card-text style="font-size:25px">Cerrar subastas</b-card-text>
         </b-card>
       </b-card-group>
+      <br>
+      <b-card-group deck>
+        <b-card class="tarjeta text-center" @click="openUsersList" bg-variant="light" >
+            <font-awesome-icon class="fa-5x" icon="users"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Ver listado de usuarios</b-card-text>
+        </b-card>
+        <b-card class="tarjeta text-center" @click="openSuscriptionPrices" bg-variant="light">
+            <font-awesome-icon class="fa-5x" icon="dollar-sign"></font-awesome-icon>
+            <b-card-text style="font-size:25px">Precios de Suscripción</b-card-text>
+        </b-card>
+      </b-card-group>
     </b-container>
   </div>
 </template>
@@ -61,6 +76,9 @@ export default {
     },
     openBookingList() {
       this.$router.push("/panel/bookings");
+    },
+    openUsersList(){
+      this.$router.push('/panel/users');
     },
     openPublishProperty() {
       this.$router.push('/properties/publish');
@@ -99,14 +117,20 @@ export default {
         })
       })
     },
+    openLocationOptions() {
+      this.$router.push('/panel/location_options');
+    },
+    openSuscriptionPrices() {
+      this.$router.push('/panel/suscription_prices');
+    },
     generateWeeks() {
       axios
         .get("http://localhost:3000/properties/generateWeeks")
         .then(response => {
           this.$bvToast.toast(
-            `Se generaron ${response.data} semanas`,
+            `Las semanas fueron generadas exitosamente.`,
             {
-              title: "Operación Exitosa",
+              title: "Operación exitosa!",
               variant: "success",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"
@@ -122,9 +146,9 @@ export default {
         .get("http://localhost:3000/properties/openAuctions")
         .then(response => {
           this.$bvToast.toast(
-            `Se abrieron ${response.data} subastas`,
+            `Las subastas fueron abiertas exitosamente.`,
             {
-              title: "Operación Exitosa",
+              title: "Operación exitosa!",
               variant: "success",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"
