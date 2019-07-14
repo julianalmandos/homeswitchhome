@@ -72,7 +72,7 @@ import axios from "axios";
 export default {
   name: "administrationPanel",
   methods: {
-    openPropertiesList() {
+    openPropertiesList() { 
       this.$router.push("/panel/properties");
     },
     openBookingList() {

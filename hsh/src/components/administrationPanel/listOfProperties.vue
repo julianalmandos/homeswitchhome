@@ -27,6 +27,7 @@
                     this.properties=response.data;
                 })
                 .catch(error => {
+                    console.log("tire error")
                     console.log(error);
                 })
         },
@@ -34,7 +35,6 @@
             reloadProperties() {
                 axios.get('//localhost:3000/properties')
                     .then(response => {
-                        console.log('anda');
                         this.properties=response.data;
                         this.$bvToast.toast('Propiedad eliminada con éxito!', {
                             title: 'Operación exitosa',

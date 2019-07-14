@@ -421,7 +421,25 @@ app.post('/locality', function (req,res){
     });
   })  
 
-
+  app.post('/cancelBooking', (req,res)=> {
+    var sql = "UPDATE weeks SET reserved=0 WHERE id="+ req.body.data.booking.idWeek;
+    conn.query(sql,function (err,result){
+      if (err) throw err; 
+    })
+    if (req.body.data.booking.type == 0 || req.body.data.booking.type == 1){
+      var sql2 = "UPDATE users SET credits=credits + 1 WHERE email='"+ req.body.data.email+"'";
+    conn.query(sql2,function (err,result){
+      if (err) throw err; 
+    })
+    }
+    var sql1 = "UPDATE bookings SET cancelled=1 WHERE id="+ req.body.data.booking.id;
+    conn.query(sql1,function (err,result){
+      if (err) throw err; 
+      res.send(result)
+    })
+   
+    
+  })
 
   app.listen(3000, function () {
     console.log('Example app listening on port 3000!');

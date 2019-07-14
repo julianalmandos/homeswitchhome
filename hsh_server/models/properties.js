@@ -1,8 +1,9 @@
 const express = require('express');
 const conn = require('../connection.js');
 const app = express.Router();
+const mailer = require('../mailer.js');
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { 
   var sql = "SELECT * FROM properties prop";
   conn.query(sql, function (err, result) {
     res.send(result);
@@ -21,47 +22,46 @@ app.get('/generateWeeks', (req, res) => {
   const sql = `SELECT id FROM properties`;
   var totalWeeks = 0;
   var quantityWeeks;
-  conn.query(sql, function (err, result) {    
+  conn.query(sql, function (err, result) {
     result.forEach(prop => {
       var fechaInicial = new Date();
       const sqlWeeks = `SELECT * FROM weeks WHERE idProperty=${prop.id} AND date >= "${fechaInicial.toISOString().substring(0, 10)}"`;
-      conn.query(sqlWeeks, function (err, result) { 
-        if (result.length == 0) { 
-          totalWeeks += 53;
+      conn.query(sqlWeeks, function (err, result) {
+        if (result.length == 0) {
+          fechaInicial.setMonth(fechaInicial.getMonth() + 12)
           while (fechaInicial.getDay() != 0) {
             fechaInicial.setDate(fechaInicial.getDate() + 1);
           }
-          for (var i = 0; i < 53; i++) {
-            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + prop.id + ",'" + fechaInicial.toISOString().substring(0, 10) + "',0,0,0,'"+new Date(0000,00,00).toISOString().substring(0,10)+"')";
-            conn.query(sql2, function (err, result) {
-              if (err) throw err;
-            });
-            fechaInicial.setDate(fechaInicial.getDate() + 7);
-          }
-        } else if (result.length < 53) { 
-          max = new Date();
-          quantityWeeks = 53 - parseInt(result.length);
-          totalWeeks += quantityWeeks;
-          for (var i = 0; i < result.length; i++) {
-            console.log(result[i].date)
-            if (result[i].date > max) { 
+          var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + prop.id + ",'" + fechaInicial.toISOString().substring(0, 10) + "',0,0,0,'" + new Date(0000, 00, 00).toISOString().substring(0, 10) + "')";
+          conn.query(sql2, function (err, result) {
+            if (err) throw err;
+          });
+        } else if (result.length < 53) {
+          max = new Date(); 
+          for (var i = 0; i < result.length; i++) { 
+            if (result[i].date > max) {
               max = result[i].date;
             }
           }
-          console.log("El maximo es ", max);
-          for (var i = 0; i < quantityWeeks; i++) {
-            max.setDate(max.getDate()+7)
-            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + prop.id + ",'" + max.toISOString().substring(0, 10) + "',0,0,0,'"+new Date(0000,00,00).toISOString().substring(0,10)+"')";
+          fechaInicial.setMonth(fechaInicial.getMonth() + 12)
+          while (fechaInicial.getDay() != 0) {
+            fechaInicial.setDate(fechaInicial.getDate() + 1);
+          }
+          max.setDate(max.getDate() + 7)
+          while(max < fechaInicial) {
+            console.log("entro fecha semana", max, " fecha limite ", fechaInicial)
+            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + prop.id + ",'" + max.toISOString().substring(0, 10) + "',0,0,0,'" + new Date(0000, 00, 00).toISOString().substring(0, 10) + "')";
             conn.query(sql2, function (err, result) {
               if (err) throw err;
             });
-          } 
+            max.setDate(max.getDate() + 7)
+          }
         };
-        console.log('asd: '+totalWeeks);
-       });
-      })
-      console.log('asd2: '+totalWeeks);
-      res.send(`${totalWeeks}`);
+        console.log('asd: ' + totalWeeks);
+      });
+    })
+    console.log('asd2: ' + totalWeeks);
+    res.send(`${totalWeeks}`);
   });
 });
 
@@ -98,13 +98,13 @@ app.get('/:id', (req, res) => {
 
 app.post('/range', (req, res) => {
   console.log(req.body.data.locality)
-  var sql = "SELECT * FROM properties prop WHERE prop.locality='" + req.body.data.locality+"' AND EXISTS (SELECT * FROM weeks w WHERE w.date>'"+req.body.data.startDate+"' AND w.date<'"+req.body.data.finishDate+"' AND prop.id=w.idProperty)";
+  var sql = "SELECT * FROM properties prop WHERE prop.locality='" + req.body.data.locality + "' AND EXISTS (SELECT * FROM weeks w WHERE w.date>'" + req.body.data.startDate + "' AND w.date<'" + req.body.data.finishDate + "' AND prop.id=w.idProperty)";
   conn.query(sql, function (err, result) {
     res.send(result);
   })
 })
 
-app.post('/:id/delete', function (req, res) {
+/*app.post('/:id/delete', function (req, res) {
   var sql = "SELECT * FROM properties p WHERE id=" + req.params.id + " AND NOT EXISTS (SELECT * FROM weeks w WHERE w.idProperty=p.id AND w.reserved=1)"
   conn.query(sql, function (err, result) {
     if (result.length > 0) {
@@ -116,6 +116,17 @@ app.post('/:id/delete', function (req, res) {
     } else {
       res.sendStatus(400);
     }
+  })
+})*/
+
+app.post('/:id/delete', function (req, res) {
+  console.log("Llamaaron")
+  var sql = "SELECT b.email, w.date, p.name, b.id, b.type, b.idWeek FROM properties p INNER JOIN weeks w ON (w.idProperty = p.id) INNER JOIN bookings b ON (b.idWeek = w.id) WHERE p.id=" + req.params.id 
+  conn.query(sql, function (err, result) { 
+    result.forEach(function(element){
+      mailer.sendEmail(element.email,`Se canceló la reserva de la semana ${element.date} de la propiedad ${element.name}`);
+    })
+    res.send(result)
   })
 })
 
@@ -131,9 +142,9 @@ app.get('/:id/bookings', function (req, res) {
 })
 
 app.post('/', function (req, res) {
-  var sql = "SELECT * FROM properties p WHERE p.locality='"+req.body.data.locality+"' AND p.province='"+req.body.data.province+"' AND p.name='"+req.body.data.name+"'";
+  var sql = "SELECT * FROM properties p WHERE p.locality='" + req.body.data.locality + "' AND p.province='" + req.body.data.province + "' AND p.name='" + req.body.data.name + "'";
   conn.query(sql, function (err, result) {
-    if(result.length == 0){
+    if (result.length == 0) {
       console.log(req.body.data)
       sql = "INSERT INTO properties (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
       conn.query(sql, function (err, result) {
@@ -151,17 +162,17 @@ app.post('/', function (req, res) {
         })
         res.send(result)
       });
-    }else{
+    } else {
       res.sendStatus(409);
     }
-    
+
   })
 })
 
 app.post('/:id/edit', function (req, res) {
-  var sql="SELECT * FROM properties p WHERE p.locality='"+req.body.data.property.locality+"' AND p.province='"+req.body.data.property.province+"' AND p.name='"+req.body.data.property.name+"'";
+  var sql = "SELECT * FROM properties p WHERE p.locality='" + req.body.data.property.locality + "' AND p.province='" + req.body.data.property.province + "' AND p.name='" + req.body.data.property.name + "'";
   conn.query(sql, function (err, result) {
-    if(result.length==0 || (result.length==1 && result[0].id==req.body.data.property.id)){
+    if (result.length == 0 || (result.length == 1 && result[0].id == req.body.data.property.id)) {
       console.log("acata")
       if (req.body.data.property.description !== "" && req.body.data.property.description !== undefined) {
         var sql = "UPDATE properties p SET p.description = '" + req.body.data.property.description + "',p.name = '" + req.body.data.property.name + "',p.base_price = '" + req.body.data.property.base_price + "',p.locality = '" + req.body.data.property.locality + "',p.country = '" + req.body.data.property.country + "',p.province= '" + req.body.data.property.province + "'  WHERE p.id='" + req.params.id + "'";
@@ -185,7 +196,7 @@ app.post('/:id/edit', function (req, res) {
         })
       }
       res.sendStatus(200);
-    }else{
+    } else {
       res.sendStatus(409);
     }
   });
