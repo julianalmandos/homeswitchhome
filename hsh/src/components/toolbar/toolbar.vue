@@ -122,7 +122,6 @@
             response.data.forEach(locality => {
               this.localities.push(locality.name);
             })
-            console.log("hola",this.localities)
           })
           .catch(error => {
             console.log(error);
@@ -145,7 +144,6 @@
         return this.user.role==0;
       },
       closeDropdown() {
-        console.log('recibi evento');
         this.$refs.dropdown.hide();
       },
       searchLocality(){
