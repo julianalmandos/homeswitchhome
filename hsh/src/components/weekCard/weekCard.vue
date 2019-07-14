@@ -146,7 +146,7 @@ export default {
       actualDate.setDate(actualDate.getDate() - 3);
       return (
         (this.week.date < actualDate.toISOString().substring(0, 10)) &
-        (this.week.date > actualDate2.toISOString().substring(0, 10))
+        (this.week.date >= actualDate2.toISOString().substring(0, 10))
       );
     },
     isInDirectReservation() {
