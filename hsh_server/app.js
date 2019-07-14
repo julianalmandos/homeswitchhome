@@ -42,13 +42,10 @@ app.get('/users', function (req, res) {
 });
 
 app.post('/login', (req, res) => {
-  console.log(req.body.data);
   var sql = "SELECT * FROM users us WHERE us.email='" + req.body.data.email + "'";
   conn.query(sql, function (err, result) {
-    console.log(result);
     if (err) throw err;
     if (result[0] == null) {
-      console.log('entra');
       return res.status(401).send('Ese e-mail no se encuentra registrado.');
     } else {
       let contraseñaValida = bcrypt.compareSync(req.body.data.password, result[0].password);
@@ -59,7 +56,6 @@ app.post('/login', (req, res) => {
       let token = jwt.sign({ id: result[0].id }, 'shhhhh', {
         expiresIn: 86400 // 10 minutos de sesión
       });
-      console.log(token);
       res.status(200).send({ auth: true, token: token, user: result[0] });
     }
   });
@@ -388,9 +384,29 @@ app.post('/locality', function (req,res){
   })
 
   app.post('/cancelBooking', (req,res)=> {
-    var sql = ""
+    var sql = "UPDATE weeks SET reserved=0 WHERE id="+ req.body.data.booking.idWeek;
     conn.query(sql,function (err,result){
       if (err) throw err; 
+    })
+    var sql1 = "UPDATE bookings SET cancelled=1 WHERE id="+ req.body.data.booking.id;
+    conn.query(sql1,function (err,result){
+      if (err) throw err; 
+    })
+    if (req.body.data.booking.type == 0 || req.body.data.booking.type == 1){
+      var sql2 = "UPDATE users SET credits=credits + 1 WHERE email='"+ req.body.data.booking.email+"'";
+    conn.query(sql2,function (err,result){
+      if (err) throw err; 
+    })
+    }
+    
+  })
+
+  app.post('/disableUser', (req,res)=> {
+    console.log("hola")
+    var sql = "UPDATE users SET disabled=1 WHERE email='"+ req.body.data.email+"'";
+    conn.query(sql,function (err,result){
+      if (err) throw err; 
+      console.log("deshabilite")
     })
   })
 

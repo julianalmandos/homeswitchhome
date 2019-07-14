@@ -40,6 +40,12 @@
       ])
     },
     methods: {
+      ...Vuex.mapActions([
+        'logoutUserAction',
+      ]),
+      logoutUser(){
+        this.logoutUserAction();
+      },
       isAdmin() {
         return this.user.role==2;
       },
@@ -55,14 +61,12 @@
       cancelBookings(bookings){
         bookings.forEach(element => {
           axios.post('//localhost:3000/cancelBooking',{
-            data:{
-              booking: element,
-              user: this.$store.state.user.email
-            }
+            data:{booking: element}
           }) 
         });
       },
       disableAccount(){
+        //cancelar las reservas que tiene
         axios.post('//localhost:3000/bookingsOfUser',{
           data:{
            email: this.$store.state.user.email,
@@ -74,9 +78,19 @@
         .catch(error => {
         console.log(error);
         })
-        //cancelar las reservas que tiene
+        
         //poner en 1 disabled
+        console.log("llegue aca")
+        axios.post('//localhost:3000/disableUser',{
+          data:{
+           email: this.$store.state.user.email,
+           }
+        })
+        .catch(error => {
+        console.log(error);
+        })
         //cerrar sesión
+        this.logoutUser();
       }
     }
   }
