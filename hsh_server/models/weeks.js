@@ -66,14 +66,14 @@ app.get('/:id/maxbid', function (req, res) {
   });
 })
 
-  app.post('/:id', (req, res) => {
-  if (req.body.data.startDate=='undefined'){
+app.post('/:id', (req, res) => {
+  if (req.body.data.startDate=='no'){
   var sql = "SELECT * FROM weeks WHERE weeks.idproperty='" + req.params.id+ "' ORDER BY weeks.date";
   conn.query(sql, function (err, result) {
     res.send(result);
   })
 }else{
-  var sql = "SELECT * FROM weeks WHERE weeks.idproperty='" + req.params.id+ "' AND weeks.date>'"+req.body.data.startDate+"' AND weeks.date<'"+req.body.data.finishDate+"' ORDER BY weeks.date";
+  var sql = "SELECT * FROM weeks WHERE weeks.idproperty='" + req.params.id+ "' AND weeks.date>='"+req.body.data.startDate+"' AND weeks.date<='"+req.body.data.finishDate+"' ORDER BY weeks.date";
     conn.query(sql, function (err, result) {
     res.send(result);
   })

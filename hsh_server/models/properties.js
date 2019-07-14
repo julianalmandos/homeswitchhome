@@ -92,13 +92,6 @@ app.get('/:id', (req, res) => {
   })
 })
 
-app.post('/range', (req, res) => {
-  console.log(req.body.data.locality)
-  var sql = "SELECT * FROM properties prop WHERE prop.locality='" + req.body.data.locality+"' AND EXISTS (SELECT * FROM weeks w WHERE w.date>'"+req.body.data.startDate+"' AND w.date<'"+req.body.data.finishDate+"' AND prop.id=w.idProperty)";
-  conn.query(sql, function (err, result) {
-    res.send(result);
-  })
-})
 
 app.post('/:id/delete', function (req, res) {
   var sql = "SELECT b.email, w.date, p.name, b.id, b.type, b.idWeek FROM properties p INNER JOIN weeks w ON (w.idProperty = p.id) INNER JOIN bookings b ON (b.idWeek = w.id) WHERE p.id=" + req.params.id

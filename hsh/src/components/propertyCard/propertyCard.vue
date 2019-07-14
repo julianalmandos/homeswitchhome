@@ -44,10 +44,10 @@ export default {
     },
     viewPropertyDetails() {
       if (this.isLoggedUser()) {
-        if(this.$route.params !== undefined){
+        if(this.$route.params.startDate !== undefined){
           this.$router.push("/details/" + this.property.id+"/"+this.$route.params.startDate+"/"+this.$route.params.finishDate);
         }else{
-          this.$router.push("/details/" + this.property.id+"/?/?");
+          this.$router.push("/details/" + this.property.id+"/no/no");
         }
       }
     },
