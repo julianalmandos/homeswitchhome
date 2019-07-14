@@ -107,7 +107,6 @@ import placeABid from '@/components/placeABid/placeABid.vue';
         axios.get("http://localhost:3000/images/"+ this.$route.params.id)
           .then(response => {
             this.images = response.data; 
-            console.log(response.data)
           })
           .catch(error => {
             console.log(error);

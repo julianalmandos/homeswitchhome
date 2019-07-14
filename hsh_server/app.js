@@ -312,6 +312,16 @@ app.get('/provinces/:country', function (req,res){
   })
 })
 
+app.get('/localities/:province/:country', function (req,res){
+  var sql2 = "SELECT p.id FROM provinces p INNER JOIN countries c ON (c.id=p.idCountry) WHERE p.name='"+req.params.province+"' AND c.name='"+req.params.country+"'";
+  conn.query(sql2, function(err,result){
+    var sql = "SELECT name FROM localities WHERE idProvince='"+result[0].id+"'";
+    conn.query (sql, function (err,result){
+      res.send(result)
+    })
+  })
+})
+
 app.post('/country', function (req,res){
   var sql = "SELECT * FROM countries WHERE name='"+req.body.data.country+"'"
   conn.query (sql, function (err,result){

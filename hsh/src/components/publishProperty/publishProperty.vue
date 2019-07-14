@@ -29,17 +29,17 @@
 
       <b-form-group>
         <label for="property-country">Ingrese el país de la propiedad</label>
-        <b-form-input type="text" id="property-country" v-model="dataRegisterProperty.country" required/>
+        <b-form-select type="text" id="property-country" v-model="dataRegisterProperty.country" :options="countries" @change="getProvinces(dataRegisterProperty.country)" required/>
       </b-form-group>
 
       <b-form-group>
         <label for="property-province">Ingrese la provincia de la propiedad</label>
-        <b-form-input type="text" id="property-province" v-model="dataRegisterProperty.province" required/>
+        <b-form-select type="text" id="property-province" v-model="dataRegisterProperty.province" :options="provinces" @change="getLocalities(dataRegisterProperty.province, dataRegisterProperty.country)" required/>
       </b-form-group>
 
       <b-form-group>
         <label for="property-locality">Ingrese la localidad de la propiedad</label>
-        <b-form-input type="text" id="property-locality" v-model="dataRegisterProperty.locality" required/>
+        <b-form-select type="text" id="property-locality" v-model="dataRegisterProperty.locality" :options="localities" required/>
       </b-form-group> 
 
       <b-form-group v-for="(image, index) of this.imagesArray" :key="index">
@@ -85,10 +85,52 @@ export default {
         locality: "",
         files: [], 
       },
-      imagesArray: new Array(5)
+      imagesArray: new Array(5),
+      countries:[],
+      provinces: [],
+      localities:[],
     };
   },
+  created(){
+    this.getCountries()
+  },
   methods: {
+    getCountries(){
+      axios.get("http://localhost:3000/countries/")
+          .then(response => {
+            this.countries= [];
+            response.data.forEach(country => {
+              this.countries.push(country.name);
+            })
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+    getProvinces(country){
+      axios.get("http://localhost:3000/provinces/"+country)
+          .then(response => {
+            this.provinces=[];
+            response.data.forEach(province => {
+              this.provinces.push(province.name);
+            })
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+    getLocalities(province, country){
+      axios.get("http://localhost:3000/localities/"+province+"/"+country)
+          .then(response => {
+            this.localities=[];
+            response.data.forEach(locality => {
+              this.localities.push(locality.name);
+            })
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
     registerProperty() {
       axios.post("http://localhost:3000/properties", {
         data: this.dataRegisterProperty

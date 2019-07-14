@@ -3,7 +3,7 @@ const conn = require('../connection.js');
 const app = express.Router();
 
 app.get('/', (req, res) => {
-  var sql = "SELECT * FROM properties prop";
+  var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (l.id=p.idLocality) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry)";
   conn.query(sql, function (err, result) {
     res.send(result);
   })
@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 
 app.get('/random', (req, res) => {
   const quantity = req.query.quantity || 5;
-  var sql = `SELECT * FROM properties ORDER BY RAND() LIMIT ${quantity}`;
+  var sql = `SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (l.id=p.idLocality) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) ORDER BY RAND() LIMIT ${quantity}`;
   conn.query(sql, function (err, result) {
     res.send(result);
   })
@@ -90,7 +90,7 @@ app.get('/openAuctions', (req, res) => {
 })
 
 app.get('/:id', (req, res) => {
-  var sql = "SELECT * FROM properties prop WHERE prop.id=" + req.params.id;
+  var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (l.id=p.idLocality) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE p.id=" + req.params.id;
   conn.query(sql, function (err, result) {
     res.send(result);
   })
@@ -131,19 +131,15 @@ app.get('/:id/bookings', function (req, res) {
 })
 
 app.post('/', function (req, res) {
-  var sql = "SELECT * FROM properties p WHERE p.locality='"+req.body.data.locality+"' AND p.province='"+req.body.data.province+"' AND p.name='"+req.body.data.name+"'";
+  var sql = "SELECT * FROM properties p INNER JOIN localities l ON (l.id=p.idLocality) INNER JOIN provinces pr ON (pr.id=l.idProvince) WHERE l.name='"+req.body.data.locality+"' AND pr.name='"+req.body.data.province+"' AND p.name='"+req.body.data.name+"'";
   conn.query(sql, function (err, result) {
     if(result.length == 0){
-      console.log(req.body.data)
-      sql = "INSERT INTO properties (name,description,address,base_price,country,province,locality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" + req.body.data.country + "','" + req.body.data.province + "','" + req.body.data.locality + "')";
+      sql = "SELECT l.id FROM localities l INNER JOIN provinces p ON (l.idProvince=p.id) INNER JOIN countries c ON (p.idCountry=c.id) WHERE p.name='"+req.body.data.province+"' AND c.name='"+req.body.data.country+"' AND l.name='"+req.body.data.locality+"'"
       conn.query(sql, function (err, result) {
-        console.log(result);
-        console.log(result["insertId"]);
-        console.log("aqui")
+        sql = "INSERT INTO properties (name,description,address,base_price,idLocality) VALUES ('" + req.body.data.name + "','" + req.body.data.description + "','" + req.body.data.address + "','" + req.body.data.base_price + "','" +result[0].id+ "')";
+        conn.query(sql, function (err, result) {
         var idPropertyIm = result["insertId"];
-        console.log(idPropertyIm);
         req.body.data.files.forEach(function (file) {
-          console.log(file);
           var sqlIm = "INSERT INTO images (idProperty,image) VALUES ('" + idPropertyIm + "','" + file + "')";
           conn.query(sqlIm, function (err, result) {
             if (err) throw err;
@@ -151,10 +147,10 @@ app.post('/', function (req, res) {
         })
         res.send(result)
       });
+    });
     }else{
       res.sendStatus(409);
-    }
-    
+    } 
   })
 })
 
