@@ -42,7 +42,7 @@ app.get('/users', function (req, res) {
 });
 
 app.post('/login', (req, res) => {
-  var sql = "SELECT * FROM users us WHERE us.email='" + req.body.data.email + "'";
+  var sql = "SELECT * FROM users us WHERE us.email='" + req.body.data.email + "' AND us.disabled=0";
   conn.query(sql, function (err, result) {
     if (err) throw err;
     if (result[0] == null) {
@@ -66,33 +66,6 @@ app.get('/images/:id', (req, res) => {
   conn.query(sql, function(err, result){
     res.send(result);
   });
-})
-
-app.post('/checkWinner', function(req,res){
-  var sql= "SELECT * FROM bookings b INNER JOIN bids bi ON (bi.id = b.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE w.date='"+ req.body.data.date +"' AND bi.email='"+req.body.data.winner+"'";
-  conn.query(sql,function (err,result){
-    if (result.length==0){
-      res.status(200).send({data:false});
-    }else{
-      res.status(200).send({data:true});
-    }
-  })
-})
-
-app.post('/makeReservation',function(req,res){
-  var sql= "INSERT INTO bookings (idMaxBid) VALUES ('"+req.body.data.id+"')";
-  conn.query(sql,function(err, result){
-    mailer.sendEmail(req.body.data.email,'Reserva confirmada para la propiedad '+req.body.data.propertyName,'Usted esta recibiendo este e-mail porque su reserva para la propiedad '
-      	  +req.body.data.propertyName+' de la semana del '+req.body.data.date.substring(0,10)+' fue confirmada. Gracias por confiar en nosotros. Disfrute su estadía.');
-    res.send(result);
-  })
-})
-
-app.get('/deleteBid/:winner',function(req,res){
-  var sql= "DELETE FROM bids WHERE id="+req.params.winner;
-  conn.query(sql,function(err, result){
-    res.send(result);
-  })
 })
 
 app.get('/openAuction/:id', (req, res) => {
@@ -160,7 +133,7 @@ app.post('/profile/edit', (req, res) => {
   });
 
   app.get('/bookings', function (req, res) {
-    var sql="SELECT w.date,p.name,b.email,b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty)"
+    var sql="SELECT w.date,p.name,book.email,book.price FROM bookings book INNER JOIN weeks w ON (w.id=book.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE book.cancelled=0"
     conn.query(sql, function (err, result) {
       if (err) throw err;
       res.send(result);
@@ -273,7 +246,7 @@ app.post('/profile/edit', (req, res) => {
 })
 
   app.post('/bookingsOfUser', function (req, res) {
-    var sql = `SELECT w.date, p.name, b.price FROM bookings book INNER JOIN bids b ON (book.idMaxBid=b.id) INNER JOIN weeks w ON (w.id=b.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE b.email="${req.body.data.email}"`
+    var sql = `SELECT w.date, p.name, book.price, book.idWeek, book.id, book.type FROM bookings book INNER JOIN weeks w ON (w.id=book.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE book.email="${req.body.data.email}" AND book.cancelled=0`
     conn.query(sql, function (err, result) {
       if (err) throw err;
       res.send(result);
@@ -403,7 +376,7 @@ app.post('/locality', function (req,res){
       if (err) throw err; 
     })
     if (req.body.data.booking.type == 0 || req.body.data.booking.type == 1){
-      var sql2 = "UPDATE users SET credits=credits + 1 WHERE email='"+ req.body.data.booking.email+"'";
+      var sql2 = "UPDATE users SET credits=credits + 1 WHERE email='"+ req.body.data.email+"'";
     conn.query(sql2,function (err,result){
       if (err) throw err; 
     })
@@ -412,11 +385,10 @@ app.post('/locality', function (req,res){
   })
 
   app.post('/disableUser', (req,res)=> {
-    console.log("hola")
     var sql = "UPDATE users SET disabled=1 WHERE email='"+ req.body.data.email+"'";
     conn.query(sql,function (err,result){
       if (err) throw err; 
-      console.log("deshabilite")
+      res.send(result)
     })
   })
 

@@ -60,7 +60,6 @@ export default {
       .get("http://localhost:3000/images/" + this.property.id)
       .then(response => {
         this.image = response.data[0];
-        console.log(response.data);
       })
       .catch(error => {
         console.log(error);

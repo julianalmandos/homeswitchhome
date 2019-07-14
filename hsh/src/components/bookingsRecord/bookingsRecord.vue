@@ -39,6 +39,9 @@
             <template slot="price" slot-scope="data">
                 ${{ data.value }}
             </template>
+            <template slot="options" slot-scope="data">
+                <b-button @click="cancelBooking(data.item)" class="blueButton btn-sm">Cancelar Reserva</b-button>
+            </template>
         </b-table>
     </b-container>
 </template>
@@ -68,7 +71,11 @@
                         key: 'price',
                         label: 'Precio de Reserva',
                         sortable: true,
-                    }                    
+                    },
+                    {
+                        key: 'options',
+                        label: 'Opciones'
+                    }                      
                 ],
                 fieldsForBids: [
                     {
@@ -114,6 +121,13 @@
                 .catch(error => {
                     console.log(error);
                 })  
+        },
+        methods:{
+            cancelBooking(element){
+                axios.post('//localhost:3000/cancelBooking',{
+                    data:{booking: element, email: this.$store.state.user.email}
+                }) 
+            },
         }
     }
 </script>
