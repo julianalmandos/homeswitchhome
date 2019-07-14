@@ -35,7 +35,7 @@
             <h4>Fecha inicial:</h4>
             <b-form @submit.stop.prevent="check()">
               <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
-                        id="range"
+                        id="range1"
                         type="date"
                         v-model="startDate"
                         required
@@ -43,7 +43,7 @@
                     ></b-form-input>
                     <h4>Fecha final:</h4>
               <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
-                        id="range"
+                        id="range2"
                         type="date"
                         v-model="finishDate"
                         required

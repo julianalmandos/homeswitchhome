@@ -387,6 +387,13 @@ app.post('/locality', function (req,res){
     });
   })
 
+  app.post('/cancelBooking', (req,res)=> {
+    var sql = ""
+    conn.query(sql,function (err,result){
+      if (err) throw err; 
+    })
+  })
+
 
 
   app.listen(3000, function () {
