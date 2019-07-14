@@ -73,15 +73,23 @@ app.get('/premiumRequests', function (req, res) {
 })
 
 app.post('/acceptNormalRequest', function (req, res) {
-  var sql = "UPDATE normal_requests SET accepted=1 WHERE user_id=" + req.body.data.userId + " AND accepted=0";
+  var sql = "SELECT * FROM bookings b INNER JOIN weeks w ON (b.idWeek=w.id) WHERE b.cancelled=0 AND b.type=0 AND b.email='"+req.body.data.email+"' AND w.date>='"+new Date().toISOString().substring(0,10)+"'";
+  console.log(sql);
   conn.query(sql, function (err, result) {
-    if (err) throw err;
-    var sql = "UPDATE users SET role=0 WHERE id=" + req.body.data.userId;
-    conn.query(sql, function (err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
-  });
+    if(result.length==0){
+      var sql = "UPDATE normal_requests SET accepted=1 WHERE user_id=" + req.body.data.userId + " AND accepted=0";
+      conn.query(sql, function (err, result) {
+        if (err) throw err;
+        var sql = "UPDATE users SET role=0 WHERE id=" + req.body.data.userId;
+        conn.query(sql, function (err, result) {
+          if (err) throw err;
+          res.sendStatus(200);
+        });
+      });
+    }else{
+      res.sendStatus(401);
+    }
+  })
 })
 
 app.post('/acceptPremiumRequest', function (req, res) {
