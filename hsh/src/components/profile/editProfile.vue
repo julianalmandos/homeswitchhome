@@ -22,18 +22,18 @@
         <b-row>
         <b-col>
           <b-form-group id="nombre" label="Número de la tarjeta: " label-for="date">
-            <b-form-input id="date" v-model="card_number" required></b-form-input>
+            <b-form-input id="num" v-model="card_number" required></b-form-input>
         </b-form-group>
         <b-form-group id="nombre" label="Mes de vencimiento: " label-for="date">
-            <b-form-input id="date" v-model="card_expiration_month" required></b-form-input>
+            <b-form-input id="month" v-model="card_expiration_month" required></b-form-input>
         </b-form-group>
         </b-col>
         <b-col>
         <b-form-group id="nombre" label="Código de seguridad: " label-for="date">
-            <b-form-input id="date" v-model="card_security_number" required></b-form-input>
+            <b-form-input id="code" v-model="card_security_number" required></b-form-input>
         </b-form-group>
         <b-form-group id="nombre" label="Año de vencimiento: " label-for="date">
-            <b-form-input id="date" v-model="card_expiration_year" required></b-form-input>
+            <b-form-input id="year" v-model="card_expiration_year" required></b-form-input>
         </b-form-group>
         </b-col>
         </b-row>
@@ -42,10 +42,10 @@
         <br>
         <br>
         <b-form-group id="nombre" label="Contraseña: " label-for="date">
-            <b-form-input id="date" type="password" v-model="newPassword"></b-form-input>
+            <b-form-input id="pass" type="password" v-model="newPassword"></b-form-input>
         </b-form-group>
         <b-form-group id="nombre" label="Confirmación: " label-for="date">
-            <b-form-input id="date" type="password" v-model="conPassword"></b-form-input>
+            <b-form-input id="conf" type="password" v-model="conPassword"></b-form-input>
         </b-form-group>
         
         <b-row align-h="between">

@@ -24,6 +24,9 @@
                     <b-alert class="mt-sm-3" v-model="showInvalidLoginData" variant="danger" dismissible>
                         <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> El e-mail o la contraseña son incorrectos.
                     </b-alert>
+                    <b-alert class="mt-sm-3" v-model="showDisabledAccount" variant="danger" dismissible>
+                        <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Esa cuenta se encuentra deshabilitada.
+                    </b-alert>
                     <b-button size="sm" class="my-2 my-sm-3 mr-3 btn-block" type="submit" variant="dark">Iniciar Sesión</b-button>
                     <b-button to="/recover_password" @click="$emit('closeDropdown')" size="sm" class="blueButton my-2 my-sm-3 mr-3 btn-block">¿Olvidaste tu contraseña?</b-button>
                 </b-col>
@@ -168,6 +171,7 @@
                 password: '',
             },
             showInvalidLoginData: false,
+            showDisabledAccount: false,
             showInvalidRegisterPassword: false,
             showInvalidRegisterCard: false,
             showInvalidBirthday: false,
@@ -225,7 +229,12 @@
                 })
                 .catch(error => {
                     console.log(error);
-                    this.showInvalidLoginData=true;
+                    if(error.response.data=='Esa cuenta se encuentra deshabilitada.'){
+                        this.showDisabledAccount=true;
+                    }else{
+                        this.showInvalidLoginData=true;
+                    }
+                    
                 })
             },
             registerUser(){

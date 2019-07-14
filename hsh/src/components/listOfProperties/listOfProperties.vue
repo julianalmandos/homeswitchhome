@@ -48,7 +48,6 @@ export default {
     response
       .then(response => {
         this.properties = response.data;
-        console.log(response.data);
       })
       .catch(error => {
         console.log(error);

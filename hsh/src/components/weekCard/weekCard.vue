@@ -7,7 +7,7 @@
                 <!--<b-button class="transparentButton btn-block" v-if="week.auction && isAdmin" v-on:click="closeAuction">Cerrar subasta</b-button>-->
                 <!-- <b-button class="transparentButton btn-block" v-else-if="isAdmin" v-on:click="openAuction">Abrir subasta</b-button> -->
                 <b-button class="transparentButton btn-block" v-if="week.auction" @click="openPlaceABidModal">Pujar</b-button>
-            </b-card-text>
+                <b-button class="redButton btn-block" @click="addFavorite()"><font-awesome-icon icon="heart" style="color:#ff6e6e;stroke:black;stroke-width:20;"></font-awesome-icon> Agregar a favoritos</b-button>            </b-card-text>
         </b-card>
         <b-card v-if= ((week.reserved)||!compare(week.date)||(week.idle))   class="card1">
             <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
@@ -179,6 +179,30 @@ import placeABid from '@/components/placeABid/placeABid.vue';
                     console.log(error);
                 })        
             },
+            addFavorite(){
+                axios.post('//localhost:3000/addFavorite',{
+                    data: {
+                        userId: this.$store.state.user.id,
+                        weekId: this.week.id
+                    }
+                })
+                .then(response => {
+                    this.$bvToast.toast('La semana fue agregada a favoritos correctamente.', {
+                        title: 'Operacion exitosa!',
+                        variant: 'success',
+                        autoHideDelay: 5000,
+                        toaster: 'b-toaster-bottom-right',
+                    });
+                })
+                .catch(error => {
+                    this.$bvToast.toast('Esa semana ya se encuentra entre tus favoritos.', {
+                        title: 'Operacion fallida!',
+                        variant: 'danger',
+                        autoHideDelay: 5000,
+                        toaster: 'b-toaster-bottom-right',
+                    });
+                })
+            }
 
             /*openAuction: function (){
                 axios.get("http://localhost:3000/openAuction/"+ this.week.id)
@@ -196,7 +220,7 @@ import placeABid from '@/components/placeABid/placeABid.vue';
    
 
 </script>
-<style>
+<style scoped>
   .card1 {
     background-color:#bfbfbf;
     color:#f2f2f2;
@@ -205,5 +229,13 @@ import placeABid from '@/components/placeABid/placeABid.vue';
   }
   .card2 {
     box-shadow: 0px 6px 3px -4px rgba(0,0,0,0.75);
+  }
+  .redButton {
+      background-color:white!important;
+      color:black!important;
+  }
+  .redButton:hover {
+      background-color: rgba(255, 135, 135, 0.5)!important;
+      color:black!important;
   }
 </style>

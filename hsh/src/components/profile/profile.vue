@@ -17,6 +17,7 @@
                 <b-col>
                 <b-button block v-if="isNormal()" to="/become_premium" class="blueButton">Convertirse en Premium</b-button>
                 <b-button block v-if="isPremium()" to="/become_normal" class="blueButton">Convertirse en Común</b-button>
+                <b-button block v-if="!isAdmin()" @click="disableAccount()" class="blueButton">Deshabilitar cuenta</b-button>
                 <b-button block to="/edit/profile" class="blueButton">Editar perfil</b-button>
                 <b-button block @click="viewBookingsRecord" class="blueButton">Ver mi historial</b-button>
                 </b-col>
@@ -29,6 +30,7 @@
 <script>
   import Vuex from 'vuex';
   import { mapState } from "vuex";
+  import axios from 'axios'
 
   export default {
     name: "profile",
@@ -38,6 +40,12 @@
       ])
     },
     methods: {
+      ...Vuex.mapActions([
+        'logoutUserAction',
+      ]),
+      logoutUser(){
+        this.logoutUserAction();
+      },
       isAdmin() {
         return this.user.role==2;
       },
@@ -49,6 +57,44 @@
       },
       viewBookingsRecord(){
         this.$router.push('/bookings');
+      },
+      cancelBookings(bookings){
+        bookings.forEach(element => {
+          axios.post('//localhost:3000/cancelBooking',{
+            data:{booking: element, email: this.$store.state.user.email}
+          }) 
+        });
+      },
+      disableAccount(){
+        //cancelar las reservas que tiene
+        if(confirm('¿Esta seguro que desea deshabilitar su cuenta?')){
+          axios.post('//localhost:3000/bookingsOfUser',{
+            data:{
+              email: this.$store.state.user.email,
+              }
+          })
+          .then(response => {
+            this.cancelBookings(response.data)
+          })
+          .catch(error => {
+          console.log(error);
+          }) 
+          
+          //poner en 1 disabled
+          axios.post('//localhost:3000/disableUser',{
+            data:{
+              email: this.$store.state.user.email,
+              }
+          })
+          .then(response => {
+            //cerrar sesión
+            this.logoutUser();
+          })
+          .catch(error => {
+          console.log(error);
+          })
+          
+      }
       }
     }
   }

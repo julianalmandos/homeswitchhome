@@ -30,12 +30,13 @@
         </b-alert>
             <b-col>
             <h4>Localidad:</h4>
-            <b-form-input size="sm" style="width:300px;" v-model="locality"></b-form-input>
+            <b-form-select size="sm" style="width:300px;" v-model="locality" :options="localities"></b-form-select>
+            <br>
             <br>
             <h4>Fecha inicial:</h4>
             <b-form @submit.stop.prevent="check()">
               <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
-                        id="range"
+                        id="range1"
                         type="date"
                         v-model="startDate"
                         :min="minDate()"
@@ -44,7 +45,7 @@
                     ></b-form-input>
                     <h4>Fecha final:</h4>
               <b-form-input size="sm" class="mr-sm-2 mb-sm-3"
-                        id="range"
+                        id="range2"
                         type="date"
                         v-model="finishDate"
                         :min="minDate()"
@@ -72,6 +73,7 @@
             </template>
 
             <b-dropdown-item to="/profile"><font-awesome-icon icon="user-alt"></font-awesome-icon> Perfil</b-dropdown-item>
+            <b-dropdown-item to="/favorites"><font-awesome-icon icon="star"></font-awesome-icon> Ver favoritos</b-dropdown-item>
             <!--<b-dropdown-item href="#">Configuración</b-dropdown-item>-->
             <!--<b-dropdown-item v-if="isPremium()" to="/become_normal"><font-awesome-icon icon="book"></font-awesome-icon> Convertirse en Normal</b-dropdown-item>
             <b-dropdown-item v-if="isNormal()" to="/become_premium"><font-awesome-icon icon="star"></font-awesome-icon> Convertirse en Premium</b-dropdown-item> -->
@@ -91,6 +93,7 @@
   import Vuex from 'vuex';
   import access from '@/components/access/access.vue';
   import { mapState } from "vuex";
+  import axios from 'axios'
 
   export default {
     name: "toolbar",
@@ -104,12 +107,26 @@
         finishDate: '',
         showErrorEmptyFields: false,
         showErrorWrongDates: false,
+        localities: []
       }
     },
     computed: {
       ...Vuex.mapState([
         'user',
       ])
+    },
+    beforeCreate(){
+      axios.get("http://localhost:3000/allLocalities/")
+          .then(response => {
+            this.localities= [];
+            response.data.forEach(locality => {
+              this.localities.push(locality.name);
+            })
+            console.log("hola",this.localities)
+          })
+          .catch(error => {
+            console.log(error);
+          });
     },
     methods: {
       ...Vuex.mapActions([
