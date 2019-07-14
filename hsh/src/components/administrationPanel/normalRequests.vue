@@ -14,7 +14,7 @@
                 <h5>No hay solicitudes disponibles</h5>
             </template>
             <template slot="options" slot-scope="data">
-                <b-button class="blueButton btn-sm" @click="acceptRequest(data.item.user_id)">Aceptar</b-button>
+                <b-button class="blueButton btn-sm" @click="acceptRequest(data.item.user_id,data.item.email)">Aceptar</b-button>
             </template>
         </b-table>
     </b-container>
@@ -70,11 +70,13 @@
                     this.requests=response.data;
                 })
             },
-            acceptRequest(id){
+            acceptRequest(id,email){
+                console.log('entra');
                 console.log(id);
                 axios.post('//localhost:3000/acceptNormalRequest',{
                     data: {
                         userId: id,
+                        email: email,
                     },
                 })
                 .then(response => {
@@ -87,6 +89,12 @@
                     this.getRequests();
                 })
                 .catch(err => {
+                    this.$bvToast.toast('El usuario posee reservas directas pendientes.', {
+                        title: 'Solicitud fallida!',
+                        variant: 'danger',
+                        autoHideDelay: 5000,
+                        toaster: 'b-toaster-bottom-right',
+                    });
                     console.log(err);
                 })
             }

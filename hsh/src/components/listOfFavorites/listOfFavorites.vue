@@ -17,6 +17,14 @@
             <template slot="date" slot-scope="data">
                 {{ data.value.substring(0,10) }}
             </template>
+            <template slot="state" slot-scope="data">
+                <span v-if="isInAuction(data.item.date) && data.item.auction==1">SUBASTA ABIERTA</span>
+                <span v-else-if="isInAuction(data.item.date) && (data.item.auction==2 || data.item.auction==0)">SUBASTA CERRADA</span>
+                <span v-else-if="isInHotSale(data.item.date) && data.item.idle==0">EN HOTSALE</span>
+                <span v-else-if="isInHotSale(data.item.date) && data.item.idle==1">OCIOSA</span>
+                <span v-else-if="isExpired(data.item.date)">EXPIRADA</span>
+                <span v-else>RESERVA DIRECTA</span>
+            </template>
             <template slot="until" slot-scope="data">
                 {{ until(data.item.date) }}
             </template>
@@ -53,6 +61,10 @@
                         sortable: true,
                     },
                     {
+                        key: 'state',
+                        label: 'Estado',
+                    },
+                    {
                         key: 'options',
                         label: 'Opciones'
                     }                     
@@ -63,6 +75,35 @@
             this.reloadFavorites();
         },
         methods: {
+            isInAuction(date) {
+                date=new Date(date).toISOString().substring(0, 10);
+                var actualDate = new Date();
+                var actualDate2 = new Date();
+                actualDate.setMonth(actualDate.getMonth() + 6);
+                actualDate2.setMonth(actualDate2.getMonth() + 6);
+                actualDate2.setDate(actualDate2.getDate() - 3);
+                return (
+                    (date <= actualDate.toISOString().substring(0, 10)) &
+                    (date >= actualDate2.toISOString().substring(0, 10))
+                );
+            },
+            isInHotSale(date) {
+                date=new Date(date).toISOString().substring(0, 10);
+                var actualDate = new Date();
+                var actualDate2 = new Date();
+                actualDate.setMonth(actualDate.getMonth() + 6);
+                actualDate.setDate(actualDate.getDate() - 3);
+                return (
+                    (date < actualDate.toISOString().substring(0, 10)) &
+                    (date >= actualDate2.toISOString().substring(0, 10))
+                );
+            },
+            isExpired(date) {
+                date=new Date(date).toISOString().substring(0, 10);
+                var actualDate = new Date();
+                if(date<actualDate){return true;}
+                return false;
+            },
             until(date) {
                 console.log(date);
                 var result=new Date(date);
