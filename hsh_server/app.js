@@ -86,7 +86,6 @@ app.post('/profile/edit', (req, res) => {
     })
   } else {
     var contraseña = bcrypt.hashSync(req.body.data.newPassword, 8);
-    console.log(contraseña)
     var sql1 = "UPDATE users SET password='" + contraseña + "', card_number='" + req.body.data.card_number + "', card_security_number='" + req.body.data.card_security_number + "', card_expiration_month='" + req.body.data.card_expiration_month + "', card_expiration_year='" + req.body.data.card_expiration_year + "', card_type='" + req.body.data.card_type + "' WHERE id=" + req.body.data.userid;
     conn.query(sql1, function (err, result) {
       res.send(contraseña);
@@ -107,17 +106,12 @@ app.post('/validatetoken', (req, res) => {
 })
 
 app.post('/register', function (req, res) {
-  //console.log(req.body.data);
   var contraseña = bcrypt.hashSync(req.body.data.password, 8);
   //falta chequear si el email ya existe
   var sql = "SELECT * FROM users us WHERE us.email='" + req.body.data.email + "'";
   conn.query(sql, function (err, result) {
-    console.log(result);
     if (result[0] == null) {
-      console.log(req.body.data);
-      console.log(new Date().toISOString());
       sql = "INSERT INTO users (email,password,name,surname,birthday,card_type,card_number,card_expiration_month,card_expiration_year,card_security_number,role,credits,last_charge,register_date) VALUES ('" + req.body.data.email + "','" + contraseña + "','" + req.body.data.name + "','" + req.body.data.surname + "','" + new Date(req.body.data.birthday).toISOString().substring(0, 10) + "','" + req.body.data.cardType + "','" + req.body.data.cardNumber + "','" + req.body.data.cardExpirationDate.month + "','" + req.body.data.cardExpirationDate.year + "','" + req.body.data.cardSecurityNumber + "',0,2,null,'" + new Date().toISOString().substring(0, 10) + "')";
-      console.log(sql);
       conn.query(sql, function (err, result) {
         if (err) throw err;
         res.status(200).send(result);
@@ -208,12 +202,10 @@ app.get('/chargeSubscription', function (req, res) {
   conn.query(sql, function (err, result) {
     if (err) throw err;
     normalPrice = result[0].price;
-    console.log(normalPrice);
     sql = "SELECT price FROM suscription_prices WHERE role=1";
     conn.query(sql, function (err, result) {
       if (err) throw err;
       premiumPrice = result[0].price;
-      console.log(premiumPrice);
       sql = "SELECT * FROM users WHERE role<2";
       conn.query(sql, function (err, result) {
         var total = 0;
@@ -275,7 +267,7 @@ app.post('/bookingsOfUser', function (req, res) {
 })
 
 app.post('/selectWinner', function (req, res) {
-  var sql = "SELECT b.id, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek=" + req.body.data.week.id + " AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN bids bi ON (bi.id= bo.idMaxBid) INNER JOIN weeks w ON (w.id=bi.idWeek) WHERE b.email=bi.email AND w.date ='" + req.body.data.week.date.substring(0, 10) + "') ORDER BY b.price DESC";
+  var sql = "SELECT b.id, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek=" + req.body.data.week.id + " AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN weeks w ON (w.id=bo.idWeek) WHERE b.email=b.email AND w.date ='" + req.body.data.week.date.substring(0, 10) + "') ORDER BY b.price DESC";
   conn.query(sql, function (err, result) {
     console.log(result)
     if (result.length == 0) { //no hay ganador, pasa a ociosa
@@ -416,7 +408,6 @@ app.get('/suscriptionPrices', (req, res) => {
   var sql = "SELECT * FROM suscription_prices ORDER BY role ASC";
   conn.query(sql, function (err, result) {
     if (err) throw err;
-    console.log(result);
     res.send(result);
   });
 })
@@ -467,7 +458,6 @@ app.post('/addFavorite', (req, res) => {
     if (err) throw err;
     if (result.length == 0) {
       sql = "INSERT INTO favorites (user_id,week_id,active) VALUES (" + req.body.data.userId + "," + req.body.data.weekId + ",1)";
-      console.log(sql);
       conn.query(sql, function (err, result) {
         if (err) throw err;
         res.sendStatus(200);
@@ -480,7 +470,6 @@ app.post('/addFavorite', (req, res) => {
 
 app.post('/deleteFavorite', (req, res) => {
   var sql = "UPDATE favorites SET active=0 WHERE user_id=" + req.body.data.userId + " AND week_id=" + req.body.data.weekId + " AND active=1";
-  console.log(sql);
   conn.query(sql, function (err, result) {
     if (err) throw err;
     res.sendStatus(200);
@@ -537,7 +526,6 @@ app.post('/weeks/:id/hotSale/price', function (req, res) {
     if (err) throw err;
     var sql2 = `SELECT u.email, p.name, w.date FROM favorites f INNER JOIN users u ON (f.user_id = u.id) INNER JOIN weeks w ON (f.week_id = w.id) INNER JOIN properties p ON (p.id = w.idProperty) WHERE (f.week_id = ${req.params.id})`
     conn.query(sql2, function (err, result2) {
-      console.log("holaaaaaaaaa",result2)
       result2.forEach(function (element) {
         mailer.sendEmail(element.email, `Aviso HotSale`, `La semana ${element.date.toISOString().substring(0,10)} de la propiedad ${element.name} fue puesta en HotSale. El monto es ${req.body.data.price}`)
         if (err) throw err;

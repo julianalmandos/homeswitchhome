@@ -15,7 +15,6 @@ app.post('/:id/bid', function (req, res) {
       maxPrice = -1;
       maxEmail = '';
     }
-    console.log(req.body.data.price, maxPrice, req.body.data.base_price)
     if (maxPrice < req.body.data.price && req.body.data.base_price < req.body.data.price) {
       //SI LA PUJA FUE MAYOR AL PRECIO BASE Y A LA ULTIMA PUJA, ENTONCES INSERTO LA NUEVA PUJA
       var sql = "INSERT INTO bids (price, idWeek, email) VALUES ('" + req.body.data.price + "','" + req.body.data.id + "','" + req.body.data.email + "')";
@@ -25,16 +24,12 @@ app.post('/:id/bid', function (req, res) {
         if(maxEmail!=''){
           var sql="SELECT p.name,p.id FROM properties p INNER JOIN weeks w ON (w.idProperty=p.id) WHERE w.id="+req.params.id;
           conn.query(sql, function(err, result){
-            console.log('entra envio email');
-            console.log(maxEmail);
-            console.log(result);
             mailer.sendEmail(maxEmail,'Puja por "'+result[0]['name']+'" superada','Usted está recibiendo este e-mail porque su puja por la propiedad "'+result[0]['name']+'" fue superada. Para volver a pujar, puede ingresar a http://localhost:8080/details/'+result[0]['id']);
           })    
         }    
         res.send(result);
       });
     } else {
-      console.log("Va por el else");
       res.status(401).send();
     }
   })
@@ -60,7 +55,6 @@ app.get('/:id/maxbid', function (req, res) {
         res.status(200).send({data: result[0].base_price});
       })
     } else {
-      console.log(result);
       res.status(200).send({ data: pepe });
     }
   });
