@@ -78,6 +78,11 @@ export default router = new Router({
       component: () => import('./components/profile/profile.vue'),
     },
     {
+      path: '/favorites',
+      name: 'listOfFavorites',
+      component: () => import('./components/listOfFavorites/listOfFavorites.vue'),
+    },
+    {
       path: '/panel/properties',
       name: 'panelProperties',
       component: () => import('./components/administrationPanel/listOfProperties.vue'),

@@ -70,6 +70,7 @@
             </template>
 
             <b-dropdown-item to="/profile"><font-awesome-icon icon="user-alt"></font-awesome-icon> Perfil</b-dropdown-item>
+            <b-dropdown-item to="/favorites"><font-awesome-icon icon="star"></font-awesome-icon> Ver favoritos</b-dropdown-item>
             <!--<b-dropdown-item href="#">Configuración</b-dropdown-item>-->
             <!--<b-dropdown-item v-if="isPremium()" to="/become_normal"><font-awesome-icon icon="book"></font-awesome-icon> Convertirse en Normal</b-dropdown-item>
             <b-dropdown-item v-if="isNormal()" to="/become_premium"><font-awesome-icon icon="star"></font-awesome-icon> Convertirse en Premium</b-dropdown-item> -->
