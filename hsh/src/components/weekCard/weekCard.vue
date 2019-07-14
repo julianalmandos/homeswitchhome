@@ -2,7 +2,7 @@
   <div class="weekCard">
     <!-- SUBASTA  SUBASTA  SUBASTA  SUBASTA  -->
     <b-card
-      v-if="((isInAuction())&(!week.reserved))"
+      v-if="(((isInAuction())&(!week.reserved))||((isInHotSale()&(!week.reserved)&(week.auction==1))))"
       border-variant="dark"
       class="card2"
       style="max-width: 15rem;margin-bottom:1.25rem"
@@ -40,7 +40,7 @@
     </b-card>
 
     <!-- HOT SALE  HOT SALE  HOT SALE  HOT SALE  -->
-    <b-card v-if="((isInHotSale())&(!week.reserved))" class="card3">
+    <b-card v-if="((isInHotSale())&(!week.reserved)&(week.auction!==1))" class="card3">
       <h6 v-if="(!week.idle)">Precio: ${{week.price}}</h6>
       <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
       <b-card-text>
