@@ -9,7 +9,6 @@ var transporter = nodemailer.createTransport({
 });
 
 function sendEmail(to,subject,text){
-  console.log("Estoy mandando el mail");
   // Definimos el email
   var mailOptions = {
     from: 'homeswitchhome23@gmail.com',

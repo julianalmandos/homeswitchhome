@@ -46,7 +46,7 @@
           <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
           <b-card-text style="font-size:25px">Abrir subastas</b-card-text>
         </b-card>
-        <b-card class="tarjeta text-center" bg-variant="light" >
+        <b-card class="tarjeta text-center" @click="closeAuction" bg-variant="light" >
             <font-awesome-icon class="fa-5x" icon="gavel"></font-awesome-icon>
             <b-card-text style="font-size:25px">Cerrar subastas</b-card-text>
         </b-card>
@@ -68,7 +68,6 @@
 
 <script>
 import axios from "axios";
-
 export default {
   name: "administrationPanel",
   methods: {
@@ -89,6 +88,34 @@ export default {
     },
     openPremiumRequests() {
       this.$router.push('/panel/premium_requests');
+    },
+    closeAuction(){
+      axios
+          .get("http://localhost:3000/closeAuctions")
+          .then(response => {
+            this.$bvToast.toast(
+              `Se cerraron ${response.data.length} subastas`,
+              {
+                title: "Operación Exitosa",
+                variant: "success",
+                autoHideDelay: 5000,
+                toaster: "b-toaster-bottom-right"
+              }
+            );
+            this.selectWinner(response.data)
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    },
+    selectWinner(closed){
+      closed.forEach(element => {
+        axios.post("http://localhost:3000/selectWinner",{
+          data: {
+              week: element
+          }
+        })
+      })
     },
     openLocationOptions() {
       this.$router.push('/panel/location_options');
@@ -161,9 +188,10 @@ export default {
         .catch(error => {
           console.error(error);
         });
+      
     }
   }
-};
+}
 </script>
 
 <style scoped>
