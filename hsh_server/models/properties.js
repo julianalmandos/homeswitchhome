@@ -110,6 +110,10 @@ app.post('/:id/delete', function (req, res) {
   conn.query(sql, function (err, result) {
     result.forEach(function(element){
       mailer.sendEmail(element.email,`Se canceló la reserva de la semana ${element.date.toISOString().substring(0,10)} de la propiedad ${element.name}`);
+      var sql = `UPDATE favorites SET active = 0 WHERE week_id = ${element.idWeek}`
+      conn.query(sql, function (err, result3) {
+        if (err) throw err;
+      })
     })
     var sqlRemove = "DELETE FROM properties WHERE id=" + req.params.id;
       conn.query(sqlRemove, function (err, result2) {
