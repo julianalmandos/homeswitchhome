@@ -19,6 +19,9 @@
             <template slot="price" slot-scope="data">
                 ${{ data.value }}
             </template>
+            <template slot="options" slot-scope="data">
+                <b-button @click="cancelBooking(data.item)" class="blueButton btn-sm">Cancelar Reserva</b-button>
+            </template>
         </b-table>
         <h1 class="titulo">Mis pujas</h1><br>
         <b-table 
@@ -38,9 +41,6 @@
             </template>
             <template slot="price" slot-scope="data">
                 ${{ data.value }}
-            </template>
-            <template slot="options" slot-scope="data">
-                <b-button @click="cancelBooking(data.item)" class="blueButton btn-sm">Cancelar Reserva</b-button>
             </template>
         </b-table>
     </b-container>
@@ -127,7 +127,25 @@
                 axios.post('//localhost:3000/cancelBooking',{
                     data:{booking: element, email: this.$store.state.user.email}
                 }) 
+                .then(response => {
+                    console.log("hola")
+                    this.reloadBookings()
+                })
+                
             },
+            reloadBookings(){
+                axios.post('//localhost:3000/bookingsOfUser',{
+                data:{
+                      email: this.$store.state.user.email,
+                }
+            })
+                .then(response => {
+                    this.bookings=response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
         }
     }
 </script>
