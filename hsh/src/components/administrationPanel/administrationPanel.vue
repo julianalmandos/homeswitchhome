@@ -120,7 +120,7 @@ export default {
     openSuscriptionPrices() {
       this.$router.push("/panel/suscription_prices");
     },
-    generateWeeks() {
+    /*generateWeeks() {
       axios
         .get("http://localhost:3000/properties/generateWeeks")
         .then(response => {
@@ -134,6 +134,35 @@ export default {
         .catch(error => {
           console.error(error);
         });
+    },*/
+    generateWeeks() {
+      axios.get("http://localhost:3000/properties").then(response => {
+        const a = new Promise((resolve, reject) => {
+          var total = 0;
+          response.data.forEach(prop => {
+            axios
+              .post("http://localhost:3000/properties/generateWeeks", {
+                data: {
+                  id: prop.id
+                }
+              })
+              .then(response => {
+                this.total += response.data;
+                console.log(`jdaslkdjaskl ${this.total}`);
+              });
+          });
+        });
+        console.log(`${total}`);
+        this.$bvToast.toast(
+          `Las semanas fueron generadas exitosamente. ${total}`,
+          {
+            title: "Operación exitosa!",
+            variant: "success",
+            autoHideDelay: 5000,
+            toaster: "b-toaster-bottom-right"
+          }
+        );
+      });
     },
     openAuctions() {
       axios
@@ -147,12 +176,17 @@ export default {
               toaster: "b-toaster-bottom-right"
             });
           } else {
-            this.$bvToast.toast(`Las subastas fueron abiertas exitosamente.Se abrieron ${response.data} subastas`, {
-              title: "Operación exitosa!",
-              variant: "success",
-              autoHideDelay: 5000,
-              toaster: "b-toaster-bottom-right"
-            });
+            this.$bvToast.toast(
+              `Las subastas fueron abiertas exitosamente.Se abrieron ${
+                response.data
+              } subastas`,
+              {
+                title: "Operación exitosa!",
+                variant: "success",
+                autoHideDelay: 5000,
+                toaster: "b-toaster-bottom-right"
+              }
+            );
           }
         })
         .catch(error => {

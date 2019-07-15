@@ -18,25 +18,22 @@ app.get('/random', (req, res) => {
   })
 })
 
-app.get('/generateWeeks', (req, res) => {
-  const sql = `SELECT id FROM properties`;
-  var totalWeeks = 0;
-  var quantityWeeks;
-  conn.query(sql, function (err, result) {
-    result.forEach(prop => {
+app.post('/generateWeeks', (req, res) => {
       var fechaInicial = new Date();
-      const sqlWeeks = `SELECT * FROM weeks WHERE idProperty=${prop.id} AND date >= "${fechaInicial.toISOString().substring(0, 10)}"`;
+      const sqlWeeks = `SELECT * FROM weeks WHERE idProperty=${req.body.data.id} AND date >= "${fechaInicial.toISOString().substring(0, 10)}"`;
       conn.query(sqlWeeks, function (err, result) {
         if (result.length == 0) {
           fechaInicial.setMonth(fechaInicial.getMonth() + 12)
           while (fechaInicial.getDay() != 0) {
             fechaInicial.setDate(fechaInicial.getDate() + 1);
           }
-          var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + prop.id + ",'" + fechaInicial.toISOString().substring(0, 10) + "',0,0,0,'" + new Date(0000, 00, 00).toISOString().substring(0, 10) + "')";
+          var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + req.body.data.id + ",'" + fechaInicial.toISOString().substring(0, 10) + "',0,0,0,'" + new Date(0000, 00, 00).toISOString().substring(0, 10) + "')";
           conn.query(sql2, function (err, result) {
             if (err) throw err;
           });
+          res.status(200).send(`${1}`)
         } else if (result.length < 53) {
+          total = 0;
           max = new Date();
           for (var i = 0; i < result.length; i++) {
             if (result[i].date > max) {
@@ -49,21 +46,18 @@ app.get('/generateWeeks', (req, res) => {
           }
           max.setDate(max.getDate() + 7)
           while(max < fechaInicial) {
+            total++;
             console.log("entro fecha semana", max, " fecha limite ", fechaInicial)
-            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + prop.id + ",'" + max.toISOString().substring(0, 10) + "',0,0,0,'" + new Date(0000, 00, 00).toISOString().substring(0, 10) + "')";
+            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES (" + req.body.data.id + ",'" + max.toISOString().substring(0, 10) + "',0,0,0,'" + new Date(0000, 00, 00).toISOString().substring(0, 10) + "')";
             conn.query(sql2, function (err, result) {
               if (err) throw err;
             });
             max.setDate(max.getDate() + 7)
           }
+          res.status(200).send(`${total}`)
         };
-        console.log('asd: ' + totalWeeks);
       });
     })
-    console.log('asd2: ' + totalWeeks);
-    res.send(`${totalWeeks}`);
-  });
- });
  
 
 app.get('/openAuctions', (req, res) => {
