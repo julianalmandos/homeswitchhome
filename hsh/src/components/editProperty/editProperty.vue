@@ -65,10 +65,13 @@ export default {
     }
   },
   created() {
-    this.getCountries()
+    
     axios.get('//localhost:3000/properties/'+this.$route.params.id)
         .then(response => {
             this.property=response.data[0];
+            this.getCountries()
+            this.getProvinces(response.data[0].country)
+            this.getLocalities(response.data[0].province,response.data[0].country)
         })
     axios.get('//localhost:3000/images/'+this.$route.params.id)
         .then(response => {
