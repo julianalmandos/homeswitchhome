@@ -111,6 +111,11 @@ app.post('/:id/delete', function (req, res) {
       conn.query(sqlRemove, function (err, result2) {
         if (err) throw err;
       })
+
+    var sqlRemove2 = "DELETE FROM weeks WHERE idProperty=" + req.params.id;
+    conn.query(sqlRemove2, function (err, result2) {
+      if (err) throw err;
+    })
     res.send(result)
   })
  })
