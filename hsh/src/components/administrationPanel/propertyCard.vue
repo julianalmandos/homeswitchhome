@@ -78,8 +78,13 @@
             </b-button>
           </b-row>
           <b-row>
-            <b-button class="btn-block redButton" @click="eliminarPropiedad">
+            <b-button class="btn-block mb-2 redButton" @click="eliminarPropiedad">
               <font-awesome-icon icon="cog"></font-awesome-icon>Eliminar
+            </b-button>
+          </b-row>
+          <b-row>
+            <b-button class="btn-block mb-2 redButton" v-if="!property.disabled" @click="disableProperty">
+              <font-awesome-icon icon="cog"></font-awesome-icon>Deshabilitar
             </b-button>
           </b-row>
         </b-col>
@@ -134,6 +139,19 @@ export default {
             this.$emit("deleted");
           })
       }
+    },
+    disableProperty(){
+      if(confirm("¿Está seguro que desea deshabilitar esta propiedad?")){
+          axios.get("http://localhost:3000/disableProperty/" + this.property.id)
+          .then(response => {
+            console.log("deshabilite")
+          })
+          axios.get("http://localhost:3000/eraseFavorites/"+ this.property.id)
+          .then(response => {
+            console.log("borre favoritos")
+          })
+      }
+      
     }
   }
 };

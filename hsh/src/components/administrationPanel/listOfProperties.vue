@@ -21,7 +21,7 @@
             }
         },
         beforeCreate() {
-            axios.get('//localhost:3000/properties')
+            axios.get('//localhost:3000/properties/admin')
                 .then(response => {
                     console.log('anda');
                     this.properties=response.data;
