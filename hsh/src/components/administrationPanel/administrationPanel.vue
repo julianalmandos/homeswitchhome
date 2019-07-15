@@ -103,7 +103,7 @@ export default {
           }else{
             this.$bvToast.toast(`No hay subastas por cerrar`, {
               title: "Operación exitosa!",
-              variant: "success",
+              variant: "warning",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"
             });
@@ -182,7 +182,7 @@ export default {
           if (response.data == 0) {
             this.$bvToast.toast(`No hay subastas por abrir`, {
               title: "Operación exitosa!",
-              variant: "success",
+              variant: "warning",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"
             });
