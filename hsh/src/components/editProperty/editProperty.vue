@@ -73,7 +73,6 @@ export default {
                 this.img[i]= this.images[i].image
             }
             this.img.fill(null,this.images.length,this.img.length);
-            console.log(this.img);
             this.imagesLoaded=true;
         })
 

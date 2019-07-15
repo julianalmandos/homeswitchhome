@@ -115,7 +115,6 @@ export default {
       .get("http://localhost:3000/images/" + this.property.id)
       .then(response => {
         this.image = response.data[0];
-        console.log(response.data);
       })
       .catch(error => {
         console.log(error);
@@ -143,15 +142,15 @@ export default {
     disableProperty(){
       if(confirm("¿Está seguro que desea deshabilitar esta propiedad?")){
           axios.get("http://localhost:3000/disableProperty/" + this.property.id)
-          .then(response => {
-            console.log("deshabilite")
-          })
           axios.get("http://localhost:3000/eraseFavorites/"+ this.property.id)
-          .then(response => {
-            console.log("borre favoritos")
+          this.$bvToast.toast('La propiedad se deshabilitó exitosamente!', {
+            title: 'Operación exitosa',
+            variant: 'success',
+            autoHideDelay: 5000,
+            toaster: 'b-toaster-bottom-right',
           })
-      }
-      
+          this.$emit("disabled")
+      }    
     }
   }
 };

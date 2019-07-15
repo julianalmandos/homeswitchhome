@@ -27,7 +27,6 @@
             axios.get('//localhost:3000/auctions')
                 .then(response => {
                     this.auctions=response.data;
-                    console.log(response.data)
                 })
                 .catch(error => {
                     console.log(error);

@@ -205,7 +205,6 @@
                     data:{booking: element, email: this.$store.state.user.email}
                 }) 
                 .then(response => {
-                    console.log("hola")
                     this.reloadBookings()
                 })
                 

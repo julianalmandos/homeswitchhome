@@ -39,9 +39,7 @@ export default {
   },
   methods:{
     openPlaceABidModal() {
-        console.log('esta emitiendose');
         this.$emit('placingBid',this.auction);
-        console.log('se emitio');
     },
    },
   created() {

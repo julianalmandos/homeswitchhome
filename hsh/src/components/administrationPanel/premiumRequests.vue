@@ -60,7 +60,6 @@
         beforeCreate() {
             axios.get('//localhost:3000/premiumRequests')
             .then(response => {
-                console.log(response.data);
                 this.requests=response.data;
             })
         },
@@ -68,12 +67,10 @@
             getRequests() {
                 axios.get('//localhost:3000/premiumRequests')
                 .then(response => {
-                    console.log(response.data);
                     this.requests=response.data;
                 })
             },
             acceptRequest(id){
-                console.log(id);
                 axios.post('//localhost:3000/acceptPremiumRequest',{
                     data: {
                         userId: id,

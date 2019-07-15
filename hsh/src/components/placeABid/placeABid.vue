@@ -50,7 +50,6 @@ export default {
     }
   },
   beforeMount() { 
-    console.log(this.week.idProperty);
       axios
       .get("http://localhost:3000/properties/" + this.week.idProperty)
       .then(response => {
@@ -78,7 +77,6 @@ export default {
           .then(response => {
             this.showPlacedBid=true;
             this.$emit('placed');
-            console.log("Puja realizada con exito");
           })
           .catch(error => {
             this.showErrorPlacingBid=true;

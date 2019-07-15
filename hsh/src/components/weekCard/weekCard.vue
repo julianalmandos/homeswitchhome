@@ -266,27 +266,10 @@ export default {
       }
     },
     reloadMaxBid() {
-      console.log("reload");
       axios
         .get("http://localhost:3000/weeks/" + this.week.id + "/maxbid")
         .then(response => {
           this.maxBid = response.data.data;
-          console.log(response.data.data);
-          console.log("relodee");
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    reloadMaxBid2() {
-      console.log("reload");
-      axios
-        .get("http://localhost:3000/weeks/" + this.week.id + "/maxbid")
-        .then(response => {
-          this.maxBid = response.data.data;
-          console.log(response.data.data);
-          console.log("relodee");
-          this.closeAuction();
         })
         .catch(error => {
           console.log(error);

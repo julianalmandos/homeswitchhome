@@ -228,7 +228,6 @@
                     }*/
                 })
                 .catch(error => {
-                    console.log(error);
                     if(error.response.data=='Esa cuenta se encuentra deshabilitada.'){
                         this.showDisabledAccount=true;
                     }else{
@@ -239,12 +238,7 @@
             },
             registerUser(){
                 var validation=this.validateData();
-                console.log('pase con error: '+validation.result);
                 if(validation.result){
-                    console.log(this.dataRegister.cardExpirationDate.year);
-                    console.log(this.dataRegister.cardExpirationDate.month);
-                    console.log('se manda');
-                    console.log(this.dataRegister.birthday);
                     axios.post('http://localhost:3000/register', {
                         data: this.dataRegister,
                     })
