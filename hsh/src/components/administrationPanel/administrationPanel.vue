@@ -120,41 +120,31 @@ export default {
     openSuscriptionPrices() {
       this.$router.push("/panel/suscription_prices");
     },
-    /*generateWeeks() {
-      axios
-        .get("http://localhost:3000/properties/generateWeeks")
-        .then(response => {
-          this.$bvToast.toast(`Las semanas fueron generadas exitosamente.`, {
-            title: "Operación exitosa!",
-            variant: "success",
-            autoHideDelay: 5000,
-            toaster: "b-toaster-bottom-right"
-          });
-        })
-        .catch(error => {
-          console.error(error);
-        });
+
+    /*async generateWeeks(){
+      await (this.generateWeek()).then(this.inform(3))
     },*/
     generateWeeks() {
-      axios.get("http://localhost:3000/properties").then(response => {
-        const a = new Promise((resolve, reject) => {
-          var total = 0;
-          response.data.forEach(prop => {
+      axios.get("http://localhost:3000/properties")
+      .then(response => {
+          var total= 0;
+          response.data.forEach(property => {
             axios
               .post("http://localhost:3000/properties/generateWeeks", {
                 data: {
-                  id: prop.id
+                  id: property.id
                 }
               })
               .then(response => {
-                this.total += response.data;
-                console.log(`jdaslkdjaskl ${this.total}`);
+                total += response.data;
+                console.log(total)
               });
           });
+          this.inform(total)
         });
-        console.log(`${total}`);
-        this.$bvToast.toast(
-          `Las semanas fueron generadas exitosamente. ${total}`,
+    },
+    inform(total){
+      this.$bvToast.toast('Las semanas fueron generadas exitosamente.'+total,
           {
             title: "Operación exitosa!",
             variant: "success",
@@ -162,7 +152,6 @@ export default {
             toaster: "b-toaster-bottom-right"
           }
         );
-      });
     },
     openAuctions() {
       axios
