@@ -103,7 +103,7 @@ export default {
           }else{
             this.$bvToast.toast(`No hay subastas por cerrar`, {
               title: "Operación exitosa!",
-              variant: "success",
+              variant: "warning",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"
             });
@@ -129,20 +129,51 @@ export default {
     openSuscriptionPrices() {
       this.$router.push("/panel/suscription_prices");
     },
+
+    /*async generateWeeks(){
+      await (this.generateWeek()).then(this.inform(3))
+    },*/
     generateWeeks() {
-      axios
-        .get("http://localhost:3000/properties/generateWeeks")
-        .then(response => {
-          this.$bvToast.toast(`Las semanas fueron generadas exitosamente.`, {
+      axios.get("http://localhost:3000/properties")
+      .then(response => {
+          var total= 0;
+          var promises=[];
+          response.data.forEach(property => {
+            promises.push(axios.post('//localhost:3000/properties/generateWeeks',{data:{id: property.id}}));
+          })
+
+          axios.all(promises)
+            .then(response => {
+              response.forEach(numero => {
+                total+=numero.data;
+              })
+            })
+            .then(nada => {
+              console.log('asd');
+              this.inform(total);
+            })
+        });
+    },
+    inform(total){
+      if(total == 0){
+      this.$bvToast.toast('No hay semanas por generar',
+          {
+            title: "Operación exitosa!",
+            variant: "warning",
+            autoHideDelay: 5000,
+            toaster: "b-toaster-bottom-right"
+          }
+        );
+      }else{
+        this.$bvToast.toast('Se generaron '+total+' semanas',
+          {
             title: "Operación exitosa!",
             variant: "success",
             autoHideDelay: 5000,
             toaster: "b-toaster-bottom-right"
-          });
-        })
-        .catch(error => {
-          console.error(error);
-        });
+          }
+        );
+      }
     },
     openAuctions() {
       axios
@@ -151,17 +182,22 @@ export default {
           if (response.data == 0) {
             this.$bvToast.toast(`No hay subastas por abrir`, {
               title: "Operación exitosa!",
-              variant: "success",
+              variant: "warning",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"
             });
           } else {
-            this.$bvToast.toast(`Las subastas fueron abiertas exitosamente.Se abrieron ${response.data} subastas`, {
-              title: "Operación exitosa!",
-              variant: "success",
-              autoHideDelay: 5000,
-              toaster: "b-toaster-bottom-right"
-            });
+            this.$bvToast.toast(
+              `Las subastas fueron abiertas exitosamente.Se abrieron ${
+                response.data
+              } subastas`,
+              {
+                title: "Operación exitosa!",
+                variant: "success",
+                autoHideDelay: 5000,
+                toaster: "b-toaster-bottom-right"
+              }
+            );
           }
         })
         .catch(error => {
