@@ -16,6 +16,9 @@
             :items="users" 
             :fields="fields"
             :filter="filter"
+            :filter-function="filterUsers"
+            :sort-by="'register_date'"
+            :sort-desc="true"
             stacked="md"
         >
             <template slot="empty">
@@ -92,6 +95,18 @@
                 })
         },
         methods: {
+            filterUsers(user,filter){
+                var role;
+                if(user.role==0){role='Común'}
+                else if(user.role==1){role='Premium'}
+                else{role='Administrador'};
+                if(role.toLowerCase().search(filter.toLowerCase())!=-1){return true}
+                if(user.email.search(filter.toLowerCase())!=-1){return true}
+                if(user.name.search(filter.toLowerCase())!=-1){return true}
+                if(user.surname.search(filter.toLowerCase())!=-1){return true}
+                if(user.register_date.search(filter.toLowerCase())!=-1){return true}
+                return false;
+            },
             makeAdministrator(userId){
                 if(confirm('¿Esta seguro que desea convertir ese usuario en administrador?')){
                     axios.post('//localhost:3000/acceptAdministratorRequest',{

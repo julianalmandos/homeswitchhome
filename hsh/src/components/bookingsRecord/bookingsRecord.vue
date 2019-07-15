@@ -221,6 +221,9 @@
                     data:{booking: element, email: this.$store.state.user.email}
                 }) 
                 .then(response => {
+                    if(element.type!==2){
+                        this.$store.state.user.credits ++
+                    }
                     this.reloadBookings()
                     this.$bvToast.toast('La reserva se canceló exitosamente!', {
                         title: 'Operación exitosa',

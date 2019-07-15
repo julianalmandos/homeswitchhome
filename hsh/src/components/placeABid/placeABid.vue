@@ -19,7 +19,7 @@
         </b-alert>
         
         <b-form-group id="bid" label="Ingrese una puja" label-for="input-1">
-          <b-form-input id="input-1" v-model="price" required/>
+          <b-form-input id="input-1" type="double" v-model="price" required/>
         </b-form-group>
         
         <template slot="modal-footer" slot-scope="{  hide }">

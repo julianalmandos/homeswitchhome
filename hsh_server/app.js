@@ -267,7 +267,8 @@ app.post('/bookingsOfUser', function (req, res) {
 })
 
 app.post('/selectWinner', function (req, res) {
-  var sql = "SELECT b.price, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek=" + req.body.data.week.id + " AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN weeks w ON (w.id=bo.idWeek) WHERE b.email=b.email AND w.date ='" + req.body.data.week.date.substring(0, 10) + "' AND cancelled=0) ORDER BY b.price DESC";
+  console.log(req.body.data.week.id, req.body.data.week.date.substring(0, 10))
+  var sql = "SELECT b.price, b.email FROM bids b INNER JOIN users u ON (u.email=b.email) WHERE b.idWeek=" + req.body.data.week.id + " AND u.credits>0 AND NOT EXISTS (SELECT * FROM bookings bo INNER JOIN weeks w ON (w.id=bo.idWeek) WHERE b.email=bo.email AND w.date ='" + req.body.data.week.date.substring(0, 10) + "' AND cancelled=0) ORDER BY b.price DESC";
   conn.query(sql, function (err, result) {
     if (result.length !== 0) { //no hay ganador, pasa a ociosa
       var email = result[0].email;

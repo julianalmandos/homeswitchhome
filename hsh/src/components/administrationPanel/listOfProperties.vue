@@ -30,7 +30,7 @@
                 })
         },
         methods: {
-            reloadProperties() {
+            reloadProperties(sizeOfBookings) {
                 axios.get('//localhost:3000/properties/admin')
                     .then(response => {
                         this.properties=response.data;
