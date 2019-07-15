@@ -27,7 +27,7 @@ app.post('/generateWeeks', (req, res) => {
           while (fechaInicial.getDay() != 0) {
             fechaInicial.setDate(fechaInicial.getDate() - 1);
           }
-          var sql2 = "INSERT INTO weeks (idProperty,date,auctionDate) VALUES (" + req.body.data.id + ",'" + fechaInicial.toISOString().substring(0, 10) + "','" + new Date(0000, 00, 00).toISOString().substring(0, 10) + "')";
+          var sql2 = "INSERT INTO weeks (idProperty,date) VALUES (" + req.body.data.id + ",'" + fechaInicial.toISOString().substring(0, 10) + "')";
           conn.query(sql2, function (err, result) {
             if (err) throw err;
           });
