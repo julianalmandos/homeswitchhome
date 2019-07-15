@@ -93,12 +93,21 @@ export default {
       axios
         .get("http://localhost:3000/closeAuctions")
         .then(response => {
+          if(response.data.length!==0){
           this.$bvToast.toast(`Se cerraron ${response.data.length} subastas`, {
             title: "Operación Exitosa",
             variant: "success",
             autoHideDelay: 5000,
             toaster: "b-toaster-bottom-right"
           });
+          }else{
+            this.$bvToast.toast(`No hay subastas por cerrar`, {
+              title: "Operación exitosa!",
+              variant: "success",
+              autoHideDelay: 5000,
+              toaster: "b-toaster-bottom-right"
+            });
+          }
           this.selectWinner(response.data);
         })
         .catch(error => {
@@ -172,8 +181,8 @@ export default {
         .then(response => {
           if (response.data == 0) {
             this.$bvToast.toast(`No hay subastas por abrir`, {
-              title: "Operación fallida!",
-              variant: "danger",
+              title: "Operación exitosa!",
+              variant: "success",
               autoHideDelay: 5000,
               toaster: "b-toaster-bottom-right"
             });

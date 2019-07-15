@@ -2,7 +2,7 @@
     <b-container>
         <h1 class="titulo">Lista de Propiedades</h1><br>
         <h5 v-if="!properties.length">No hay propiedades disponibles.</h5>
-        <propertyCard v-else v-for="property in properties" :key="property.id" :property="property" @deleted="reloadProperties"/>
+        <propertyCard v-else v-for="property in properties" :key="property.id" :property="property" @disabled="reloadProperties2" @deleted="reloadProperties"/>
     </b-container>
 </template>
 
@@ -21,9 +21,8 @@
             }
         },
         beforeCreate() {
-            axios.get('//localhost:3000/properties')
+            axios.get('//localhost:3000/properties/admin')
                 .then(response => {
-                    console.log('anda');
                     this.properties=response.data;
                 })
                 .catch(error => {
@@ -31,10 +30,9 @@
                 })
         },
         methods: {
-            reloadProperties(sizeOfBookings) {
-                axios.get('//localhost:3000/properties')
+            reloadProperties() {
+                axios.get('//localhost:3000/properties/admin')
                     .then(response => {
-                        console.log('anda');
                         this.properties=response.data;
                         this.$bvToast.toast(`Propiedad eliminada con éxito!. La cantidad de reservas canceladas fue ${sizeOfBookings}`, {
                             title: 'Operación exitosa',
@@ -45,6 +43,12 @@
                     })
                     .catch(error => {
 
+                    })
+            },
+             reloadProperties2() {
+                axios.get('//localhost:3000/properties/admin')
+                    .then(response => {
+                        this.properties=response.data;
                     })
             }
         }

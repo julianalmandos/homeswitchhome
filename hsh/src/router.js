@@ -175,20 +175,16 @@ export default router = new Router({
 router.beforeEach((to, from, next) => {
   //if(localStorage.getItem('jwt')!=null){
   if (to.matched.some(record => record.meta.requiresAdmin)) {
-    console.log('entra');
     var tokenValido = false;
     axios.post('//localhost:3000/validatetoken', {
       token: localStorage.getItem('jwt')
     })
       .then(response => {
-        console.log('response: ' + response.data);
         if (response.data) {
           if (store.state.user.role == 2) {
-            console.log('sigueentra');
             next();
           }
         } else {
-          console.log('sigueelse')
           //desloguear usuario y redirigir a login
           store.dispatch('logoutUserAction');
           next('/');
@@ -199,20 +195,16 @@ router.beforeEach((to, from, next) => {
       });
       //chequeo si no esta vencido y dependiendo la ruta hago lo que sea
     }else if(to.matched.some(record => record.meta.requiresAuth)){
-      console.log('entra');
       var tokenValido=false;
       axios.post('//localhost:3000/validatetoken', {
         token: localStorage.getItem('jwt')
       })
       .then(response => {
-        console.log('response: '+response.data);
         if(response.data){
           if(store.state.user.role==1 || store.state.user.role==0 || store.state.user.role==2){
-            console.log('sigueentra');
             next();
           }
         }else{
-          console.log('sigueelse')
           //desloguear usuario y redirigir a login
           store.dispatch('logoutUserAction');
           next('/');

@@ -12,7 +12,7 @@
                     <br>
                     <h4>Semana: {{(auction.date).substring(0,10)}}</h4>
                     <br>
-                    <b-button class="transparentButton btn-block" :to="'/details/'+auction.idProperty">Ver Propiedad</b-button>
+                    <b-button class="transparentButton btn-block" :to="'/details/'+auction.idProperty+'/no/no'">Ver Propiedad</b-button>
                 </b-card-text>
             </b-card-body>
             </b-col>
@@ -39,9 +39,7 @@ export default {
   },
   methods:{
     openPlaceABidModal() {
-        console.log('esta emitiendose');
         this.$emit('placingBid',this.auction);
-        console.log('se emitio');
     },
    },
   created() {

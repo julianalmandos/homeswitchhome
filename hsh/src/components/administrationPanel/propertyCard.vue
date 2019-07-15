@@ -72,14 +72,19 @@
             -->
             <b-button
               class="btn-block mb-2 blueButton"
-              :to="{ name: 'details', params: { id: this.property.id }}"
+              :to="'/details/'+property.id+'/no/no'"
             >
               <font-awesome-icon icon="list-alt"></font-awesome-icon>Ver detalle
             </b-button>
           </b-row>
           <b-row>
-            <b-button class="btn-block redButton" @click="eliminarPropiedad">
+            <b-button class="btn-block mb-2 redButton" @click="eliminarPropiedad">
               <font-awesome-icon icon="cog"></font-awesome-icon>Eliminar
+            </b-button>
+          </b-row>
+          <b-row>
+            <b-button class="btn-block mb-2 redButton" v-if="!property.disabled" @click="disableProperty">
+              <font-awesome-icon icon="cog"></font-awesome-icon>Deshabilitar
             </b-button>
           </b-row>
         </b-col>
@@ -110,7 +115,6 @@ export default {
       .get("http://localhost:3000/images/" + this.property.id)
       .then(response => {
         this.image = response.data[0];
-        console.log(response.data);
       })
       .catch(error => {
         console.log(error);
@@ -134,6 +138,19 @@ export default {
             this.$emit("deleted", response.data.length);
           })
       }
+    },
+    disableProperty(){
+      if(confirm("¿Está seguro que desea deshabilitar esta propiedad?")){
+          axios.get("http://localhost:3000/disableProperty/" + this.property.id)
+          axios.get("http://localhost:3000/eraseFavorites/"+ this.property.id)
+          this.$bvToast.toast('La propiedad se deshabilitó exitosamente!', {
+            title: 'Operación exitosa',
+            variant: 'success',
+            autoHideDelay: 5000,
+            toaster: 'b-toaster-bottom-right',
+          })
+          this.$emit("disabled")
+      }    
     }
   }
 };

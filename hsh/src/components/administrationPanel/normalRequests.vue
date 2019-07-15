@@ -71,8 +71,6 @@
                 })
             },
             acceptRequest(id,email){
-                console.log('entra');
-                console.log(id);
                 axios.post('//localhost:3000/acceptNormalRequest',{
                     data: {
                         userId: id,

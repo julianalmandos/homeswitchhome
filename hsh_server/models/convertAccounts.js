@@ -36,7 +36,6 @@ app.post('/convertToNormal', (req, res) => {
 app.get('/hasPremiumRequest/:id', function (req, res) {
   var sql = "SELECT * FROM premium_requests WHERE user_id=" + req.params.id + " AND accepted=0";
   conn.query(sql, function (err, result) {
-    console.log(result);
     if (result[0] == null) {
       res.send(false);
     } else {
@@ -74,7 +73,6 @@ app.get('/premiumRequests', function (req, res) {
 
 app.post('/acceptNormalRequest', function (req, res) {
   var sql = "SELECT * FROM bookings b INNER JOIN weeks w ON (b.idWeek=w.id) WHERE b.cancelled=0 AND b.type=0 AND b.email='"+req.body.data.email+"' AND w.date>='"+new Date().toISOString().substring(0,10)+"'";
-  console.log(sql);
   conn.query(sql, function (err, result) {
     if(result.length==0){
       var sql = "UPDATE normal_requests SET accepted=1 WHERE user_id=" + req.body.data.userId + " AND accepted=0";

@@ -54,7 +54,6 @@
                 }
             })
             .then(response => {
-                //console.log('todo OK');
             })
             .catch(err => {
                 this.$router.push('/');
@@ -63,7 +62,6 @@
         methods: {
             changePassword() {
                 if(this.password==this.confirmPassword){
-                    //console.log('coinciden!');
                     axios.post('//localhost:3000/changePassword',{
                         data: {
                             token: this.token,

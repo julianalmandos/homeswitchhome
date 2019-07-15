@@ -258,7 +258,7 @@ app.post('/bookingsOfUser', function (req, res) {
       res.send(result);
     });
   } else {
-    var sql = `SELECT w.date, p.name, book.price, book.type FROM bookings book INNER JOIN weeks w ON (w.id=book.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE book.email="${req.body.data.email}" AND book.type=${req.body.data.types} AND book.cancelled=0`
+    var sql = `SELECT w.date, p.name, book.price, book.idWeek, book.id, book.type FROM bookings book INNER JOIN weeks w ON (w.id=book.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE book.email="${req.body.data.email}" AND book.type=${req.body.data.types} AND book.cancelled=0`
     conn.query(sql, function (err, result) {
       if (err) throw err;
       res.send(result);
@@ -385,12 +385,13 @@ app.post('/province', function (req, res) {
 })
 
 app.post('/locality', function (req, res) {
+  console.log("")
   var sql = "SELECT * FROM localities l INNER JOIN provinces p ON (p.id=l.idProvince)  WHERE p.name='" + req.body.data.province + "' AND l.name='" + req.body.data.locality + "'";
   conn.query(sql, function (err, result) {
     if (result.length == 0) {
       var sql2 = "SELECT p.id FROM provinces p INNER JOIN countries c ON (c.id=p.idCountry) WHERE p.name='" + req.body.data.province + "' AND c.name='" + req.body.data.country + "'";
       conn.query(sql2, function (err, result) {
-        var sql3 = "INSERT INTO localities (name, idProvince) VALUES ('" + req.body.data.province + "'," + result[0].id + ")"
+        var sql3 = "INSERT INTO localities (name, idProvince) VALUES ('" + req.body.data.locality + "'," + result[0].id + ")"
         conn.query(sql3, function (err, result) {
           if (err) throw err;
           res.send(result);
@@ -474,19 +475,19 @@ app.post('/deleteFavorite', (req, res) => {
 })
 
   app.post('/searchAll', (req, res) => {
-    var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (p.idLocality=l.id) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE l.name='" + req.body.data.locality+"' AND EXISTS (SELECT * FROM weeks w WHERE w.date>'"+req.body.data.startDate+"' AND w.date<'"+req.body.data.finishDate+"'AND reserved=0 AND p.id=w.idProperty)";
+    var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (p.idLocality=l.id) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE l.name='" + req.body.data.locality+"' AND p.disabled=0 AND EXISTS (SELECT * FROM weeks w WHERE w.date>'"+req.body.data.startDate+"' AND w.date<'"+req.body.data.finishDate+"'AND reserved=0 AND p.id=w.idProperty)";
     conn.query(sql, function (err, result) {
       res.send(result);
     })
   })
   app.post('/searchLocality', (req, res) => {
-    var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (p.idLocality=l.id) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE l.name='" + req.body.data.locality+"'";
+    var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (p.idLocality=l.id) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE l.name='" + req.body.data.locality+"' AND p.disabled=0";
     conn.query(sql, function (err, result) {
       res.send(result);
     })
   })
   app.post('/searchRange', (req, res) => {
-    var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (p.idLocality=l.id) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE EXISTS (SELECT * FROM weeks w WHERE w.date>'"+req.body.data.startDate+"' AND w.date<'"+req.body.data.finishDate+"' AND reserved=0 AND p.id=w.idProperty)";
+    var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (p.idLocality=l.id) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE p.disabled=0 AND EXISTS (SELECT * FROM weeks w WHERE w.date>'"+req.body.data.startDate+"' AND w.date<'"+req.body.data.finishDate+"' AND reserved=0 AND p.id=w.idProperty)";
     conn.query(sql, function (err, result) {
       res.send(result);
     })
@@ -582,6 +583,20 @@ app.post('/weeks/:id/directBooking/booking', function (req, res) {
       res.sendStatus(409)
   })
 })
+
+app.get('/disableProperty/:id', (req, res) => {
+  var sql = "UPDATE properties SET disabled=1 WHERE id="+req.params.id;
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+  });
+})
+
+app.get('/eraseFavorites/:id', function (req, res) {
+  var sql = "UPDATE favorites SET active=0 WHERE week_id IN (SELECT id FROM weeks WHERE idProperty="+req.params.id+")";
+  conn.query(sql, function (err, result) {
+    if (err) throw err;
+  });
+});
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');

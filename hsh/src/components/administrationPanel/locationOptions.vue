@@ -94,7 +94,6 @@ export default {
     getProvinces(country){
       axios.get("http://localhost:3000/provinces/"+country)
           .then(response => {
-            console.log(response.data)
             this.provinces=[];
             response.data.forEach(province => {
               this.provinces.push(province.name);

@@ -49,9 +49,6 @@ export default {
       showErrorEmptyFields: false,
     }
   },
-  beforeMount() { 
-      console.log("llegue hasta aca")
-  },
   methods: {
     openHotSaleForAWeek() { 
       this.resetAlerts(); 

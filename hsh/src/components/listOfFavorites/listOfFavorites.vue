@@ -105,7 +105,6 @@
                 return false;
             },
             until(date) {
-                console.log(date);
                 var result=new Date(date);
                 result.setDate(result.getDate()+6);
                 return result.toISOString().substring(0,10);
@@ -134,7 +133,6 @@
                 axios.get('//localhost:3000/getFavorites/'+this.$store.state.user.id)
                     .then(response => {
                         this.favorites=response.data;
-                        console.log(this.favorites);
                     })
                     .catch(error => {
                         console.log(error);

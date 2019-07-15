@@ -4,7 +4,14 @@ const app = express.Router();
 const mailer = require('../mailer.js');
 
 app.get('/', (req, res) => {
-  var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (l.id=p.idLocality) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry)";
+  var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country FROM properties p INNER JOIN localities l ON (l.id=p.idLocality) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE disabled=0";
+  conn.query(sql, function (err, result) {
+    res.send(result);
+  })
+})
+
+app.get('/admin', (req, res) => {
+  var sql = "SELECT p.id, p.name, p.description, p.address, p.base_price, l.name AS locality, pr.name AS province, c.name AS country, disabled FROM properties p INNER JOIN localities l ON (l.id=p.idLocality) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry)";
   conn.query(sql, function (err, result) {
     res.send(result);
   })
@@ -37,7 +44,7 @@ app.post('/generateWeeks', (req, res) => {
           fechaInicial.setMonth(fechaInicial.getMonth()+12);
           result[0].date.setDate(result[0].date.getDate()+7)
           while(result[0].date.toISOString().substring(0, 10)<fechaInicial.toISOString().substring(0, 10)){
-            var sql2 = "INSERT INTO weeks (idProperty,date,auctionDate) VALUES (" + req.body.data.id + ",'" + result[0].date.toISOString().substring(0, 10) + "','" + new Date(0000, 00, 00).toISOString().substring(0, 10) + "')";
+            var sql2 = "INSERT INTO weeks (idProperty,date) VALUES (" + req.body.data.id + ",'" + result[0].date.toISOString().substring(0, 10) + "')";
             conn.query(sql2, function (err, result) {
               if (err) throw err;
             });
@@ -91,6 +98,11 @@ app.post('/:id/delete', function (req, res) {
       conn.query(sqlRemove, function (err, result2) {
         if (err) throw err;
       })
+
+    var sqlRemove2 = "DELETE FROM weeks WHERE idProperty=" + req.params.id;
+    conn.query(sqlRemove2, function (err, result2) {
+      if (err) throw err;
+    })
     res.send(result)
   })
  })
@@ -135,7 +147,6 @@ app.post('/:id/edit', function (req, res) {
   var sql = "SELECT * FROM properties p WHERE p.locality='" + req.body.data.property.locality + "' AND p.province='" + req.body.data.property.province + "' AND p.name='" + req.body.data.property.name + "'";
   conn.query(sql, function (err, result) {
     if (result.length == 0 || (result.length == 1 && result[0].id == req.body.data.property.id)) {
-      console.log("acata")
       if (req.body.data.property.description !== "" && req.body.data.property.description !== undefined) {
         var sql = "UPDATE properties p SET p.description = '" + req.body.data.property.description + "',p.name = '" + req.body.data.property.name + "',p.base_price = '" + req.body.data.property.base_price + "',p.locality = '" + req.body.data.property.locality + "',p.country = '" + req.body.data.property.country + "',p.province= '" + req.body.data.property.province + "'  WHERE p.id='" + req.params.id + "'";
         conn.query(sql, function (err, result) {
@@ -145,7 +156,6 @@ app.post('/:id/edit', function (req, res) {
       if ((req.body.data.files).length > 0) {
         var sqlIm = "DELETE FROM images WHERE idProperty =" + req.params.id
         conn.query(sqlIm, function (err, result) {
-          console.log("borre")
         });
         req.body.data.files.forEach(function (file) {
           if ((file !== undefined) && (file !== "") && (file !== null)) {
