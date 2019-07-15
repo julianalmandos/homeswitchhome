@@ -258,7 +258,7 @@ app.post('/bookingsOfUser', function (req, res) {
       res.send(result);
     });
   } else {
-    var sql = `SELECT w.date, p.name, book.price, book.type FROM bookings book INNER JOIN weeks w ON (w.id=book.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE book.email="${req.body.data.email}" AND book.type=${req.body.data.types} AND book.cancelled=0`
+    var sql = `SELECT w.date, p.name, book.price, book.idWeek, book.id, book.type FROM bookings book INNER JOIN weeks w ON (w.id=book.idWeek) INNER JOIN properties p ON (p.id=w.idProperty) WHERE book.email="${req.body.data.email}" AND book.type=${req.body.data.types} AND book.cancelled=0`
     conn.query(sql, function (err, result) {
       if (err) throw err;
       res.send(result);
@@ -385,12 +385,13 @@ app.post('/province', function (req, res) {
 })
 
 app.post('/locality', function (req, res) {
+  console.log("")
   var sql = "SELECT * FROM localities l INNER JOIN provinces p ON (p.id=l.idProvince)  WHERE p.name='" + req.body.data.province + "' AND l.name='" + req.body.data.locality + "'";
   conn.query(sql, function (err, result) {
     if (result.length == 0) {
       var sql2 = "SELECT p.id FROM provinces p INNER JOIN countries c ON (c.id=p.idCountry) WHERE p.name='" + req.body.data.province + "' AND c.name='" + req.body.data.country + "'";
       conn.query(sql2, function (err, result) {
-        var sql3 = "INSERT INTO localities (name, idProvince) VALUES ('" + req.body.data.province + "'," + result[0].id + ")"
+        var sql3 = "INSERT INTO localities (name, idProvince) VALUES ('" + req.body.data.locality + "'," + result[0].id + ")"
         conn.query(sql3, function (err, result) {
           if (err) throw err;
           res.send(result);
