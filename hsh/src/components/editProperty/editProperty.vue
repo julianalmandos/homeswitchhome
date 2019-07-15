@@ -15,13 +15,13 @@
           <b-form-input type="input-9" v-model="property.base_price" required/>
         </b-form-group>
         <b-form-group v-if="!booked" id="country" :label="'País'" label-for="input-10">  
-          <b-form-input type="input-10" v-model="property.country" required/>
+          <b-form-select type="input-10" v-model="property.country" :options="countries" @change="getProvinces(property.country)" required/>
         </b-form-group>
         <b-form-group v-if="!booked" id="province" :label="'Provincia'" label-for="input-11"> 
-          <b-form-input type="input-11" v-model="property.province" required/>
+          <b-form-select type="input-11" v-model="property.province" :options="provinces" @change="getLocalities(property.province, property.country)" required/>
         </b-form-group>
         <b-form-group v-if="!booked" id="locality" :label="'Localidad'" label-for="input-12">  
-          <b-form-input type="input-12" v-model="property.locality" required/>
+          <b-form-select type="input-12" v-model="property.locality" :options="localities" required/>
         </b-form-group>
         <b-form-group id="imagen1" :label="'Imagen N°1'" label-for="input-2">
           <b-form-input id="input-2" v-model="img[0]" required></b-form-input>
@@ -39,7 +39,7 @@
           <b-form-input id="input-6" v-model="img[4]"></b-form-input>
         </b-form-group>
         <b-row align-h="between">
-            <b-button :to="{ name: 'details', params: { id: this.$route.params.id }}" class="blueButton" style="float:left;"><font-awesome-icon icon="list-alt"></font-awesome-icon> Volver a la Propiedad</b-button>
+            <b-button :to="'/details/'+this.$route.params.id+'/no/no'" class="blueButton" style="float:left;"><font-awesome-icon icon="list-alt"></font-awesome-icon> Volver a la Propiedad</b-button>
             <b-button type="submit" class="blueButton" style="float:right;"><font-awesome-icon icon="home"></font-awesome-icon> Editar</b-button> 
         </b-row>
       </form>
@@ -59,9 +59,13 @@ export default {
       images: {},
       imagesLoaded: false,
       booked: false,
+      countries: [],
+      provinces: [],
+      localities: []
     }
   },
   created() {
+    this.getCountries()
     axios.get('//localhost:3000/properties/'+this.$route.params.id)
         .then(response => {
             this.property=response.data[0];
@@ -82,6 +86,42 @@ export default {
         })
   },
   methods: {
+      getCountries(){
+      axios.get("http://localhost:3000/countries/")
+          .then(response => {
+            this.countries= [];
+            response.data.forEach(country => {
+              this.countries.push(country.name);
+            })
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+    getProvinces(country){
+      axios.get("http://localhost:3000/provinces/"+country)
+          .then(response => {
+            this.provinces=[];
+            response.data.forEach(province => {
+              this.provinces.push(province.name);
+            })
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+    getLocalities(province, country){
+      axios.get("http://localhost:3000/localities/"+province+"/"+country)
+          .then(response => {
+            this.localities=[];
+            response.data.forEach(locality => {
+              this.localities.push(locality.name);
+            })
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
     propertyEdition() { 
       if(confirm('¿Está seguro que desea editar esta propiedad?')){
         axios

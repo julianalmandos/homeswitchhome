@@ -72,7 +72,7 @@
             -->
             <b-button
               class="btn-block mb-2 blueButton"
-              :to="{ name: 'details', params: { id: this.property.id }}"
+              :to="'/details/'+this.property.id+'/no/no'"
             >
               <font-awesome-icon icon="list-alt"></font-awesome-icon>Ver detalle
             </b-button>

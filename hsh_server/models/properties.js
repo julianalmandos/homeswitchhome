@@ -157,14 +157,16 @@ app.post('/', function (req, res) {
 })
 
 app.post('/:id/edit', function (req, res) {
-  var sql = "SELECT * FROM properties p WHERE p.locality='" + req.body.data.property.locality + "' AND p.province='" + req.body.data.property.province + "' AND p.name='" + req.body.data.property.name + "'";
+  var sql = "SELECT p.id FROM properties p INNER JOIN localities l ON (l.id=p.idLocality) INNER JOIN provinces pr ON (pr.id=l.idProvince) INNER JOIN countries c ON (c.id=pr.idCountry) WHERE l.name='" + req.body.data.property.locality + "' AND pr.name='" + req.body.data.property.province + "' AND p.name='" + req.body.data.property.name + "'";
   conn.query(sql, function (err, result) {
     if (result.length == 0 || (result.length == 1 && result[0].id == req.body.data.property.id)) {
       if (req.body.data.property.description !== "" && req.body.data.property.description !== undefined) {
-        var sql = "UPDATE properties p SET p.description = '" + req.body.data.property.description + "',p.name = '" + req.body.data.property.name + "',p.base_price = '" + req.body.data.property.base_price + "',p.locality = '" + req.body.data.property.locality + "',p.country = '" + req.body.data.property.country + "',p.province= '" + req.body.data.property.province + "'  WHERE p.id='" + req.params.id + "'";
-        conn.query(sql, function (err, result) {
-
-        });
+        var sql1 = "SELECT id FROM localities WHERE name='" + req.body.data.property.locality + "'";
+        conn.query(sql1, function (err, result) {
+          var sql = "UPDATE properties p SET p.description = '" + req.body.data.property.description + "',p.name = '" + req.body.data.property.name + "',p.base_price = '" + req.body.data.property.base_price + "',p.idLocality = '" + result[0].id + "'  WHERE p.id='" + req.params.id + "'";
+          conn.query(sql, function (err, result) {
+          });
+        }); 
       }
       if ((req.body.data.files).length > 0) {
         var sqlIm = "DELETE FROM images WHERE idProperty =" + req.params.id
