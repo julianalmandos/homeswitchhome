@@ -79,7 +79,12 @@
           </b-row>
           <b-row>
             <b-button class="btn-block mb-2 redButton" @click="eliminarPropiedad">
-              <font-awesome-icon icon="cog"></font-awesome-icon>Eliminar
+              <font-awesome-icon icon="cog"></font-awesome-icon>Eliminar y cancelar reservas
+            </b-button>
+          </b-row>
+          <b-row>
+            <b-button class="btn-block mb-2 redButton" @click="eliminarPropiedad2">
+              <font-awesome-icon icon="cog"></font-awesome-icon>Eliminar y no cancelar reservas
             </b-button>
           </b-row>
           <b-row>
@@ -137,6 +142,15 @@ export default {
             });
             this.$emit("deleted", response.data.length);
           })
+      }
+    },
+    eliminarPropiedad2() {
+      if (confirm("¿Esta seguro que desea eliminar esta propiedad?")) {
+        axios
+          .post("//localhost:3000/properties/" + this.property.id + "/delete")
+          .then(response => {
+            });
+            this.$emit("deleted",0);
       }
     },
     disableProperty(){
