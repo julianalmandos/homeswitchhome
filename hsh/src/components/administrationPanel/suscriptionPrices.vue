@@ -4,11 +4,11 @@
         <br>
         <div class="formulario">
             <form @submit.stop.prevent="changeSuscriptionPrices()" style="width:30%">
-                <label for="normalPrice">Precios Usuario Normal</label>
+                <label for="normalPrice">Precio Usuario Normal</label>
                 <b-form-group id="normalPrice">
                     <b-form-input type="number" v-model="prices[0].price" required/>
                 </b-form-group>
-                <label for="premiumPrice">Precios Usuario Normal</label>
+                <label for="premiumPrice">Precio Usuario Premium</label>
                 <b-form-group id="premiumPrice">
                     <b-form-input type="number" v-model="prices[1].price" required></b-form-input>
                 </b-form-group>

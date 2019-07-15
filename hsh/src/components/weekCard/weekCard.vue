@@ -2,7 +2,7 @@
   <div class="weekCard">
     <!-- SUBASTA  SUBASTA  SUBASTA  SUBASTA  -->
     <b-card
-      v-if="(((isInAuction())&(!week.reserved))||((isInHotSale()&(!week.reserved)&(week.auction==1))))"
+      v-if="(((isInAuction())&(!week.reserved)&(week.auction!==0))||((isInHotSale()&(!week.reserved)&(week.auction==1))))"
       border-variant="dark"
       class="card2"
       style="max-width: 15rem;margin-bottom:1.25rem"
@@ -23,7 +23,7 @@
     </b-card>
 
     <!-- RESERVA DIRECTA  RESERVA DIRECTA  RESERVA DIRECTA  RESERVA DIRECTA  -->
-    <b-card v-if="((isInDirectReservation())&(!week.reserved))" class="card1">
+    <b-card v-if="((isInDirectReservation())&(!week.reserved))||((isInAuction())&(week.auction==0))" class="card1">
       <h5 slot="header">Semana: {{(week.date).substring(0,10)}}</h5>
       <b-card-text>
         <b-button
@@ -50,9 +50,6 @@
           @click="bookHotSale"
         >Reservar HotSale</b-button>
         <h6 v-if="(week.idle)&(!isAdmin)">OCIOSA</h6>
-        <b-button class="redButton btn-block" @click="addFavorite()">
-          <font-awesome-icon icon="heart" style="color:#ff6e6e;stroke:black;stroke-width:20;"></font-awesome-icon>Agregar a favoritos
-        </b-button>
         <b-button
           v-if="((!week.idle)&(isAdmin))"
           class="transparentButton btn-block"
@@ -63,6 +60,9 @@
           class="transparentButton btn-block"
           @click="openHotSaleModal"
         >Poner en HotSale</b-button>
+        <b-button class="redButton btn-block" @click="addFavorite()">
+          <font-awesome-icon icon="heart" style="color:#ff6e6e;stroke:black;stroke-width:20;"></font-awesome-icon>Agregar a favoritos
+        </b-button>
       </b-card-text>
     </b-card>
 
@@ -312,16 +312,17 @@ export default {
 </script>
 <style>
 .card1 {
-  background-color: #bfbfbf;
+  background-color: #48d2f5c9;
   color: #f2f2f2;
   box-shadow: 0px 6px 3px -4px rgba(0, 0, 0, 0.75);
 }
 .card3 {
-  background-color: #ffaaff;
+  background-color: #be46a4bb;
   color: #f2f2f2;
   box-shadow: 0px 6px 3px -4px rgba(0, 0, 0, 0.75);
 }
 .card2 {
+  background-color: #9ffac5;
   box-shadow: 0px 6px 3px -4px rgba(0, 0, 0, 0.75);
 }
 .card4 {

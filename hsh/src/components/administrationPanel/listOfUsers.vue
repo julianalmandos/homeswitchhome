@@ -27,6 +27,9 @@
             <template slot="role" slot-scope="data">
                 {{data.value==0 ? 'Común' : (data.value==1 ? 'Premium' : 'Administrador')}}
             </template>
+            <template slot="credits" slot-scope="data">
+                {{ data.value }}
+            </template>
             <template slot="options" slot-scope="data">
                 <b-button v-if="data.item.role!=2" class="blueButton btn-sm" @click="makeAdministrator(data.item.id)">Convertir en Administrador</b-button>
                 <span v-else>No hay opciones.</span>
@@ -66,6 +69,11 @@
                     {
                         key: 'register_date',
                         label: 'Fecha de Registro',
+                        sortable: true,
+                    },
+                    {
+                        key: 'credits',
+                        label: 'Créditos',
                         sortable: true,
                     },
                     {
