@@ -31,12 +31,12 @@
                 })
         },
         methods: {
-            reloadProperties() {
+            reloadProperties(sizeOfBookings) {
                 axios.get('//localhost:3000/properties')
                     .then(response => {
                         console.log('anda');
                         this.properties=response.data;
-                        this.$bvToast.toast('Propiedad eliminada con éxito!', {
+                        this.$bvToast.toast(`Propiedad eliminada con éxito!. La cantidad de reservas canceladas fue ${sizeOfBookings}`, {
                             title: 'Operación exitosa',
                             variant: 'success',
                             autoHideDelay: 5000,

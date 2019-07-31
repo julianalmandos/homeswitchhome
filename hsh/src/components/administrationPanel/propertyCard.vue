@@ -131,7 +131,7 @@ export default {
                   }
                 })
             });
-            this.$emit("deleted");
+            this.$emit("deleted", response.data.length);
           })
       }
     }
