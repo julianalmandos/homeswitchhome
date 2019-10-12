@@ -23,40 +23,57 @@ app.get('/generateWeeks', (req, res) => {
     var totalWeeks = 0;
     result.forEach(prop => {
       var fechaInicial = new Date()
-      const sqlWeeks = `SELECT * FROM weeks WHERE idProperty=${prop.id} AND date >= ${fechaInicial.toISOString().substring(0, 10)}`;
-      conn.query(sqlWeeks, function (err, result) {
-        if (result.length < 53) {
+      const sqlWeeks = `SELECT * FROM weeks WHERE idProperty=${prop.id} AND date >= "${fechaInicial.toISOString().substring(0, 10)}"`;
+      conn.query(sqlWeeks, function (err, result) { 
+        if (result.length == 0) { 
+          totalWeeks += 53;
           while (fechaInicial.getDay() != 0) {
             fechaInicial.setDate(fechaInicial.getDate() + 1);
           }
-          const quantityWeeks = 53 - result.length;
-          totalWeeks += quantityWeeks;
-          for (var i = 0; i < quantityWeeks; i++) {
+          for (var i = 0; i < 53; i++) {
             var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES ('" + prop.id + "','" + fechaInicial.toISOString().substring(0, 10) + "',0,0,0,0000-00-00)";
             conn.query(sql2, function (err, result) {
               if (err) throw err;
             });
             fechaInicial.setDate(fechaInicial.getDate() + 7);
           }
-        }
+        } else if (result.length < 53) { 
+          max = new Date();
+          const quantityWeeks = 53 - result.length;
+          totalWeeks += quantityWeeks;
+          for (var i = 0; i < result.length; i++) {
+            console.log(result[i].date)
+            if (result[i].date > max) { 
+              max = result[i].date;
+            }
+          }
+          console.log("El maximo es ", max);
+          for (var i = 0; i < quantityWeeks; i++) {
+            max.setDate(max.getDate()+7)
+            var sql2 = "INSERT INTO weeks (idProperty,date,auction,reserved,idle,auctionDate) VALUES ('" + prop.id + "','" + max.toISOString().substring(0, 10) + "',0,0,0,0000-00-00)";
+            conn.query(sql2, function (err, result) {
+              if (err) throw err;
+            });
+          } 
+        };
+       });
       })
-    })
-    res.send(`${totalWeeks}`)
-  })
-})
+res.send(`${totalWeeks}`)
+  });
+});
 
 app.get('/openAuctions', (req, res) => {
   const sql = `SELECT id FROM properties`;
-  let totalAuctions = 0;
   conn.query(sql, function (err, result) {
     var actualDate = new Date();
-    result.forEach(prop => {
+    totalAuctions = 0;
+    result.forEach(function (prop) {
       const sqlWeeks = `SELECT * FROM weeks WHERE idProperty=${prop.id} AND auction=0`;
       conn.query(sqlWeeks, function (err, result) {
-        result.forEach(week => {  
+        result.forEach(function (week) {
           week.date.setMonth(week.date.getMonth() - 6);
           if (actualDate > week.date) {
-            totalAuctions++;
+            totalAuctions += 1;
             const sql = `UPDATE weeks w SET w.auction = 1, w.auctionDate="${actualDate.toISOString().substring(0, 10)}" WHERE id=${week.id}`
             conn.query(sql, function (err, result) {
               if (err) throw err;
@@ -96,7 +113,7 @@ app.get('/:id/bookings', function (req, res) {
   var sql = "SELECT * FROM properties p INNER JOIN weeks w ON (p.id = w.idProperty) WHERE p.id='" + req.params.id + "' AND w.reserved=1";
   conn.query(sql, function (err, result) {
     if (result.length == 0) {
-    "UPDATE properties p SET p.description = '" + req.body.data.property.description + "',p.name = '" + req.body.data.property.name
+      "UPDATE properties p SET p.description = '" + req.body.data.property.description + "',p.name = '" + req.body.data.property.name
       res.status(200).send({ data: false });
     } else {
       res.status(200).send({ data: true });
@@ -121,7 +138,7 @@ app.post('/', function (req, res) {
         if (err) throw err;
       });
     })
-    var fechaInicial = new Date()
+    /*var fechaInicial = new Date()
     while (fechaInicial.getDay() != 0) {
       console.log('entra');
       fechaInicial.setDate(fechaInicial.getDate() + 1);
@@ -132,7 +149,7 @@ app.post('/', function (req, res) {
         if (err) throw err;
       });
       fechaInicial.setDate(fechaInicial.getDate() + 7);
-    }
+    }*/
     res.send(result)
   });
 })
